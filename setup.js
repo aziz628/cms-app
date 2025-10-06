@@ -11,7 +11,7 @@ console.log('Starting project setup...');
 // Configuration
 const SERVER_DIR = path.join(__dirname, 'server');
 const FRONTEND_DIR = path.join(__dirname, 'frontend');
-const UPLOAD_DIRS = ['gallery', 'trainers', 'events', 'reviews', 'transformations']
+const UPLOAD_DIRS = ['gallery', 'trainers', 'events', 'reviews', 'classes', 'transformations'];
 const UPLOAD_BASE = path.join(SERVER_DIR, 'uploads');
 
 async function setupProject() {
