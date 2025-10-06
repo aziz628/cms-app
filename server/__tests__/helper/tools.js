@@ -105,21 +105,9 @@ export async function getAuthCookies(credentials = { username: 'admin', password
 export function cleanup_all_upload() {
 
   if (fs.existsSync(UPLOADS_DIR)) {
-      // List all items in uploadsRoot
-      const items = fs.readdirSync(UPLOADS_DIR, { withFileTypes: true });
-
-      // Filter for directories only
-      const folders = items.filter(dirent => {
-         if (dirent.isDirectory())  return true;
-         console.log(`Not a directory: ${dirent.name}`);
-         return false;
-      }).map(dirent => dirent.name);
       
-      console.log('Cleaning up uploads in folders ');
-      folders.forEach(folder => {
-          const folderPath = path.join(UPLOADS_DIR, folder);
-          fs.rmSync(folderPath, { recursive: true, force: true });
-      });
+      console.log('Cleaning up uploads directory...');
+      const folders = ['gallery', 'trainers', 'events', 'reviews', 'classes', 'transformations'];
       // Remove everything
       fs.rmSync(UPLOADS_DIR, { recursive: true, force: true });
 
