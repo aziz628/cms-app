@@ -20,10 +20,10 @@ async function setupProject() {
     console.log('\n Installing dependencies...');
     
     console.log('   Installing server dependencies...');
-    execSync('npm ci', { cwd: SERVER_DIR, stdio: 'inherit' });
+    execSync('npm install', { cwd: SERVER_DIR, stdio: 'inherit' });
     
     console.log('   Installing frontend dependencies...');
-    execSync('npm ci', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+    execSync('npm install', { cwd: FRONTEND_DIR, stdio: 'inherit' });
     
     // 2. Setup upload directories
     console.log('\n Creating upload directories...');
@@ -68,6 +68,15 @@ async function setupProject() {
     console.log('\n To start the server:');
     console.log('   cd server');
     console.log('   npm run prod:start');
+    // 5. copy env.example to .env.production
+    const envExamplePath = path.join(SERVER_DIR, '.env.example');
+    const envProductionPath = path.join(SERVER_DIR, '.env.production');
+    if (!fs.existsSync(envProductionPath)) {
+      fs.copyFileSync(envExamplePath, envProductionPath);
+      console.log('\n Created .env.production from .env.example');
+    } else {
+      console.log('\n .env.production already exists, skipping creation');
+    }
     
   } catch (error) {
     console.error('\n Setup failed:', error);
