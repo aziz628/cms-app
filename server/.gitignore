@@ -9,7 +9,7 @@ dist/
 DB/*.sqlite
 DB/migration-status*.json
 package-lock.json
-
+**/package-lock.json
 # Environment files (except example and test)
 .env
 .env.*
