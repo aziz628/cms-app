@@ -17,6 +17,7 @@ package-lock.json
 !.env.test
 
 # User uploads
+/uploads
 /uploads/*
 __tests__/test_db.sqlite
 # Logs and editor files
