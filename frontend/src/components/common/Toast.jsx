@@ -30,7 +30,7 @@ export function Toast({ type = 'info', message, onClose }) {
         onClick={onClose}
         type='button'
         style={{ backgroundColor: 'gainsboro', padding: '4px' }}
-        className="ml-4  text-black hover:text-gray-500"
+        className="ml-4 rounded text-black hover:text-gray-500"
       >
         <span className="sr-only">Close</span> 
         <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
