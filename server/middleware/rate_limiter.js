@@ -19,21 +19,21 @@ export const authLimiter = createLimiter(
   15 * 60 * 1000,  // 15 minutes
   5,               // 5 attempts
   'RATE_LIMITED_AUTH',
-  'Too many authentication attempts'
+  'Too many authentication attempts , please try again later.'
 );
 
 export const adminLimiter = createLimiter(
   60 * 1000,      // 1 minute
   30,             // 30 requests
   'RATE_LIMITED_ADMIN',
-  'Too many admin requests'
+  'Too many admin requests , please try again later.'
 );
 
 export const publicLimiter = createLimiter(
   60 * 1000,      // 1 minute
   100,            // 100 requests
   'RATE_LIMITED_PUBLIC',
-  'Too many public API requests'
+  'Too many requests'
 );
 
 // Global limiter

@@ -135,10 +135,20 @@ describe("Schedule API", () => {
         })
         // happy path - update a session
         it("should update a session", async () => {
-            // Arrange : no setup needed
+            // Arrange : create new class to update the session to use its id
+            const classResponse = await request(app)
+            .post('/api/admin/classes')
+            .set('Cookie', authCookies)
+            .field('name', "Schedule Update Test Class")
+            .field('description', "This is a class for schedule update tests")
+            .field('private_coaching', false)
+            .attach('image', '__tests__/fixtures/testing_image.jpg');
+            
+            expect(typeof classResponse.body.id).toBe('number');
+            const new_class_id = classResponse.body.id;
             // Prepare the updated session data
             const updatedSession = {
-                class_id: 1,
+                class_id: new_class_id,
                 start_time: "10:00",
                 end_time: "11:00",
                 day_of_week: "tuesday"
@@ -153,6 +163,11 @@ describe("Schedule API", () => {
             // Assert: Check if the response is successful
             expect(response.statusCode).toBe(200);
             expect(response.body.message).toBe('Session updated successfully');
+            // delete the old class and use the new one for future tests
+            await request(app)
+            .delete(`/api/admin/classes/${class_id}`)
+            .set('Cookie', authCookies);
+            class_id = new_class_id;
         });
         // sad path - session not found
         it("should return 404 for non-existing session", async () => {

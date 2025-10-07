@@ -92,7 +92,12 @@ app.use('/api/auth', (req, res, next) => {
 }, auth_route);
 
 // Base route
-app.use('/api/admin', adminLimiter, authenticate_session, admin_route);
+app.use('/api/admin', (req,res,next)=>{adminLimiter
+    if(process.env.NODE_ENV !== 'test') {
+        adminLimiter(req, res, next)
+     }
+    else next();
+}, authenticate_session, admin_route);
 
 
 // AFTER all API routes, serve the React app static files

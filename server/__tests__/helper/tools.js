@@ -118,6 +118,8 @@ export function cleanup_all_upload() {
       folders.forEach(folder => {
           const folderPath = path.join(UPLOADS_DIR, folder);
           fs.mkdirSync(folderPath);
+          // add gitkeep file to each folder
+          fs.writeFileSync(path.join(folderPath, '.gitkeep'), '');
       });
 }
 }
