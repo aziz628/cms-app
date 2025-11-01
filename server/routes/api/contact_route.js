@@ -26,4 +26,5 @@ router.put("/address", address_validator, controller.update_address);
 router.put("/phone_number", phone_validator, controller.update_phone_number);
 router.put("/email", email_validator, controller.update_email);
 
+
 export default router;

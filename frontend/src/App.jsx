@@ -11,29 +11,38 @@ import Gallery from "./pages/Gallery";
 import Events from "./pages/Events";
 import Reviews from "./pages/Reviews";
 import Transformations from "./pages/Transformations";
+import Setting from "./pages/Setting.jsx";
 import Login from "./pages/Login";
+import Contact from "./pages/Contact.jsx";
+import GeneralInfo from "./pages/Generalinfo.jsx";
 import Header from "./components/common/Header";
 import NotFound from "./pages/NotFound"
 import { AuthProvider } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import { useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 
-import './assets/css/custum.css';
-import './assets/css/output.css';
+import './assets/css/theme.css'; // Import theme styles and variables
+import  './index.css' // Import Tailwind components and utilities
+import './assets/css/output.css'; // Import compiled Tailwind CSS
 
 function ProtectedRoute({children}) {
   const {user,logout} = useAuth();
 
   // Listen for unauthorized events to log out the user
     useEffect(() => {
-    const handleUnauthorized = () => {
-      console.log("Unauthorized event received, logging out");
-      logout();
-    };
-
-    window.addEventListener('unauthorized', handleUnauthorized);
-    return () => window.removeEventListener('unauthorized', handleUnauthorized);
-  }, []); // Empty dependency array means "run once on mount"
+      // Handler for unauthorized event
+      const handleUnauthorized = () => {
+        console.log("Unauthorized event received, logging out");
+        logout();
+      };
+      
+      // Add event listener for unauthorized events
+      window.addEventListener('unauthorized', handleUnauthorized);
+      
+      // Cleanup function to remove the old event listener 
+      return () => window.removeEventListener('unauthorized', handleUnauthorized);
+    }, []); // Empty dependency array means "run once on mount"
 
   console.log("ProtectedRoute user:", user,"from page:", getCurrentPage());
   if(!user) {
@@ -65,11 +74,15 @@ const routes = [
   { path: "/events", element: <Events /> },
   { path: "/reviews", element: <Reviews /> },
   { path: "/transformations", element: <Transformations /> },
+  { path: "/general-info", element: <GeneralInfo /> },
+  { path: "/contact", element: <Contact /> },
+  { path: "/settings", element: <Setting /> },
 ];
 
 function App() {
 
   return (
+  <ThemeProvider>
     <AuthProvider>
       <NotificationProvider>
         <Router>
@@ -98,6 +111,7 @@ function App() {
         </Router>
       </NotificationProvider>
     </AuthProvider>
+  </ThemeProvider>
   )
 }
 export default App

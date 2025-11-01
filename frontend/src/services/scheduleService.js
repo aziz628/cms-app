@@ -7,17 +7,17 @@ const scheduleService = {
     return response.data;
   },
   
-  createScheduleClass: async (scheduleData) => {
+  createSession: async (scheduleData) => {
     const response = await api.post('/admin/schedule', scheduleData);
     return response.data;
   },
   
-  updateScheduleClass: async (id, scheduleData) => {
+  updateSession: async (id, scheduleData) => {
     const response = await api.put(`/admin/schedule/${id}`, scheduleData);
     return response.data;
   },
   
-  deleteScheduleClass: async (id) => {
+  deleteSession: async (id) => {
     const response = await api.delete(`/admin/schedule/${id}`);
     return response.data;
   }

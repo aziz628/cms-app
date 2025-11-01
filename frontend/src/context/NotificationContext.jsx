@@ -49,7 +49,7 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
      const handleApiError = (event) => {
       const errorData = event.detail;
-      // You can also log to console for debugging
+      // log to console for debugging
       console.error('Debugging API Error:', errorData);
 
       // Add the error as a notification

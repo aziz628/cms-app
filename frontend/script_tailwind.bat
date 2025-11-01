@@ -1,3 +1,0 @@
-@echo off
-echo Compiling Tailwind CSS...
-"c:\Users\wesla\Documents\personal projects\code projects\Web_front_end_pages\template system\tailwindcss.exe" -c ./tailwind.config.cjs -i ./src/index.css -o ./build/output.css --minify --watch

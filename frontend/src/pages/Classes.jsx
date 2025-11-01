@@ -5,6 +5,7 @@ import DeleteModal from '../components/common/DeleteModal';
 import { createClassSchema, updateClassSchema } from '../validation/schemas/classSchema';
 import { useNotification } from '../context/NotificationContext';
 import { useBodyOverflow } from '../utils/tools';
+import { useScrollToForm } from '../utils/tools';
 
 function Classes() {
   const [classes, setClasses] = useState([]);
@@ -33,21 +34,13 @@ function Classes() {
     fetchClasses();
   }, []);
 
-  useEffect(() => {
-    if (isModalOpen) {
-      // Scroll to the form when modal opens
-      const formElement = document.getElementById('form');
-      if (formElement) {
-        formElement.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [isModalOpen] );
+  useScrollToForm(isModalOpen);
+
   // Prevent background scrolling when delete modal is open
   useBodyOverflow(showDeleteModal);
   
   // opens modal for adding/editing class
   const openModal = (classItem=null) => {
-    closeModal(); // Close any existing modal
     setEditingClass(classItem);    // Set class being edited (or null for new class)
     setIsModalOpen(true);     // Show modal
   };
@@ -66,16 +59,17 @@ function Classes() {
   }
   const handleDeleteConfirm = async () => {
     try {
-      closeDeleteModal();
-      setLoading(true);
+
+      // Call delete API
       await classService.deleteClass(deletingClassId);
+      
+      closeDeleteModal(); // Close modal after deletion
       success('Class deleted successfully');
       fetchClasses(); // Refresh class list
     } catch (error) {
       error('Failed to delete class');
       console.error(error);
     } finally {
-      setLoading(false);
       setDeletingClassId(null);
       setShowDeleteModal(false);
     }
@@ -90,14 +84,14 @@ function Classes() {
         // Create new class
         await classService.createClass(formData);
       }
-      success(`Class ${editingClass ? 'updated' : 'created'} successfully`);    
+      success(`Class ${editingClass ? 'updated' : 'created'} successfully`);  
+      fetchClasses();  
     } catch (err) {
       error('Failed to save class');
       console.error(err);
     } finally {
       setLoading(false);
       closeModal();
-      fetchClasses();
     }
   };
 
@@ -107,7 +101,7 @@ function Classes() {
             <h2 className="text-2xl font-bold">Classes Management</h2>
             <button 
               onClick={() => openModal(null)} // Open modal for adding new class
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="btn-primary"
             >
               <i className="fa-solid fa-plus mr-2"></i>
               Add New Class
@@ -127,7 +121,7 @@ function Classes() {
           <>
           <h2 className='text-xl font-semibold mb-4'>Class List</h2>
           <div className=' overflow-x-auto'>
-            <table  className='table-auto text-center w-full max-w-[800px] border  rounded-lg divide-y divide-gray-200 '>
+            <table  className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-gray-200 '>
               <thead className='bg-[#ebeef2]'>
                 <tr>
                   {[{ header: 'Class', width: '15%' },
@@ -161,12 +155,12 @@ function Classes() {
                     <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
                       <button 
                         onClick={() => openModal(classItem)} // Open modal for editing this class
-                        className='bg-success m-[auto] block hover:bg-green-600 text-white px-3 py-1 rounded '
+                        className='bg-success m-[auto] block hover:bg-hoverSuccess text-btnText px-3 py-1 rounded '
                       >
                         Edit
                         <i className="fa-solid fa-pencil-alt ml-1"></i>
                       </button>
-                      <button  onClick={() => openDeleteModal(classItem.id)} className='bg-red-600 m-[auto] flex items-center hover:bg-red-700 text-white px-3 py-1 rounded'>
+                      <button  onClick={() => openDeleteModal(classItem.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded'>
                         <span >Delete</span>
                         <i className="fa-solid fa-trash ml-1"></i>
                       </button>

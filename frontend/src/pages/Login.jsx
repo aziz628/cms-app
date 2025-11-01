@@ -17,8 +17,6 @@ function Login() {
         setLoading(true);
 
         try {
-                // In a real app, you'd call your API here
-                // For now, we'll simulate a login
             const response = await authService.login({ username, password });
             console.log('Login response:', response);
             login({ username: response.username });

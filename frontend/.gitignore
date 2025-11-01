@@ -12,6 +12,10 @@ node_modules/
 
 dist
 dist-ssr
+tailwind-output/output.css
+./src/assets/css/output.css
+**/src/assets/css/output.css
+
 *.local
 package-lock.json
 
@@ -25,3 +29,7 @@ package-lock.json
 *.njsproj
 *.sln
 *.sw?
+tempCodeRunnerFile.bat
+
+# executables
+*.exe

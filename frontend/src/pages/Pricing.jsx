@@ -78,12 +78,17 @@ function Pricing() {
   const saveFeature=async ()=>{
     try{
       if(editingFeature){
-        if(!editingFeature.feature.trim()) return error('Feature cannot be empty');
+        // Validate the edited feature using the schema
+        const isValid = updateFeatureSchema.validate(editingFeature);
+        if(!isValid) return error('Invalid feature data');
 
         await pricingService.editFeature(editingFeature.id,{feature:editingFeature.feature})
         success('Feature updated successfully')
       }else{
-        if(!newFeature.feature.trim()) return error('Feature cannot be empty');
+        // Validate the new feature using the schema
+        const isValid = addFeatureSchema.validate(newFeature);
+        if(!isValid) return error('Invalid feature data');
+        
         await pricingService.addFeature(newFeature.planId,{feature:newFeature.feature})
         success('Feature added successfully')
       }
@@ -217,7 +222,7 @@ function Pricing() {
                           </ul>
                           {/* Add New Feature */}
                           <div className='flex flex-col space-y-2'>
-                            <button onClick={() => setNewFeature({planId: plan.id, feature: '' })} className='text-primary  py-1 border border-primary hover:bg-secondary hover:text-white' type='button'>
+                            <button onClick={() => setNewFeature({planId: plan.id, feature: '' })} className='text-primary rounded py-1 border border-primary hover:bg-secondary hover:text-white' type='button'>
                             <i className="fa-solid fa-plus mr-2"></i>
                             Add feature</button>
                           

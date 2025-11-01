@@ -24,6 +24,7 @@ async function setupProject() {
     
     console.log('   Installing frontend dependencies...');
     execSync('npm install', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+
     
     // 2. Setup upload directories
     console.log('\n Creating upload directories...');
@@ -41,12 +42,17 @@ async function setupProject() {
       }
     }
     
-    // 3. Build frontend and copy to server
+    // 3. compile tailwind and move to src/assets/css
+    console.log('   Compiling Tailwind CSS...');
+    execSync('npm run compile_tailwind', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+
+    // 4. Build frontend and copy to server
     console.log('\n Building frontend...');
     execSync('npm run build', { cwd: FRONTEND_DIR, stdio: 'inherit' });
     
     console.log('Copying frontend build to server/dist...');
     const distPath = path.join(SERVER_DIR, 'dist');
+    // Remove existing dist if it exists
     if (fs.existsSync(distPath)) {
       fs.rmSync(distPath, { recursive: true, force: true });
     }
@@ -56,8 +62,8 @@ async function setupProject() {
     const frontendDistPath = path.join(FRONTEND_DIR, 'dist');
     fs.cpSync(frontendDistPath, distPath, { recursive: true });
     console.log('Frontend build copied to server/dist');
-    
-    // 4. Run migrations (sqlite will create the DB file if it doesn't exist)
+
+    // 5. Run migrations (sqlite will create the DB file if it doesn't exist)
     console.log('\n Setting up database...');
     console.log('   Running migrations...');
     execSync('npm run migrate', { cwd: SERVER_DIR, stdio: 'inherit' });
@@ -68,7 +74,8 @@ async function setupProject() {
     console.log('\n To start the server:');
     console.log('   cd server');
     console.log('   npm run prod:start');
-    // 5. copy env.example to .env.production
+    
+    // 6. copy env.example to .env.production
     const envExamplePath = path.join(SERVER_DIR, '.env.example');
     const envProductionPath = path.join(SERVER_DIR, '.env.production');
     if (!fs.existsSync(envProductionPath)) {

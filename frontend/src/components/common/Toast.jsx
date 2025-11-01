@@ -1,5 +1,4 @@
 // src/components/common/Toast.jsx
-import React from 'react';
 
 const toastClasses = {
   success: 'bg-green-50 border-green-500 text-success',

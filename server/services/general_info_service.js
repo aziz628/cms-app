@@ -16,7 +16,7 @@ import { run_in_transaction } from "../utils/db_utils.js";
         'business_hours',
         (
           SELECT json_group_array(
-            json_object('day', day, 'open_time', open_time, 'close_time', close_time)
+            json_object('id', id, 'day', day, 'open_time', open_time, 'close_time', close_time)
           )
           FROM business_hour
         ),

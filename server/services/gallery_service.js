@@ -15,7 +15,7 @@ import db from "../DB/db_connection.js";
 async function get_all_categories_and_images() {
         // Retrieve all categories with their associated images
         // use json and subqueries to have an object showing two arrays categories and images
-          let {data=null} = await db.get(`
+        let {data=null} = await db.get(`
              SELECT json_object(
             'categories', (
                 SELECT json_group_array(
@@ -44,6 +44,9 @@ async function get_all_categories_and_images() {
         ) as data
     
             `)
+        data = data ? JSON.parse(data) : {categories:[],images:[]};
+
+        return data;
           /*
           (`
         SELECT json_group_array(
@@ -68,10 +71,6 @@ async function get_all_categories_and_images() {
             GROUP BY category_id
         ) images ON images.category_id = c.id;
     `);*/
-        data = data ? JSON.parse(data) : {categories:[],images:[]};
-
-        return data;
-    
 }
 
  /**

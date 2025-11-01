@@ -11,7 +11,7 @@ const SUPPORTED_PLATFORMS = [
   'pinterest',
   'snapchat'
 ];
-//link_data,link_id
+
 const socialMediaSchema ={
       platform: joi.string().valid(...SUPPORTED_PLATFORMS),
       link: joi.string().uri()

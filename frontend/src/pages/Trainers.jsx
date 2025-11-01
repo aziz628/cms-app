@@ -128,7 +128,6 @@ function Trainers() {
         ) : (
           <>
           <h2 className='text-xl font-semibold mb-4'>Trainer List</h2>
-
           <div className=' overflow-x-auto'>
           <table  className='table-auto w-full text-center max-w-[800px] border  rounded-lg divide-y divide-gray-200 '>
               <thead className='bg-[#ebeef2]'>

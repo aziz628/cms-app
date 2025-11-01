@@ -1,15 +1,6 @@
 import { useState,useEffect } from 'react';
 import {getCurrentPage} from '../../utils/tools';
-/*
- const mimeToExt = {
-      'image/jpeg': 'jpg',
-      'image/png': 'png',
-      'image/gif': 'gif',
-      'image/webp': 'webp',
-      'application/pdf': 'pdf',
-      'text/plain': 'txt',
-  };
-*/
+
 function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,schema,useFormData = true}) {
   const [formData,setFormData] = useState(initialData || {});
   const [errors,setErrors] = useState({});
@@ -58,24 +49,30 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
       setErrors({});
       return { isValid: true };
     } catch (err) {
-      console.log(err)
        // Collect all validation errors
       const validationErrors = {};
+
       // First, check if we have any field-level errors
-      const hasFieldErrors = err.inner.some(error => error.path && error.path !== "");
+      const hasFieldErrors = err.inner?.some(error => error.path && error.path !== "");
       
       // Extract field-specific errors
       err.inner?.forEach(error => {
         if (error.type === 'hasChanges' && hasFieldErrors) {
           return; // Skip this error
         } if (error.path) {
-        validationErrors[error.path] = error.message;
+          // for any field-specific error set the error message
+          validationErrors[error.path] = error.message;
         } else {
+          // for any other errors without specific field, set form error
           validationErrors.form = error.message;
         }
       });
+      // If there are no field-specific errors, set the form-level error
+      if(Object.keys(validationErrors).length === 0){
+        validationErrors.form = err.message;
+      }
       console.log(err?.inner)
-      
+
       return { isValid: false, errors: validationErrors };
     }
   };
@@ -211,6 +208,8 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
               onChange={field.type === 'file' 
               ? handleFileChange
               : (value) => setFormData({...formData, [field.name]: value})} />
+              
+              {/* Display field-specific error */}
               {errors[field.name] && (
               <div className="bg-red-100 bg-opacity-10  text-danger  pb-2 ">
                 <p className="text-danger">{errors[field.name]} <i class="fa-solid fa-circle-exclamation"></i></p>
@@ -242,6 +241,7 @@ function FormField({field,value,onChange,preview=null}) {
           return <input type="text"
           name={field.name}
           className="input" 
+          placeholder={field.placeholder || ''}
           value={value} onChange={e => onChange(e.target.value)} ></input>
       case 'number':
           return <input name={field.name} type="number" className="input" value={value} onChange={e => onChange(e.target.value)} ></input>
@@ -279,25 +279,28 @@ function FormField({field,value,onChange,preview=null}) {
               */}
               <input name={field.name} id={field.name} type="file" className="input" accept="image/*"
                 onChange={e => onChange(field.name,e)} ></input>
+                
               {preview && <div className='flex'>
                 <img src={preview.url} alt="Preview" className="rounded mt-2 w-24 h-24" />
-               {!preview.isInitial && <button style={{width:"fitcontent"}}
-                    type='button'
-                    onClick={() =>{
-                      // Clear the file input then submit null to onChange
-                      const fileInput = document.querySelector(`input[name="${field.name}"]`);
-                      if (fileInput) {
-                        fileInput.value = null;
-                      }
-                      onChange(field.name, null);
-                    }}
-                    className="ml-2 mt-2 px-2 h-[30px] flex items-center inline  text-white bg-danger hover:bg-red-600 border-danger hover:border-red-700 hover:bg-red-700"
-                    title="Remove file"
-                  >
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                       <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
-                     </svg>
-                </button>}
+               {!preview.isInitial && 
+                <button style={{width:"fitcontent"}}
+                      type='button'
+                      onClick={() =>{
+                        // Clear the file input then submit null to onChange
+                        const fileInput = document.querySelector(`input[name="${field.name}"]`);
+                        if (fileInput) {
+                          fileInput.value = null;
+                        }
+                        onChange(field.name, null);
+                      }}
+                      className="ml-2 mt-2 px-2 h-[30px] flex items-center inline rounded text-white bg-danger  border-danger hover:border-red-700 hover:bg-red-700"
+                      title="Remove file"
+                    >
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
+                      </svg>
+                  </button>
+                }
               </div>
               }
             </div>

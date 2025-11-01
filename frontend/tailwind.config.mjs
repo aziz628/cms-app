@@ -1,7 +1,6 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
+    "./index.html", 
     "./src/**/*.{js,jsx,ts,tsx,html}"
   ],
   theme: {
@@ -13,10 +12,23 @@ export default {
     extend: {
       colors: {
         bg: 'var(--color-bg)',
+        containerBg: 'var(--color-container-bg)',
         surface: 'var(--color-surface)',
         text: 'var(--color-text)',
+        btnText: 'var(--color-btn-text)',
         primary: 'var(--color-primary)',
-        muted: 'var(--color-muted)'
+        muted: 'var(--color-muted)',
+        shadowColor: 'var(--color-shadow)',
+        secondary: 'var(--color-secondary)',
+        tertiary: 'var(--color-tertiary)',
+        hoverPrimary: 'var(--hover-primary)',
+        warning: 'var(--color-warning)',
+        danger: 'var(--color-danger)',
+        hoverDanger: 'var(--color-hover-danger)',
+        success: 'var(--color-success)',
+        hoverSuccess: 'var(--color-hover-success)',
+        tableHeaderBg: 'var(--color-table-header-bg)',
+        inputBg: 'var(--color-input-bg)'
       },
       spacing: {
         '1': 'var(--space-1)',

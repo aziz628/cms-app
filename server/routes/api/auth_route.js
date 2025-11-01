@@ -2,7 +2,7 @@ import express from 'express';
 import auth_controller from '../../controllers/auth_controller.js';
 import {async_controller } from "../../utils/async_controller.js"
 import { authenticate_session } from '../../middleware/auth_middleware.js';
-import auth_validator from '../../middleware/validators/auth.validator.js';
+import auth_validator from '../../middleware/validators/auth_validator.js';
 
 const { login, logout,update_password,update_username } = async_controller(auth_controller);
 const {

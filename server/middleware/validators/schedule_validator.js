@@ -1,6 +1,6 @@
 import {dynamic_validator,custum_joi as joi} from "../dynamic_validator_middleware.js";
 
-const days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 // Base Schema for session validation
 const session_Schema_base = {

@@ -64,7 +64,8 @@ if (process.env.NODE_ENV !== 'test') {
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-// Parse URL-encoded bodies (as sent by HTML forms)
+
+// Parse URL-encoded bodies (as sent by HTML forms but we don't use it now)
 // app.use(express.urlencoded({ extended: true }));
 
 /*

@@ -7,10 +7,88 @@ import App_error from "../errors/AppError.js";
 
 async function get_schedule() {
     // get all sessions from the schedule table
-        return await db.all(`SELECT sch.*, classes.name AS class_name FROM schedule as sch JOIN classes ON sch.class_id = classes.id`);
-        // inner join with classes to get class name
+        
+     let {data=null} = await db.get(`
+        SELECT json_object(
+            'sessionsByDay' , (
+                SELECT json_group_object(
+                    day_of_week,
+                    sessions
+                ) FROM (
+                    SELECT 
+                        s.day_of_week,
+                        json_group_array(
+                            json_object(
+                                'id', s.id,
+                                'start_time', s.start_time,
+                                'end_time', s.end_time,
+                                'class_id', s.class_id,
+                                'day_of_week', s.day_of_week
+                            )
+                        ) as sessions
+                    FROM schedule s
+                    GROUP BY s.day_of_week
+                )
+            ) ,
+            'classes', (
+                SELECT json_group_array(
+                    json_object(
+                        'id', c.id,
+                        'name', c.name
+                    )
+                )
+                FROM classes c
+            )
+        ) as data
+         `)
+        // parse data if it exists, if not then return empty schedule structure
+        data = data ? JSON.parse(data) : {
+            classes: [],
+            sessionsByDay: {},
+           //  time_slots: [] added later if needed
+        };
+        // parse the sessions from JSON strings to array of objects
+        Object.entries(data.sessionsByDay)?.forEach(([day, sessions]) => {
+            data.sessionsByDay[day] = JSON.parse(sessions);
+        });
+        // Order days of the week
+        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const orderedSessionsByDay = {};
+        
+        dayOrder.forEach(day => {
+            if (data.sessionsByDay[day]) {
+                orderedSessionsByDay[day] = data.sessionsByDay[day];
+            }
+        });
+        
+        data.sessionsByDay = orderedSessionsByDay;
+        
+        // order by start_time and duration (end_time - start_time)
+        for (const day in data.sessionsByDay) {
+            data.sessionsByDay[day].sort((a, b) => {
+                const startA = timeToMinutes(a.start_time);
+                const startB = timeToMinutes(b.start_time);
+                
+                // Compare by start_time first
+                if (startA !== startB) {
+                    return startA - startB;
+                }
+
+                // If start_time is the same, compare by duration
+                const durationA = timeToMinutes(a.end_time) - startA;
+                const durationB = timeToMinutes(b.end_time) - startB;
+                
+                return durationB -durationA ; // shorter duration first
+            });
+        }
+
+        return data;
 }
 
+const timeToMinutes = (time) => {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        };
 
 /**
  * Adds a new session to the schedule.
@@ -23,8 +101,8 @@ async function add_session(new_session) {
         validate_new_session_time(new_session);
         let result;
         try {
-         result = await db.run(`INSERT INTO schedule (day_of_week, start_time, end_time, class_id) VALUES (?, ?, ?, ?)`,
-        [new_session.day_of_week, new_session.start_time, new_session.end_time, new_session.class_id]);
+            result = await db.run(`INSERT INTO schedule (day_of_week, start_time, end_time, class_id) VALUES (?, ?, ?, ?)`,
+            [new_session.day_of_week, new_session.start_time, new_session.end_time, new_session.class_id]);
         } catch (err) {
             if (err.message.includes("FOREIGN KEY constraint failed")) {
                 throw new App_error("Class not found", 404, "CLASS_NOT_FOUND");
@@ -95,18 +173,12 @@ function validate_new_session_time(new_session, old_session=null) {
     // the one missing get it from the old session
     let start_time = new_session.start_time || (old_session?.start_time);
     let end_time = new_session.end_time || (old_session?.end_time);
+    // Convert times to minutes for faster comparison
+    const start_minutes = timeToMinutes(start_time);
+    const end_minutes = timeToMinutes(end_time);
 
-    const start_parts = start_time.split(":");
-    const end_parts = end_time.split(":");
-
-    // convert to numbers
-    start_parts[0] = parseInt(start_parts[0], 10);  
-    start_parts[1] = parseInt(start_parts[1], 10);
-    end_parts[0] = parseInt(end_parts[0], 10);
-    end_parts[1] = parseInt(end_parts[1], 10);
-
-    // how to compare two strings like 24:00 and 23:59
-    if (start_parts[0] > end_parts[0] || (start_parts[0] === end_parts[0] && start_parts[1] >= end_parts[1])) {
+    // Simple numeric comparison - much faster than string parsing
+    if (start_minutes >= end_minutes) {
         throw new App_error("Start time must be before end time", 400, "INVALID_SESSION_TIMES");
     }   
 }

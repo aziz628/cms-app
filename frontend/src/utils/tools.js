@@ -34,3 +34,19 @@ export function useBodyOverflow(locked) {
     };
   }, [locked]);
 }
+
+/** useScrollToForm
+ * Scrolls to the form element when the modal is opened.
+ * @param {boolean} isModalOpen - Indicates if the modal is open.
+ */
+export function useScrollToForm(isModalOpen) {
+useEffect(() => {
+    if (isModalOpen) {
+      // Scroll to the form when modal opens
+      const formElement = document.getElementById('form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [isModalOpen]);
+}
