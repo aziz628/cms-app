@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs (don't commit built files)
+dist/
+
+# Database files
+DB/*.sqlite
+DB/migration-status*.json
+package-lock.json
+**/package-lock.json
+# Environment files (except example and test)
+.env
+.env.*
+!.env.example
+!.env.test
+
+# User uploads
+/uploads
+/uploads/*
+__tests__/test_db.sqlite
+# Logs and editor files
+*.log
+.DS_Store
+.vscode/
+.idea/
+#scripts
+generate_cert.bat

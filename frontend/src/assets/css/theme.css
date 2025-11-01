@@ -1,0 +1,117 @@
+/* tailwind forced these and i don't want to handle them one by one in css 
+handle the default border color hover
+button:hover{
+  border-color: none !important;
+}
+  handle the outline
+button:focus-visible{
+   outline: none !important;
+}
+   */
+   
+
+:root{
+  /* Colors */
+  --color-bg: #f7fafc;
+  --color-container-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-text: #111827;
+  --color-btn-text: #ffffff;
+  --color-primary: #2563eb;         /* Main blue (used for primary actions) */
+  --color-secondary: #007bffcc;       /* Slightly lighter blue (secondary actions) */
+  --color-tertiary: #dbeafe;       /* light blue equal to blue-100 in tailwind */
+  --hover-primary: #1a49ca;         /* Darker blue (hover state for primary actions) */
+  --color-warning: #f59e42;         /* Orange (for warning actions like logout) */
+  --color-danger: #dc2626;          /* Red (for destructive actions like delete) */
+  --color-hover-danger: #bb2124;    /* Darker red for hover state */
+  --color-success: #22c55e;         /* Green (for success messages) */
+  --color-hover-success: #16a34a; /* Darker green for hover state */
+  --color-muted: #606673;          /* Gray (for less prominent text) */
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-table-header-bg: #f3f4f6; /* Light gray for table headers */
+  --color-input-bg: #d1d5db;       /* Light gray for input backgrounds */
+  /* Spacing Reference Table:
+    | Variable    | rem   | px   | Use Case                    |
+    |-------------|-------|------|-----------------------------|
+    | --space-1   | 0.25  | 4    | Tight gaps, icons           |
+    | --space-2   | 0.5   | 8    | Buttons, small padding      |
+    | --space-4   | 1     | 16   | Card padding, section gap   |
+    | --space-8   | 2     | 32   | Large section separation    |
+  */
+
+  /* Spacing */
+  --space-1: 0.25rem; /* in px 4px */
+  --space-2: 0.5rem; /* in px 8px */
+  --space-4: 1rem; /* in px 16px */
+  --space-8: 2rem; /* in px 32px */
+
+  /* Font Sizes */
+  /* Typography Reference Table:
+    | Variable        | rem   | px   | Weight | Use Case                |
+    |-----------------|-------|------|--------|-------------------------|
+    | --text-xs       | 0.75  | 12   | 400    | Captions, helper text   |
+    | --text-sm       | 0.875 | 14   | 400    | Secondary info, labels  |
+    | --text-base     | 1     | 16   | 400    | Body text, paragraphs   |
+    | --text-lg       | 1.125 | 18   | 500    | Subheadings, highlights |
+    | --text-xl       | 1.25  | 20   | 600    | Headings, section titles|
+ 
+    tailwind utility for weight and their values                    
+    | font-normal     | 400   |
+    | font-medium     | 500   |
+    | font-semibold   | 600   |
+    | font-bold       | 700   |
+    */
+  
+
+  /* Standard: Use --text-base for most body text at weight 400. Increase size for headings and important info, optionally increasing weight for emphasis. Keep weight consistent for body, vary size and weight for hierarchy. */
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 0.5rem;
+
+  /* Shadows */
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.06);
+
+  /* Layout tokens */
+  --sidebar-width: 256px;
+  --header-height: 64px;
+  --container-max: 1200px;
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-heading: "Bebas Neue", sans-serif;
+}
+
+/* global base */
+/*
+:root {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  
+}*/
+
+/* dark theme */
+[data-theme="dark"]{
+  --color-bg: #0b1220; /* Dark theme background */
+  --color-container-bg: #1e293b; /* Dark theme container background */
+  --color-btn-bg: #2563eb; /* Dark theme button background */
+  --color-surface: #1e293b;        /* Darker surface for cards/modals */
+  --color-text: #e6eef7;            /* Light text color */
+  --color-btn-text: #ffffff;       /* White text color for buttons */
+  --color-primary: #3b82f6;
+  --color-secondary: #60a5fa;      /* Lighter blue for secondary actions */
+  --color-tertiary: #93c5fd;       /* lighter blue equal to blue-300 in tailwind */
+  --hover-primary: #2563eb;        /* Slightly darker blue for hover */
+  --color-warning: #f59e42;        /* Keep same orange */
+  --color-danger: #ef4444;         /* Slightly lighter red */
+  --color-success: #22c55e;        /* Keep same green */
+  --color-muted: #9ca3af;         /* Lighter gray for better contrast */
+  --color-shadow: White; /* better visibility shadow for dark mode */
+  --color-table-header-bg: #374151; /* Darker gray for table headers */
+  --color-input-bg: #374151;       /* Darker gray for input backgrounds */
+}
+
+input:-webkit-autofill {  
+  background-color: #d1d5db !important;
+}
