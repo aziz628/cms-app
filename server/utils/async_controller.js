@@ -1,5 +1,6 @@
 function async_handler(fn) {
     return (req, res, next) => {
+        // run the async function inside a resolved promise and catch any errors
         Promise.resolve(fn(req, res, next)).catch(next);
     };
 }

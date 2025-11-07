@@ -222,12 +222,11 @@ describe('Transformation API', () => {
         });
         // sad path - empty request body
         it('should return 400 for missing required fields', async () => {
-
             // Act : send an update request to create a new transformation with missing fields
             const response = await request(app)
                 .put(`/api/admin/transformation/${transformation_id}`)
                 .set('Cookie', auth_cookies)
-
+            
             // Assert
             expect(response.statusCode).toBe(400);
             expect(response.body.message).toBe('At least one field or a file must be provided for an update.');

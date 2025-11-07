@@ -26,7 +26,7 @@ const update_social_media_link_schema = joi.object(socialMediaSchema).min(1).req
 // Schema for address validation
 const addressSchema = joi.object({
     address: joi.string().min(5).max(100).required()  
-});
+}).required();
 
 
 // Schema for phone validation

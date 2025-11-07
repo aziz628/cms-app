@@ -29,25 +29,17 @@ const errorHandler = (err, req, res, _next) => {
             code: err.code || err.message.toUpperCase().replace(/\s+/g, '_')
         };
     }
+
     // Handle network/dns errors
     else if (NETWORK_ERRORS.includes(err.code)) {
         error = {
             status: 503,
-            message: "Connection error. Please  try again later.",
-            code: "CONNECTION_ERROR"
+            message: "Service temporarily unavailable. Please try again later.",
+            code: "SERVICE_UNAVAILABLE"
         };
     }
-   
-    // Handle system-level errors
-    else if (err.syscall) {
-        error = {
-            status: 500,
-            message: "A system error occurred. Please try again later.",
-            code: "SYSTEM_ERROR"
-        };
-    }
-    
-    // Find mapped error response
+
+    // Find registered  error response
     else {
         const mappedError = errorMapping[err.code] || errorMapping[err.name] || errorMapping[err.message];
         if (mappedError) {
@@ -68,7 +60,10 @@ const errorHandler = (err, req, res, _next) => {
     });
 };
 
-// if the error is from server service which require network then u can't send response to client so this probably useless and stupid to tell client about netwwork error
+// If the server can't reach an external dependency like  a database timeout or API failure,
+// it can still respond to the client with a 503 status .
+// This informs the user that the issue is temporary and server-related,  
+// to keep answer user friendly instead of mentioning dependency we just say temporarily unavailable.
 
 // Define network-related error codes
 const NETWORK_ERRORS = [
@@ -88,15 +83,18 @@ const errorMapping = {
     SyntaxError: { status: 400, message: "Invalid request format", code: "INVALID_FORMAT" },
 
     // File upload errors
-    "LIMIT_UNEXPECTED_FILE": { status: 400, message: "Unexpected file field in upload", code: "UNEXPECTED_FILE_FIELD" },
-    "LIMIT_FILE_COUNT": { status: 413, message: "Too many files uploaded", code: "TOO_MANY_FILES" },
-    "LIMIT_FILE_SIZE": { status: 413, message: "Uploaded file is too large", code: "FILE_TOO_LARGE" },
+    LIMIT_UNEXPECTED_FILE: { status: 400, message: "Unexpected file field in upload", code: "UNEXPECTED_FILE_FIELD" },
+    LIMIT_FILE_COUNT: { status: 413, message: "Too many files uploaded", code: "TOO_MANY_FILES" },
+    LIMIT_FILE_SIZE: { status: 413, message: "Uploaded file is too large", code: "FILE_TOO_LARGE" },
+    
     // File system - Just the essential one
-    "ENOENT": { status: 404, message: "Resource not found", code: "NOT_FOUND" },
-
+    ENOENT: { status: 404, message: "Resource not found", code: "NOT_FOUND" },
+    
     // database constraint
     "SQLITE_CONSTRAINT: UNIQUE constraint failed: gallery_category.name": { status: 400, message: "Category name must be unique", code: "DUPLICATE_CATEGORY_NAME" },    
+    
     // db errors
+    SequelizeUniqueConstraintError: { status: 400, message: "Resource already exists", code: "RESOURCE_EXISTS" },
 };
 
 export default errorHandler;

@@ -175,7 +175,7 @@ const close_db=async () => {
  */
 async function main() {
   const [cmd, option] = process.argv.slice(2);
-
+  
   if (cmd === 'run' && option === 'all') await runAll();
   else if (cmd === 'run') await runNext();
   else if (cmd === 'undo' && option === 'all') await undoAll();

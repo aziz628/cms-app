@@ -9,8 +9,9 @@ describe("Schedule API", () => {
     let class_id;
 
     beforeAll(async () => {
+        console.log("parent beforeall")
         authCookies = await getAuthCookies();
-        
+        console.log("class setup")
         // create a class to use its id for the schedule tests
         const classResponse = await request(app)
         .post('/api/admin/classes')
@@ -25,7 +26,7 @@ describe("Schedule API", () => {
 
     });
     afterAll(async () => {
-        // clean up - delete the created class
+        // clean up - delete the created class after tests (in case not deleted during tests)
         await request(app)
         .delete(`/api/admin/classes/${class_id}`)
         .set('Cookie', authCookies);
@@ -33,7 +34,11 @@ describe("Schedule API", () => {
 
   
     describe("POST /api/admin/schedule", () => {
-
+        beforeAll(() => {        
+            console.log("post beforeall")
+            // Ensure class_id is defined before running tests
+            expect(class_id).toBeDefined();
+        })
         // happy path - create a new session
         it("should create a new session", async () => {
             // Arrange: Prepare the session data
@@ -41,7 +46,7 @@ describe("Schedule API", () => {
             const newSession = {
                 start_time: "09:00",
                 end_time: "10:00",
-                day_of_week: "monday",
+                day_of_week: "Monday",
                 class_id
             };
             
@@ -88,7 +93,7 @@ describe("Schedule API", () => {
                 class_id: "invalid_id", // This should be a number
                 start_time: "09:00",
                 end_time: "10:00",
-                day_of_week: "monday"
+                day_of_week: "Monday"
             };
 
             // Act: Perform a POST request to the /api/admin/schedule endpoint
@@ -110,7 +115,7 @@ describe("Schedule API", () => {
                 class_id: 1,
                 start_time: "09:00",
                 end_time: "invalid_time", // This should be a valid time format
-                day_of_week: "monday"
+                day_of_week: "Monday"
             };
 
             // Act: Perform a POST request to the /api/admin/schedule endpoint
@@ -129,7 +134,7 @@ describe("Schedule API", () => {
 
         // Ensure the session ID is defined before running tests
         beforeAll(() => {
-
+            
             // Check if the sessionId is defined
             expect(sessionId).toBeDefined();
         })
@@ -151,7 +156,7 @@ describe("Schedule API", () => {
                 class_id: new_class_id,
                 start_time: "10:00",
                 end_time: "11:00",
-                day_of_week: "tuesday"
+                day_of_week: "Tuesday"
             };
 
             // Act: Perform a PUT request to the /api/admin/schedule/:id endpoint
@@ -179,7 +184,7 @@ describe("Schedule API", () => {
                 class_id: 1,
                 start_time: "10:00",
                 end_time: "11:00",
-                day_of_week: "tuesday"
+                day_of_week: "Tuesday"
             };
 
             // Act: Perform a PUT request to the /api/admin/schedule/:id endpoint
@@ -219,7 +224,7 @@ describe("Schedule API", () => {
                 class_id: 1,
                 start_time: "10:00",
                 end_time: "invalid_time", // This should be a valid time format
-                day_of_week: "tuesday"
+                day_of_week: "Tuesday"
             };
 
             // Act: Perform a PUT request to the /api/admin/schedule/:id endpoint
@@ -234,44 +239,52 @@ describe("Schedule API", () => {
             expect(response.body.code).toBe('VALIDATION_ERROR');
         });
     });
-  describe("GET /api/admin/schedules", () => {
-        // happy path - get all schedules
-        it("should return all schedules", async () => {
+    describe("GET /api/admin/schedules", () => {
+            // happy path - get all schedules
+            it("should return all schedules", async () => {
 
-            // Act: Perform a GET request to the /api/admin/schedule endpoint
-            const response = await request(app)
-                .get('/api/admin/schedule')
-                .set('Cookie', authCookies);
+                // Act: Perform a GET request to the /api/admin/schedule endpoint
+                const response = await request(app)
+                    .get('/api/admin/schedule')
+                    .set('Cookie', authCookies);
 
-            // Assert: Check if the response is successful and contains schedules
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toBeDefined();
-            
-            // Check the structure of each schedule
-            // body is object of objects
-          
-            for(const schedule of response.body) {
-                expect(schedule).toHaveProperty('id');
-                expect(schedule).toHaveProperty('class_id');
-                expect(schedule).toHaveProperty('start_time');
-                expect(schedule).toHaveProperty('end_time');
-                expect(schedule).toHaveProperty('day_of_week');
-                expect(schedule).toHaveProperty('class_name');
-            }
-               
+                // Assert: Check if the response is successful and contains schedules
+                expect(response.statusCode).toBe(200);
+                expect(response.body).toBeDefined();
+                expect(response.body).toHaveProperty('classes');
+                expect(response.body).toHaveProperty('sessionsByDay');
+                
+                // Check the structure of each schedule
+                // body is object of objects
+
+                for(const Class of response.body.classes) {
+                    expect(Class).toHaveProperty('id');
+                    expect(Class).toHaveProperty('name');
+                }
+
+                for(const day in response.body.sessionsByDay) {
+                    for(const session of response.body.sessionsByDay[day]) {
+                        expect(session).toHaveProperty('id');
+                        expect(session).toHaveProperty('start_time');
+                        expect(session).toHaveProperty('end_time');
+                        expect(session).toHaveProperty('class_id');
+                        expect(session).toHaveProperty('day_of_week');
+                    }
+                }
+
+            })
+            // sad path - unauthorized access
+            it("should return 401 for unauthorized access", async () => {
+                // Arrange: no setup needed
+                // Act: Perform a GET request to the schedule endpoint without authentication
+                const response = await request(app).get('/api/admin/schedule');
+
+                // Assert: Check if the response is unauthorized
+                expect(response.statusCode).toBe(401);
+                expect(response.body.message).toBe('Unauthorized');
+                expect(response.body.code).toBe('UNAUTHORIZED');
+            })
         })
-        // sad path - unauthorized access
-        it("should return 401 for unauthorized access", async () => {
-            // Arrange: no setup needed
-            // Act: Perform a GET request to the schedule endpoint without authentication
-            const response = await request(app).get('/api/admin/schedule');
-
-            // Assert: Check if the response is unauthorized
-            expect(response.statusCode).toBe(401);
-            expect(response.body.message).toBe('Unauthorized');
-            expect(response.body.code).toBe('UNAUTHORIZED');
-        })
-    })
     describe("DELETE /api/admin/schedule/:id", () => {
 
         // Ensure the session ID is defined before running tests

@@ -104,8 +104,9 @@ async function delete_social_media(link_id) {
 async function update_address(address) {
     // there is only one contact info row, so we can read it directly
     await run_in_transaction(db, async () => {
-        const data = await db.get(`SELECT * FROM contact LIMIT 1`);
-
+        
+        // check if contact info exists
+        const data = await db.get(`SELECT 1 FROM contact LIMIT 1`);
         if (!data) {
             throw new AppError("No contact info found to update address", 404, "CONTACT_NOT_FOUND");
         }
@@ -120,6 +121,7 @@ async function update_address(address) {
 async function update_phone_number(phone_number) {
     await run_in_transaction(db, async () => {
         const data = await db.get(`SELECT * FROM contact LIMIT 1`);
+        
         if (!data) {
             throw new AppError("No contact info found to update phone number", 404, "CONTACT_NOT_FOUND");
         }

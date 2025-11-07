@@ -29,57 +29,77 @@ describe('Dashboard Integration Tests', () => {
     });
     // happy path - pagination
     it('should return paginated admin actions logs', async () => {
-        // save how much there is pages before running this test and see how much there is on last page
-        let pages_number;
+        // save number of pages before running the test
+        // save logs count from last page
+        let pages_count;
         let last_page_logs_number;
         let total_logs;
-        // do some requests to create more than 10 log entries
+
+        // do multiple requests to create more than 10 log entries
         let categories_list=[]
         
-        // check first page is 10 
-            const response = await request(app)
+        // get the first page logs to save initial numbers
+        const response = await request(app)
                 .get('/api/admin/dashboard?page=1')
                 .set('Cookie', authCookies);
+
+        // Check response
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty('logs');
         expect(response.body).toHaveProperty('totalPages');
         expect(Array.isArray(response.body.logs)).toBe(true);
-        
-        // set numbers 
-        pages_number=response.body.totalPages
-        last_page_logs_number=response.body.logs.length;
-        total_logs=(pages_number-1)*10+last_page_logs_number;
-        
+
+        // set the pagination info
+        pages_count = response.body.totalPages;
+
+        // get last page logs number
+        const response_2=await request(app)
+                .get(`/api/admin/dashboard?page=${Math.max(pages_count, 1)}`)
+                .set('Cookie', authCookies);
+
+        last_page_logs_number = response_2.body.logs.length;
+        // calculate total logs 
+        total_logs = pages_count > 0 
+            ? (pages_count - 1) * 10 + last_page_logs_number 
+            : 0;
+
         // create logs 
         for (let i = 0; i < 15; i++) {
             // Create a new category
             const categoryResponse = await request(app)
                     .post('/api/admin/gallery/category')
                     .set('Cookie', authCookies)
-                    .send({name: `Test Category ${i}`}); // randomly generated name
-            if(categoryResponse.body.category_id)
-            categories_list.push(categoryResponse.body.category_id);
-            total_logs+=1;
+                    .send({name: `Test Category ${i}`}); // pseudo name
+            
+            // Check category creation response
+            if (categoryResponse.body.category_id) {
+                categories_list.push(categoryResponse.body.category_id);
+                total_logs += 1;
+            }
         }
-        // calc new value
-        pages_number=Math.floor(total_logs / 10)+(total_logs % 10 >0 ? 1 :0)
+        // calc new value based on created logs
+        pages_count = Math.floor(total_logs / 10) + (total_logs % 10 > 0 ? 1 : 0);
 
         // Check second page
-        const response2 = await request(app)
-            .get(`/api/admin/dashboard?page=${pages_number}`)
+        const response3 = await request(app)
+            .get(`/api/admin/dashboard?page=${pages_count}`)
             .set('Cookie', authCookies);
-        expect(response2.statusCode).toBe(200);
-        expect(response2.body).toHaveProperty('logs');
-        expect(response2.body).toHaveProperty('totalPages');
+
+        expect(response3.statusCode).toBe(200);
+        expect(response3.body).toHaveProperty('logs');
+        expect(response3.body).toHaveProperty('totalPages');
+
         // the expected number of total pages should be total/10+total%10
-        expect(response2.body.totalPages).toBeGreaterThanOrEqual(pages_number);
-        expect(response2.body.logs.length).toBeGreaterThanOrEqual(total_logs % 10);
+        expect(response3.body.totalPages).toBeGreaterThanOrEqual(pages_count);
+        expect(response3.body.logs.length).toBeGreaterThanOrEqual(total_logs % 10);
+
         // delete all the categories
         for (const category_id of categories_list) {
             let response = await request(app)
                 .delete(`/api/admin/gallery/category/${category_id}`)
                 .set('Cookie', authCookies);
-            expect(response.statusCode).toBe(204)
+
+            expect(response.statusCode).toBe(204);
         }
     });
     // sad path - unauthorized access

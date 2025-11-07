@@ -136,6 +136,7 @@ describe("General Info API", () => {
         // happy path - update a class with only fields
         it('should update a class with only fields and return status code 200', async () => {
             expect(test_class_id).toBeDefined(); // Ensure the class ID is available
+            
             // Arrange: Set up an updated class object with only fields
             const updatedClass = {
                 name: 'Updated Class',
@@ -193,11 +194,13 @@ describe("General Info API", () => {
             
             // Arrange : Set up an updated class object with missing fields
             const updatedClass = {};
+
             // Act: Perform a PUT request to the /api/admin/classes/:id endpoint with missing fields
             const response = await request(app)
                 .put(`/api/admin/classes/${test_class_id}`)
                 .set('Cookie', authCookies)
                 .send(updatedClass);
+                
             // Assert: Check if the application correctly handled the missing fields
             expect(response.statusCode).toBe(400);
             expect(response.body.message).toBe('At least one field or a file must be provided for an update.');

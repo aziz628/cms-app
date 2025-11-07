@@ -41,11 +41,11 @@ async function get_schedule() {
             )
         ) as data
          `)
+         
         // parse data if it exists, if not then return empty schedule structure
         data = data ? JSON.parse(data) : {
             classes: [],
             sessionsByDay: {},
-           //  time_slots: [] added later if needed
         };
         // parse the sessions from JSON strings to array of objects
         Object.entries(data.sessionsByDay)?.forEach(([day, sessions]) => {

@@ -3,14 +3,21 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import AppError from '../errors/AppError.js';
-// file number limit per field
-const MAX_FILE_COUNT = 2;
+import { canAddFile } from '../services/upload_storage_state_service.js';
+import { save_file_to_disk } from '../services/content_service.js';
+// file upload limits
+const MAX_UPLOAD_FILES_PER_REQUEST = parseInt(process.env.MAX_UPLOAD_FILES_PER_REQUEST) || 2;
+const DEFAULT_MAX_UPLOAD_SIZE = parseInt(process.env.DEFAULT_MAX_UPLOAD_SIZE) || 2 * 1024 * 1024; // 2MB
 
 // --- Setup ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const UPLOAD_BASE = process.env.UPLOAD_BASE || 'uploads';
-const UPLOAD_DIR = path.join(__dirname, '../', UPLOAD_BASE);
+
+// upload base dir's relative path to project root (different per env)
+const UPLOAD_BASE_DIR = process.env.UPLOAD_BASE || 'uploads';
+
+// absolute path to uploads directory
+const UPLOAD_DIR_PATH = path.join(__dirname, '../', UPLOAD_BASE_DIR);
 
 // --- Pipeline Factory ---
 
@@ -41,11 +48,48 @@ function create_upload_pipeline(options={}) {
       };
       return [
         memory_upload(memory_upload_options),
+        post_upload_size_check,
         validator,
         file_validator(file_validator_options),
         file_saver({ section })
       ];
     }
+// --- Middleware 0: Post Upload Size Check ---
+
+/**
+ *  Middleware to check total storage limit after file upload.
+ * used against bypassing Content-Length header check in memory_upload middleware.
+ * @param {import('express').Request} req - The Express request object.
+ * @param {import('express').Response} res - The Express response object.
+ * @param {import('express').NextFunction} next - The next middleware function.
+ */
+
+function post_upload_size_check(req, res, next) {
+  //  request has no files 
+  if(!(req.file || (req.files && Object.keys(req.files).length>0))) return next()
+
+  // Get the uploaded files size from the request
+  const uploadedFilesSize = req.file 
+  ? req.file.size 
+  : Object.values(req.files || {})
+    .flat()
+    .reduce((sum, f) => sum + (f?.size || 0), 0);
+
+  // debugging the 0 size
+  if (uploadedFilesSize==0){
+    console.log(req.file || Object.keys(req.files))
+  }  
+
+  // size in mb
+  console.log(' Post-upload file size ', (uploadedFilesSize / (1024 * 1024)).toFixed(2)+' MB');
+  
+  // Check if the upload would exceed the total storage limit
+  if (!canAddFile(uploadedFilesSize)) {
+    return next(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'));
+  }
+
+  next();
+}
 
 // --- Middleware 1: Memory Uploader ---
 
@@ -66,20 +110,34 @@ function create_upload_pipeline(options={}) {
     mode = 'single',
     field_name = 'image',
     fields = [],
-    maxSize = 2 * 1024 * 1024, // 2MB
+    maxSize = DEFAULT_MAX_UPLOAD_SIZE,
     allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
   } = options;
 
   const storage = multer.memoryStorage();
   const upload = multer({
     storage,
-    limits: { fileSize: maxSize , files: MAX_FILE_COUNT },
+    limits: { fileSize: maxSize , files: MAX_UPLOAD_FILES_PER_REQUEST },
     fileFilter: (req, file, cb) => {
-      if (allowedMimeTypes.includes(file?.mimetype)) {
-        cb(null, true);
-      } else {
-        cb(new AppError(`Invalid file type. Allowed: ${allowedMimeTypes.join(', ')}`, 400, 'INVALID_FILE_TYPE'), false);
+      // check mime type 
+      if (!allowedMimeTypes.includes(file?.mimetype)) {
+        return cb(new AppError(`Invalid file type. Allowed: ${allowedMimeTypes.join(', ')}`, 400, 'INVALID_FILE_TYPE'), false);
       }
+      // Content-Length header presence
+       const contentLength = parseInt(req.headers['content-length'], 10);
+       console.log(' Content-Length header:', contentLength);
+
+      if (!contentLength || contentLength <= 0) {
+        return cb(new AppError('Content-Length header is required', 400, 'MISSING_CONTENT_LENGTH'), false);
+      }
+      
+      //  Validate against storage limit using Content-Length
+      if (!canAddFile(contentLength)) {
+        console.log(' Upload would exceed total storage limit. Content-Length:', contentLength);
+       //  return cb(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'), false);
+      }
+      // all checks passed , accept file
+      cb(null, true);
     },
   });
   return mode === 'fields' ? upload.fields(fields.map(field => ({ name: field, maxCount: 1 }))) : upload.single(field_name);
@@ -185,14 +243,19 @@ const save_file = async (file, section) => {
     // create a unique filename
     const unique_suffix = Math.floor(Math.random() * 1000);
     const filename = `${Date.now()}_${unique_suffix}${path.extname(file.originalname)}`;
+    
     // join the upload directory with the section and filename
-    const filepath = path.join(UPLOAD_DIR, section, filename);
+    const filepath = path.join(UPLOAD_DIR_PATH, section, filename);
+    
     // write the file to disk
-    await fs.promises.writeFile(filepath, file.buffer);
+    await save_file_to_disk(filepath, file.buffer,file.size);
+   
     // update the file object with new properties    
     file.filename = filename;
     file.path = filepath;
-    file.buffer = null; // faster Free memory
+    file.buffer = null; // Free the file saved in memory sooner 
     return file;
     };
+
+    
 export { memory_upload, file_saver, file_validator ,create_upload_pipeline}

@@ -5,7 +5,8 @@ export default create_migration({
         `CREATE TABLE IF NOT EXISTS general_info (
             about_summary TEXT  NOT NULL DEFAULT ''
         );`,
-         
+        `INSERT INTO general_info (about_summary) VALUES ('');`,
+        
         `CREATE TABLE IF NOT EXISTS business_hour (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             day TEXT NOT NULL,

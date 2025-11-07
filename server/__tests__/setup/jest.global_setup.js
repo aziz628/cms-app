@@ -8,6 +8,9 @@ console.log("Jest global setup - environment:", process.env.NODE_ENV);
 async function globalSetup() {
   // Run all migrations once
   console.log("test setup...");
+  
+  // remove any tables if exist
+  await migrate.undoAll();
 
   if (typeof migrate.runAll === 'function') {
     await migrate.runAll();

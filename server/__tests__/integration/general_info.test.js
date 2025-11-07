@@ -10,6 +10,7 @@ describe("General Info API", () => {
 
     beforeAll(async () => {
         authCookies = await getAuthCookies();
+        console.log("Auth cookies obtained for tests.");
     });
 
    

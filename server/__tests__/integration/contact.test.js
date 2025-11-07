@@ -79,11 +79,13 @@ describe('Contact Integration Tests', () => {
             // Arrange: Prepare the data to update social media link
             const social_media_link = { platform: 'facebook', link: 'https://facebook.com/example' };
             const invalid_id = 99999999;
+            
             // Act: Send a PUT request with invalid id
             const response = await request(app)
                 .put(`/api/admin/contact/social-media/${invalid_id}`)
                 .set('Cookie', authCookies)
                 .send(social_media_link);
+            
             // Assert: Check if the response indicates not found
             expect(response.statusCode).toBe(404);
             expect(response.body.message).toBe(`No social media link found with ID ${invalid_id}`);
@@ -125,6 +127,7 @@ describe('Contact Integration Tests', () => {
         it('should update address', async () => {
             // Arrange: Prepare the data to update address
             const address = '123 Main St, City, Country';
+            
             // Act: Send a PUT request to update address
             const response = await request(app)
                 .put('/api/admin/contact/address')
@@ -154,6 +157,7 @@ describe('Contact Integration Tests', () => {
         it('should update phone number', async () => {
             // Arrange: Prepare the data to update phone number
             const phone_number = 12345678; // Example 8-digit phone number
+            
             // Act: Send a PUT request to update phone number
             const response = await request(app)
                 .put('/api/admin/contact/phone_number')
@@ -168,6 +172,7 @@ describe('Contact Integration Tests', () => {
         it('should return 400 for invalid phone number', async () => {
             // Arrange: Prepare invalid phone number
             const phone_number = 12345; // Too short
+            
             // Act: Send a PUT request with invalid data
             const response = await request(app)
                 .put('/api/admin/contact/phone_number')
@@ -183,6 +188,7 @@ describe('Contact Integration Tests', () => {
         it('should update email', async () => {
             // Arrange: Prepare the data to update email
             const email = 'test@example.com';
+            
             // Act: Send a PUT request to update email
             const response = await request(app)
                 .put('/api/admin/contact/email')
@@ -197,6 +203,7 @@ describe('Contact Integration Tests', () => {
         it('should return 400 for invalid email', async () => {
             // Arrange: Prepare invalid email
             const email = 'invalid-email'; // Invalid email format
+            
             // Act: Send a PUT request with invalid data
             const response = await request(app)
                 .put('/api/admin/contact/email')

@@ -3,13 +3,16 @@ import db from "../DB/db_connection.js"
 
 /**
  * Reads the admin actions log from a JSON file.
+ * @param {number} page - The page number for pagination ( start from 1) .
  * @returns {Promise<Array>} An array of logged actions.
  * @throws {App_error} If reading the log file fails.
  */
 async function get_actions_log(page) {
     const pageSize = 10;
+    // Calculate offset based on page number
     const offset = (page - 1) * pageSize;
     const logs = await db.all(`SELECT action, timestamp, icon FROM admin_log LIMIT ${pageSize} OFFSET ${offset}`);
+    
     // Add pagination info
     const countResult = await db.get(`SELECT COUNT(*) as count FROM admin_log`);
     const totalCount = countResult.count;

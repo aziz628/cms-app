@@ -26,9 +26,24 @@ import { run_in_transaction } from "../utils/db_utils.js";
     `);
     data = data ? JSON.parse(data) : { business_hours: [], about_summary: '' };
 
-    return data ;
+   // Sort the business hours using the first part of the day string.
+    data.business_hours.sort((a, b) => {      
+      return getDayIndex(a.day) - getDayIndex(b.day);
+    });
+    
+    return data;
 }
 
+/**
+ * Get the index of a day in the week.
+ */
+const getDayIndex = (dayStr) => {
+        const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+        // If the day string contains a '-', split and use the first part.
+        const day = dayStr.includes('-') ? dayStr.split('-')[0] : dayStr;
+        return dayOrder.indexOf(day.toLowerCase());
+      };
 
 // add business hours
 async  function create_business_hour (new_business_hour){
@@ -86,7 +101,11 @@ async function delete_business_hour(id) {
  */
 async function update_about_summary(summary) {
   return await run_in_transaction(db,async () => {
-  
+    // check if general_info row exists
+    const row = await db.get(`SELECT 1 FROM general_info LIMIT 1`);
+    if (!row) {
+      throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
+    }
     await db.run(`UPDATE general_info SET about_summary = ?`, [summary]);
 
     await record_entity_update("about summary");

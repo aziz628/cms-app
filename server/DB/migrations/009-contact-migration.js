@@ -10,6 +10,8 @@ export default create_migration({
             phone_number TEXT NOT NULL DEFAULT '',
             email TEXT NOT NULL DEFAULT ''
         );`,
+        `INSERT INTO contact (address, phone_number, email) VALUES ('', '', '');`,
+
         `CREATE TABLE IF NOT EXISTS social_media_link (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             platform TEXT NOT NULL,

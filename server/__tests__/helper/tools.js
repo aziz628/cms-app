@@ -32,7 +32,7 @@ export function get_fixture_image(number=0) {
  */
 export function ensure_uploaded_file_exist(subfolder="",filename) {
   const filePath = path.join(UPLOADS_DIR, subfolder, filename);
-
+  
   const exists = fs.existsSync(filePath);
   // If the file exists, do a request to ensure it is served
   if(exists){
@@ -118,6 +118,7 @@ export function cleanup_all_upload() {
       folders.forEach(folder => {
           const folderPath = path.join(UPLOADS_DIR, folder);
           fs.mkdirSync(folderPath);
+          
           // add gitkeep file to each folder
           fs.writeFileSync(path.join(folderPath, '.gitkeep'), '');
       });
