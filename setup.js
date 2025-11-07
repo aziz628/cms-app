@@ -36,6 +36,8 @@ async function setupProject() {
 
     for (const dir of UPLOAD_DIRS) {
       const dirPath = path.join(UPLOAD_BASE, dir);
+      
+      // Create directory if it doesn't exist
       if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
         console.log(`Created ${dirPath}`);
@@ -52,6 +54,7 @@ async function setupProject() {
     
     console.log('Copying frontend build to server/dist...');
     const distPath = path.join(SERVER_DIR, 'dist');
+
     // Remove existing dist if it exists
     if (fs.existsSync(distPath)) {
       fs.rmSync(distPath, { recursive: true, force: true });

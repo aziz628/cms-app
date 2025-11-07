@@ -6,11 +6,14 @@ node_modules/
 dist/
 data/
 __tests__/data/
+
 # Database files
 DB/*.sqlite
 DB/migration-status*.json
+__tests__/test_db.sqlite
 package-lock.json
 **/package-lock.json
+
 # Environment files (except example and test)
 .env
 .env.*
@@ -19,11 +22,11 @@ package-lock.json
 
 # User uploads
 /uploads
-__tests__/test_db.sqlite
 # Logs and editor files
 *.log
 .DS_Store
 .vscode/
 .idea/
+
 #scripts
 generate_cert.bat
