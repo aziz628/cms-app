@@ -4,7 +4,8 @@ node_modules/
 
 # Build outputs (don't commit built files)
 dist/
-
+data/
+__tests__/data/
 # Database files
 DB/*.sqlite
 DB/migration-status*.json
@@ -18,7 +19,6 @@ package-lock.json
 
 # User uploads
 /uploads
-/uploads/*
 __tests__/test_db.sqlite
 # Logs and editor files
 *.log
