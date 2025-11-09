@@ -8,6 +8,7 @@ const {about_summary_validator,
     create_business_hours_validator,
     update_business_hours_validator,
     delete_business_hour_validator} = async_controller(general_info_validator);
+    
 const controller = async_controller(general_info_controller);
 const router = express.Router();
 

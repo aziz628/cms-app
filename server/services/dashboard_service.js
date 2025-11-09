@@ -7,7 +7,7 @@ import db from "../DB/db_connection.js"
  * @returns {Promise<Array>} An array of logged actions.
  * @throws {App_error} If reading the log file fails.
  */
-async function get_actions_log(page) {
+async function get_admin_actions(page) {
     const pageSize = 10;
     // Calculate offset based on page number
     const offset = (page - 1) * pageSize;
@@ -52,7 +52,7 @@ async function record_entity_deletion(entity_name) {
 }
 
 export  {
-    get_actions_log,
+    get_admin_actions,
     record_entity_creation,
     record_entity_update,
     record_entity_deletion

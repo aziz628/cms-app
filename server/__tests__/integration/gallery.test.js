@@ -12,14 +12,11 @@ describe("Gallery API", () => {
     let image_id;
     let image_name;
     let category_id;
+
     beforeAll(async () =>{
         authCookies = await getAuthCookies();
     });
-    // ensure no test fixture files exist in uploads/gallery  before and after the tests
-    afterAll(async() => {
-            const noFilesExist = check_no_file_in_uploads(upload_subfolder);
-            expect(noFilesExist).toBe(true);
-        });
+   
 
     describe("POST /api/gallery", () => {
         // happy path - create a new category

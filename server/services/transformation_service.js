@@ -1,5 +1,5 @@
 import { delete_image } from "./content_service.js";
-import {record_entity_creation,record_entity_update,record_entity_deletion } from "./log_service.js";
+import {record_entity_creation,record_entity_update,record_entity_deletion } from "./dashboard_service.js";
 import db from "../DB/db_connection.js";
 import { run_in_transaction } from "../utils/db_utils.js";
 

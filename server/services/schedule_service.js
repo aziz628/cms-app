@@ -1,9 +1,12 @@
 import db from "../DB/db_connection.js";
 import {
     record_entity_update,
-}from "./log_service.js";
+}from "./dashboard_service.js";
 import { run_in_transaction } from "../utils/db_utils.js";
 import App_error from "../errors/AppError.js";
+
+const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
 
 async function get_schedule() {
     // get all sessions from the schedule table
@@ -51,8 +54,7 @@ async function get_schedule() {
         Object.entries(data.sessionsByDay)?.forEach(([day, sessions]) => {
             data.sessionsByDay[day] = JSON.parse(sessions);
         });
-        // Order days of the week
-        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        // Order days of the week 
         const orderedSessionsByDay = {};
         
         dayOrder.forEach(day => {
@@ -63,7 +65,7 @@ async function get_schedule() {
         
         data.sessionsByDay = orderedSessionsByDay;
         
-        // order by start_time and duration (end_time - start_time)
+        // order by start_time and duration, complexity O(n log n)
         for (const day in data.sessionsByDay) {
             data.sessionsByDay[day].sort((a, b) => {
                 const startA = timeToMinutes(a.start_time);

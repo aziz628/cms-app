@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { createChangeDetection } from '../validationRules';
 
 // Days of the week
-export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+export const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 // Time validation helper - checks if time is in HH:MM format
 const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;

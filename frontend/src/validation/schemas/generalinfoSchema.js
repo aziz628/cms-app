@@ -1,5 +1,32 @@
 import * as yup from "yup";
 import {createChangeDetection} from "../validationRules"
+import { DAYS } from "./scheduleSchema";
+
+// Helper function to validate day format
+function validateDayFormat (dayValue) {
+  if (!dayValue) return false;
+
+  // Check if it's a range (day1-day2)
+  if (dayValue.includes('-')) {
+    const [day1, day2] = dayValue.split('-').map(d => d.trim());
+    
+    // Both parts must be valid days
+    if (!DAYS.includes(day1) || !DAYS.includes(day2)) {
+      return false;
+    }
+    
+    // Days must be different (unique)
+    if (day1 === day2) {
+      return false;
+    }
+    
+    // Both must be valid
+    return true;
+  }
+  
+  // Single day - must be in DAYS array
+  return DAYS.includes(dayValue.trim());
+};
 
 export const aboutSchema = yup.object({
   about_summary: yup.string()
@@ -10,7 +37,11 @@ export const aboutSchema = yup.object({
 });
 
 const baseBusinessHourSchema = {
-  day: yup.string().required("Day is required"),
+  day: yup.string().lowercase().required("Day is required")
+  .test('day-format', 'Day must be in format "Day" or "Day1-Day2" (e.g., "monday" or "monday-friday")'
+  , validateDayFormat
+  ),
+
   open_time: yup.string().matches(/^\d{2}:\d{2}$/, "Open time must be in HH:MM format"),
   close_time: yup.string()
   .matches(/^\d{2}:\d{2}$/, "Close time must be in HH:MM format")

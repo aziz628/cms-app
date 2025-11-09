@@ -164,7 +164,7 @@ export default function Info() {
                                                             {
                                                                 businessHours.map((hour) => (
                                                                     <tr key={hour.id}>
-                                                                        <td className='px-4 py-2 font-semibold'>{hour.day}</td>
+                                                                        <td className='px-4 py-2 font-semibold'>{hour.day?.charAt(0)?.toUpperCase() + hour.day?.slice(1)}</td>
                                                                         <td className='px-4 py-2'>{hour.open_time}</td>
                                                                         <td className='px-4 py-2'>{hour.close_time}</td>
                                                                         <td className='px-4 py-2 space-y-1 text-sm flex flex-col justify-center items-center'>

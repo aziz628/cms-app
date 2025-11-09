@@ -3,7 +3,7 @@ import {
     record_entity_creation,
     record_entity_update,
     record_entity_deletion
-} from "./log_service.js";
+} from "./dashboard_service.js";
 import { run_in_transaction } from "../utils/db_utils.js";
 import App_Error from "../errors/AppError.js";
 import db from "../DB/db_connection.js";

@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { promises as fsPromises } from 'fs';
+import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -24,7 +24,6 @@ let storageState = {
   lastUpdated: new Date().toISOString()
 };
 
-initialize(); // Call initialize on module load
 
 // Queue for writes
 const writeQueue = [];
@@ -58,23 +57,29 @@ async function processQueue() {
 
     // Process next item in the queue if any
     if (writeQueue.length > 0) {
-      setImmediate(() => processQueue());
+      processQueue();
     }
   }
 }
 
 /**
  * Initializes storage state from disk
+ * creates new state file data is invalid/missing
  */
-async function initialize() {
+async function initialize_storage_state() {
   try {
     // Load existing state
-    const data = await fsPromises.readFile(STORAGE_STATE_FILE, 'utf-8');
-    
-    // set state 
-    storageState = JSON.parse(data);
-    console.log(' Storage state loaded:', storageState);
-    
+    const data = await fs.readFile(STORAGE_STATE_FILE, 'utf-8');
+    const parsed = JSON.parse(data);
+
+    // if parsed data is missing fields then it's invalid
+    if (typeof parsed.totalSize !== 'number' || typeof parsed.lastUpdated !== 'string') {
+      // ENOENT error will trigger creation of new file
+      throw { code: 'ENOENT' };
+    } 
+    // Set in-memory state
+    storageState = parsed;
+    console.log(' Storage state loaded:', parsed);
   } catch (error) {
     // If file doesn't exist, create it
     if (error.code === 'ENOENT') {
@@ -97,6 +102,8 @@ async function initialize() {
     }
   }
 }
+
+
 /**
      * Recursively calculates the total size of all files within the uploads directory.
      *
@@ -107,29 +114,29 @@ async function initialize() {
      * @async
      * @returns {Promise<number>} The total size of all files in bytes.
     */
-    const getDirectorySize = async (directory=UPLOAD_DIR_PATH) => {
-      let totalSize = 0;
-      // Read all items in the directory
-      const files = await fs.promises.readdir(directory);
+  const getDirectorySize = async (directory=UPLOAD_DIR_PATH) => {
+    let totalSize = 0;
+    // Read all items in the directory
+    const files = await fs.readdir(directory);
 
-      for (const file of files) {
-        try {
-          // get the file stats
-          const filePath = path.join(directory, file);
-          const stats = await fs.promises.stat(filePath);
+    for (const file of files) {
+      try {
+        // get the file stats
+        const filePath = path.join(directory, file);
+        const stats = await fs.stat(filePath);
 
-          // If it's a directory, recurse into it
-          if (stats.isDirectory()) {
-            totalSize += await getDirectorySize(filePath);
-          } else {
-            totalSize += stats.size;
-          }
-        } catch (err) {
-          console.error(`Error accessing file ${file}:`, err);
+        // If it's a directory, recurse into it
+        if (stats.isDirectory()) {
+          totalSize += await getDirectorySize(filePath);
+        } else {
+          totalSize += stats.size;
         }
+      } catch (err) {
+        console.error(`Error accessing file ${file}:`, err);
       }
-      return totalSize;
-    };
+    }
+    return totalSize;
+  };
 
 /**
  * Gets current storage state (instant read)
@@ -193,7 +200,6 @@ async function decrementStorage(fileSizeBytes) {
                 `   This suggests a bug in file deletion tracking.`
               );
             }
-
             // Decrement storage size, ensuring it doesn't go below zero (edge case)
             storageState.totalSize = Math.max(0, newTotal);
             storageState.lastUpdated = new Date().toISOString();
@@ -215,11 +221,11 @@ async function decrementStorage(fileSizeBytes) {
  */
 async function saveToFile() {
   const dataDir = path.dirname(STORAGE_STATE_FILE);
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+  if (!fsSync.existsSync(dataDir)) {
+    fsSync.mkdirSync(dataDir, { recursive: true });
   }
 
-  await fsPromises.writeFile(
+  await fs.writeFile(
     STORAGE_STATE_FILE,
     JSON.stringify(storageState, null, 2),
     'utf-8'
@@ -256,5 +262,6 @@ export  {
   incrementStorage,
   decrementStorage,
   canAddFile,
-  reset
+  reset,
+  initialize_storage_state
 };

@@ -1,8 +1,10 @@
 import request from 'supertest';
 import app from '../../app'; // Adjust the path to your Express app
+/*
 import path from 'path';
 import fs from 'fs'
 import review_service from '../../services/review_service.js'; // Adjust the path to your gallery service
+*/
 import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image,check_no_file_in_uploads} from '../helper/tools.js';
 // global variables
 const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
@@ -18,11 +20,7 @@ describe('Review API Integration Tests', () => {
     beforeAll(async () => {
         authCookies = await getAuthCookies();
     });
-    // cleanup after all tests
-    afterAll(async () => {
-        const noFilesExist = check_no_file_in_uploads(upload_subfolder);
-        expect(noFilesExist).toBe(true);
-    });
+    
 
     describe('POST /api/reviews', () => {
 

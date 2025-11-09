@@ -25,18 +25,67 @@ export function get_fixture_image(number=0) {
 }
 
 /**
- * Check if an uploaded file exists in the uploads directory and is being served.
+ * Get the size of a fixture image file in bytes.
+ * @param {number} [number=0] - The fixture number (0-based index, default is zero).
+ * @returns {number} The size of the fixture file in bytes.
+ * @throws {Error} If the fixture number is out of range.
+ * */
+export function get_fixture_image_size(number=0) {
+    const root_relative_fixturePath = get_fixture_image(number);
+    const absolute_fixturePath = path.join(__dirname, '..', '..', root_relative_fixturePath);
+    const stats = fs.statSync(absolute_fixturePath);
+    return stats.size;
+}
+
+
+// Helper: Generate large test file
+export async function createLargeTestFile(sizeBytes) {
+  const filepath = path.join(__dirname,'../../', RELATIVE_FIXTURES_DIR, 'large_file.png');
+
+  // Write zeros in chunks (faster than single write)
+  const chunkSize = 10 * 1024 * 1024; // 10MB chunks
+  const chunks = Math.ceil(sizeBytes / chunkSize); // total number of chunks
+  const zeroBuffer = Buffer.alloc(chunkSize, 0); // buffer of zeros
+  
+  const stream = fs.createWriteStream(filepath); // create write stream
+  
+  for (let i = 0; i < chunks; i++) {
+    // determine how much to write in this chunk
+    const toWrite = i === chunks - 1 
+      ? sizeBytes - (i * chunkSize)
+      : chunkSize;
+
+    if (toWrite === chunkSize) {
+      stream.write(zeroBuffer);
+    } else {
+      stream.write(Buffer.alloc(toWrite, 0));
+    }
+  }
+
+  // return a promise that resolves when done
+  return new Promise((resolve, reject) => {
+    // finalize the write
+    stream.end();
+    // return a promise that resolves when done
+    stream.on('finish', resolve);
+    stream.on('error', reject);
+  });
+}
+
+
+
+/**
+ * Check if an uploaded file exists in the uploads directory and is being served through the API.
  * @param {string} subfolder - The subfolder under uploads (e.g., 'gallery', 'events').
  * @param {string} filename - The name of the file to check.
  * @returns {boolean} True if the file exists, false otherwise.
  */
 export function ensure_uploaded_file_exist(subfolder="",filename) {
   const filePath = path.join(UPLOADS_DIR, subfolder, filename);
-  
   const exists = fs.existsSync(filePath);
+
   // If the file exists, do a request to ensure it is served
-  if(exists){
-    // do a request to /uploads/<subfolder>/<filename>
+  if (exists) {
     const urlPath = `/uploads/${subfolder}/${filename}`
     request(app)
       .get(urlPath)
@@ -65,6 +114,7 @@ export  function check_no_file_in_uploads(subfolder) {
   for (const filename of fixture_images) {
     // build the full path to the file
     const filePath = path.join(UPLOADS_DIR, subfolder, filename);
+    
     // check if the file still exists
     if (fs.existsSync(filePath)) {
       return false;
@@ -105,16 +155,29 @@ export async function getAuthCookies(credentials = { username: 'admin', password
 export function cleanup_all_upload() {
 
   if (fs.existsSync(UPLOADS_DIR)) {
-      
       console.log('Cleaning up uploads directory...');
       const folders = ['gallery', 'trainers', 'events', 'reviews', 'classes', 'transformations'];
+      
+      // check if  files stayed in uploads
+      folders.forEach(folder => {
+          const folderPath = path.join(UPLOADS_DIR, folder);
+          if (fs.existsSync(folderPath)) {
+              const files = fs.readdirSync(folderPath);
+              // any file except .gitkeep
+              const realFiles = files.filter(f => f !== '.gitkeep');
+              if (realFiles.length > 0) {
+                  console.error(` - Found ${realFiles.length} files in ${folder} after tests: ${realFiles.join(', ')}`);
+              }
+          }
+      });
+
       // Remove everything
       fs.rmSync(UPLOADS_DIR, { recursive: true, force: true });
 
       // remake the root folder
       fs.mkdirSync(UPLOADS_DIR);
 
-      // Recreate each folder
+      // Recreate each subfolder
       folders.forEach(folder => {
           const folderPath = path.join(UPLOADS_DIR, folder);
           fs.mkdirSync(folderPath);

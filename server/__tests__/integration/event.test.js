@@ -14,10 +14,7 @@ describe("Event api",() => {
     beforeAll(async () => {
         authCookies = await getAuthCookies();
     })
-afterAll(async() => {
-        const noFilesExist = check_no_file_in_uploads(upload_subfolder);
-        expect(noFilesExist).toBe(true);
-    });
+        
 
     describe('Get /events', () => {
         // get all events

@@ -1,5 +1,5 @@
 import multer from 'multer';
-import fs from 'fs';
+//import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import AppError from '../errors/AppError.js';
@@ -54,44 +54,8 @@ function create_upload_pipeline(options={}) {
         file_saver({ section })
       ];
     }
-// --- Middleware 0: Post Upload Size Check ---
-
-/**
- *  Middleware to check total storage limit after file upload.
- * used against bypassing Content-Length header check in memory_upload middleware.
- * @param {import('express').Request} req - The Express request object.
- * @param {import('express').Response} res - The Express response object.
- * @param {import('express').NextFunction} next - The next middleware function.
- */
-
-function post_upload_size_check(req, res, next) {
-  //  request has no files 
-  if(!(req.file || (req.files && Object.keys(req.files).length>0))) return next()
-
-  // Get the uploaded files size from the request
-  const uploadedFilesSize = req.file 
-  ? req.file.size 
-  : Object.values(req.files || {})
-    .flat()
-    .reduce((sum, f) => sum + (f?.size || 0), 0);
-
-  // debugging the 0 size
-  if (uploadedFilesSize==0){
-    console.log(req.file || Object.keys(req.files))
-  }  
-
-  // size in mb
-  console.log(' Post-upload file size ', (uploadedFilesSize / (1024 * 1024)).toFixed(2)+' MB');
-  
-  // Check if the upload would exceed the total storage limit
-  if (!canAddFile(uploadedFilesSize)) {
-    return next(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'));
-  }
-
-  next();
-}
-
-// --- Middleware 1: Memory Uploader ---
+    
+// --- Middleware 0: Memory Uploader ---
 
 /**
  * Middleware to handle memory uploads.
@@ -117,6 +81,7 @@ function post_upload_size_check(req, res, next) {
   const storage = multer.memoryStorage();
   const upload = multer({
     storage,
+    // multer checks the file size when it collects the file chunks
     limits: { fileSize: maxSize , files: MAX_UPLOAD_FILES_PER_REQUEST },
     fileFilter: (req, file, cb) => {
       // check mime type 
@@ -125,22 +90,70 @@ function post_upload_size_check(req, res, next) {
       }
       // Content-Length header presence
        const contentLength = parseInt(req.headers['content-length'], 10);
-       console.log(' Content-Length header:', contentLength);
-
-      if (!contentLength || contentLength <= 0) {
+      if (!contentLength || contentLength <= 0 ) {
         return cb(new AppError('Content-Length header is required', 400, 'MISSING_CONTENT_LENGTH'), false);
       }
-      
+      // validate size using Content-Length to fail fast and skip multer collection of chunks (buffering)
+      if(contentLength > maxSize){
+        // same error as multer's built in file size exceeded
+        return cb(new AppError('Uploaded file is too large', 413, 'FILE_TOO_LARGE'), false);
+      }
+
       //  Validate against storage limit using Content-Length
       if (!canAddFile(contentLength)) {
-        console.log(' Upload would exceed total storage limit. Content-Length:', contentLength);
-       //  return cb(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'), false);
+         return cb(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'), false);
       }
       // all checks passed , accept file
       cb(null, true);
     },
   });
   return mode === 'fields' ? upload.fields(fields.map(field => ({ name: field, maxCount: 1 }))) : upload.single(field_name);
+}
+
+
+
+// --- Middleware 1: Post Upload Size Check ---
+
+/**
+ *  Middleware to check total storage limit after file upload.
+ * used against bypassing Content-Length header check in memory_upload middleware.
+ * @param {import('express').Request} req - The Express request object.
+ * @param {import('express').Response} res - The Express response object.
+ * @param {import('express').NextFunction} next - The next middleware function.
+ */
+
+function post_upload_size_check(req, res, next) {
+  //  request has no files 
+  if(!(req.file || (req.files && Object.keys(req.files).length>0))) return next()
+
+  // Get the uploaded files size from the request
+  const uploadedFilesSize = req.file 
+  ? req.file.size 
+  : Object.values(req.files || {})
+    .flat()
+    .reduce((sum, f) => sum + (f?.size || 0), 0);
+
+  // debugging the 0 size
+  if (uploadedFilesSize==0){
+    console.log(req.file || Object.keys(req.files))
+  }  
+
+  // Check header vs actual size mismatch
+  const contentLength = parseInt(req.headers['content-length'], 10);
+  if (contentLength && Math.abs(contentLength - uploadedFilesSize) > 1024) { // Allow 1KB tolerance
+    return next(new AppError(
+      'Actual file size differs from Content-Length header',
+      400,
+      'CONTENT_LENGTH_MISMATCH'
+    ));
+  }
+  
+  // Check if the upload would exceed the total storage limit
+  if (!canAddFile(uploadedFilesSize)) {
+    return next(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'));
+  }
+
+  next();
 }
 
 // --- Middleware 2: File Presence Validator ---
@@ -258,4 +271,4 @@ const save_file = async (file, section) => {
     };
 
     
-export { memory_upload, file_saver, file_validator ,create_upload_pipeline}
+export { memory_upload, file_saver, file_validator ,post_upload_size_check,create_upload_pipeline}

@@ -1,7 +1,4 @@
-import fs from "fs"
-import path from "path";
-import { fileURLToPath } from 'url';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /**
  * Run database operations in a transaction
  * @param {object} db - The database connection object.

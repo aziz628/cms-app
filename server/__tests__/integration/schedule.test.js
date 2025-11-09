@@ -2,6 +2,7 @@ import request  from "supertest";
 import app from "../../app.js";
 import { getAuthCookies } from '../helper/tools.js';
 
+const days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 describe("Schedule API", () => {
     let authCookies;
@@ -9,9 +10,7 @@ describe("Schedule API", () => {
     let class_id;
 
     beforeAll(async () => {
-        console.log("parent beforeall")
         authCookies = await getAuthCookies();
-        console.log("class setup")
         // create a class to use its id for the schedule tests
         const classResponse = await request(app)
         .post('/api/admin/classes')
@@ -35,7 +34,6 @@ describe("Schedule API", () => {
   
     describe("POST /api/admin/schedule", () => {
         beforeAll(() => {        
-            console.log("post beforeall")
             // Ensure class_id is defined before running tests
             expect(class_id).toBeDefined();
         })
@@ -46,7 +44,7 @@ describe("Schedule API", () => {
             const newSession = {
                 start_time: "09:00",
                 end_time: "10:00",
-                day_of_week: "Monday",
+                day_of_week: "monday",
                 class_id
             };
             
@@ -93,7 +91,7 @@ describe("Schedule API", () => {
                 class_id: "invalid_id", // This should be a number
                 start_time: "09:00",
                 end_time: "10:00",
-                day_of_week: "Monday"
+                day_of_week: "monday"
             };
 
             // Act: Perform a POST request to the /api/admin/schedule endpoint
@@ -107,6 +105,28 @@ describe("Schedule API", () => {
             expect(response.body.message).toMatch(/"class_id" must be a number/);
             expect(response.body.code).toBe('VALIDATION_ERROR');
         });
+        // sad path - capitalized day of week
+        it("should return 400 for capitalized day of week", async () => {
+            // Arrange: Prepare a session with a capitalized day of week
+            const invalidSession = {
+                class_id: 1,
+                start_time: "09:00",
+                end_time: "10:00",
+                day_of_week: "Monday" // This should be lowercase
+            };
+
+            // Act: Perform a POST request to the /api/admin/schedule endpoint
+            const response = await request(app)
+                .post('/api/admin/schedule')
+                .set('Cookie', authCookies)
+                .send(invalidSession);
+
+            // Assert: Check if the response is a bad request
+            expect(response.statusCode).toBe(400);
+            // "value" must be one of [monday, tuesday, ...]
+            expect(response.body.message).toMatch(`"day_of_week" must be one of [${days_of_week.join(', ')}]`);
+            expect(response.body.code).toBe('VALIDATION_ERROR');
+        });
 
         // sad path - invalid time format
         it("should return 400 for invalid time format", async () => {
@@ -115,7 +135,7 @@ describe("Schedule API", () => {
                 class_id: 1,
                 start_time: "09:00",
                 end_time: "invalid_time", // This should be a valid time format
-                day_of_week: "Monday"
+                day_of_week: "monday"
             };
 
             // Act: Perform a POST request to the /api/admin/schedule endpoint
@@ -156,7 +176,7 @@ describe("Schedule API", () => {
                 class_id: new_class_id,
                 start_time: "10:00",
                 end_time: "11:00",
-                day_of_week: "Tuesday"
+                day_of_week: "tuesday"
             };
 
             // Act: Perform a PUT request to the /api/admin/schedule/:id endpoint
@@ -184,7 +204,7 @@ describe("Schedule API", () => {
                 class_id: 1,
                 start_time: "10:00",
                 end_time: "11:00",
-                day_of_week: "Tuesday"
+                day_of_week: "tuesday"
             };
 
             // Act: Perform a PUT request to the /api/admin/schedule/:id endpoint
@@ -224,7 +244,7 @@ describe("Schedule API", () => {
                 class_id: 1,
                 start_time: "10:00",
                 end_time: "invalid_time", // This should be a valid time format
-                day_of_week: "Tuesday"
+                day_of_week: "tuesday"
             };
 
             // Act: Perform a PUT request to the /api/admin/schedule/:id endpoint

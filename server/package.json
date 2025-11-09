@@ -23,8 +23,10 @@
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/helper/",
       "<rootDir>/__tests__/setup/"
-    ]
-  },
+    ],
+  "_comment": "This transform field is needed to handle ES modules",
+  "transform": {} 
+},
   "dependencies": {
     "bcrypt": "^5.1.0",
     "busboy": "^1.6.0",

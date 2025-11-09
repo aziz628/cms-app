@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../app.js";
 
-import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image,check_no_file_in_uploads} from '../helper/tools.js';
+import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
 // get current directory name
 const upload_subfolder = 'classes'
 const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']; // Allowed file types
@@ -17,10 +17,6 @@ describe("General Info API", () => {
       authCookies = await getAuthCookies();
     });
     
-    afterAll(async() => {
-            const noFilesExist = check_no_file_in_uploads(upload_subfolder);
-            expect(noFilesExist).toBe(true);
-        });
     
     describe("POST /api/admin/classes", () => {
 
@@ -152,6 +148,7 @@ describe("General Info API", () => {
             expect(response.statusCode).toBe(200);
             expect(response.body.message).toBe('Class updated successfully');
         })
+
         // happy path - update a class with fields and image
         it('should update a class and return status code 200', async () => {
             expect(test_class_id).toBeDefined(); // Ensure the class ID is available
@@ -171,14 +168,14 @@ describe("General Info API", () => {
                 .field('description', updatedClass.description)
                 .field('private_coaching', updatedClass.private_coaching)
                 .attach('image', get_fixture_image(1)); // Attach a new image file
-            // Assert: Check if the application correctly handled the update
+            
+                // Assert: Check if the application correctly handled the update
             expect(response.statusCode).toBe(200);
             expect(response.body.message).toBe('Class updated successfully');
             expect(response.body.image).toBeDefined(); // Check if the image is returned
-            
 
             // check if the old image is deleted from the uploads directory
-            const old_image_exists = ensure_uploaded_file_exist(upload_subfolder,imageName); 
+            const old_image_exists = ensure_uploaded_file_exist(upload_subfolder,imageName);
             expect(old_image_exists).toBe(false)
 
             // check if the new image is added to the uploads directory

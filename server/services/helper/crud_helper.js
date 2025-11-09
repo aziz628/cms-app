@@ -4,7 +4,7 @@ import {
     record_entity_creation,
     record_entity_update,
     record_entity_deletion
-} from "../log_service.js";
+} from "../dashboard_service.js";
 import App_error from "../../errors/AppError.js";
 
 /**

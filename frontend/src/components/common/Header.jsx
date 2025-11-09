@@ -19,7 +19,7 @@ function Header() {
   }
   return (
     <header className="z-40 fixed flex items-center h-16 px-4 py-3 text-white bg-black w-full shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
+        <div className="container min-w-full flex justify-between items-center">
           <h1 className="text-2xl font-bold">Gym CMS</h1>
           <button 
             onClick={handleLogout}

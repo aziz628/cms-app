@@ -1,7 +1,7 @@
 import db from "../DB/db_connection.js";
 import {
     record_entity_update,
-}from "./log_service.js";
+}from "./dashboard_service.js";
 import { run_in_transaction } from "../utils/db_utils.js";
 import AppError from "../errors/AppError.js";
 

@@ -4,8 +4,8 @@ node_modules/
 
 # Build outputs (don't commit built files)
 dist/
-data/
-__tests__/data/
+data/storage-state.json
+__tests__/data/storage-state.json
 
 # Database files
 DB/*.sqlite
@@ -14,6 +14,8 @@ __tests__/test_db.sqlite
 package-lock.json
 **/package-lock.json
 
+# test files
+__tests__/fixtures/large_file.png
 # Environment files (except example and test)
 .env
 .env.*

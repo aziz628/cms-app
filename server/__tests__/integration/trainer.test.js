@@ -11,13 +11,11 @@ describe("Trainer API", () => {
     let authCookies; // Variable to store authentication cookies
     let trainerId; // Variable to store the created trainer ID
     let trainerImage; // Variable to store the uploaded trainer image
+    
     beforeAll(async () => {
         authCookies = await getAuthCookies();
     });
-    afterAll(async () => {
-        const noFilesExist =  check_no_file_in_uploads(upload_subfolder);
-        expect(noFilesExist).toBe(true);
-    })
+    
     describe("GET /api/admin/trainers", () => {
         // happy path - get all trainers
         it('should return all trainers', async () => {

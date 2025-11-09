@@ -16,13 +16,15 @@ import  auth_route from './routes/api/auth_route.js';
 import admin_route from './routes/api/admin_route.js';
 import errorHandler from './middleware/errorHandler.js';
 import { authenticate_session } from './middleware/auth_middleware.js';
-
+import db from './DB/db_connection.js';
+import fs from 'fs/promises';
 // Create Express app
 const app = express();
 
 // Get the directory name using ES modules approach
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const UPLOAD_DIR_PATH = path.join(__dirname, process.env.UPLOAD_BASE || 'uploads');
 
 
 // Middleware
@@ -99,6 +101,71 @@ app.use('/api/admin', (req,res,next)=>{adminLimiter
      }
     else next();
 }, authenticate_session, admin_route);
+
+// Admin health check route - detailed status for admins
+app.get('/api/admin/health', authenticate_session, async (req, res) => {
+    const healthCheck = {
+        status: 'healthy',
+        timestamp: Date.now(),
+        uptime: process.uptime(),
+        checks: {}
+    };
+    try {
+        // Database check with details
+        if (db) {
+            await db.get('SELECT 1');
+            healthCheck.checks.database = {
+                status: 'connected',
+                type: 'sqlite'
+            };
+        } else {
+            healthCheck.checks.database = { status: 'no connection' };
+            healthCheck.status = 'degraded';
+        }
+
+        // File system check
+        
+        // Check if uploads directory exists and is accessible
+        try {
+            await fs.access(UPLOAD_DIR_PATH);
+            const stats = await fs.stat(UPLOAD_DIR_PATH);
+            healthCheck.checks.filesystem = {
+                status: 'accessible',
+                uploadsDirectory: UPLOAD_DIR_PATH,
+                lastModified: stats.mtime
+            };
+        } catch (fsError) {
+            healthCheck.checks.filesystem = { 
+                status: 'missing uploads directory',
+                path: UPLOAD_DIR_PATH
+            };
+            healthCheck.status = 'degraded';
+        }
+        // Memory usage
+        const memUsage = process.memoryUsage();
+        healthCheck.checks.memory = {
+            heapUsed: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB`,
+            heapTotal: `${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`,
+            rss: `${Math.round(memUsage.rss / 1024 / 1024)}MB`
+        };
+
+        res.status(200).json(healthCheck);
+    } catch (error) {
+        healthCheck.checks.database = 'disconnected';
+    }
+
+});
+// public health check route - basic status
+app.get('/api/health', publicLimiter, async (req, res) => {
+    try {
+        // Simple DB query to check connectivity
+        await db.get('SELECT 1');
+        res.status(200).json({ status: 'OK', timestamp: Date.now()  });
+    } catch (error) {
+        res.status(500).json({ status: 'Error', timestamp: Date.now() });
+    }
+})
+
 
 
 // AFTER all API routes, serve the React app static files

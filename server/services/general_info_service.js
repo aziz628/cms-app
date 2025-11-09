@@ -2,7 +2,7 @@ import db from "../DB/db_connection.js";
 import {record_entity_creation,
   record_entity_deletion,
   record_entity_update  
-}from "./log_service.js";
+}from "./dashboard_service.js";
 import AppError from "../errors/AppError.js";
 import { run_in_transaction } from "../utils/db_utils.js";
 /**
@@ -42,6 +42,7 @@ const getDayIndex = (dayStr) => {
 
         // If the day string contains a '-', split and use the first part.
         const day = dayStr.includes('-') ? dayStr.split('-')[0] : dayStr;
+        // Return the index of the day in the week.
         return dayOrder.indexOf(day.toLowerCase());
       };
 

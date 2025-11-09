@@ -1,6 +1,6 @@
 import {dynamic_validator,custum_joi as joi} from "../dynamic_validator_middleware.js";
 
-const days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 // Base Schema for session validation
 const session_Schema_base = {
@@ -13,7 +13,7 @@ const session_Schema_base = {
             'string.pattern.base': '"end_time" must be in 24-hour format (HH:MM)'
         }), // 24-hour format HH:MM
         day_of_week: joi.string().valid(...days_of_week)
-    }
+    };
 
 // Schema for create session validation
 const create_session_Schema = joi.object({

@@ -10,7 +10,6 @@ describe("General Info API", () => {
 
     beforeAll(async () => {
         authCookies = await getAuthCookies();
-        console.log("Auth cookies obtained for tests.");
     });
 
    
@@ -32,9 +31,11 @@ describe("General Info API", () => {
             expect(response.statusCode).toBe(201);
             expect(response.body.message).toBe("Business hour created successfully");
             expect(response.body.id).toBeDefined();
+
             // Save the created business hours ID for later use
             hours_id = response.body.id;
         });
+        
         // sad path - missing fields
         it('should return 400 for missing fields', async () => {
             // Arrange: Prepare an incomplete business hour data
@@ -51,6 +52,42 @@ describe("General Info API", () => {
             // Assert: Check if the application correctly handled the missing fields
             expect(response.statusCode).toBe(400);
             expect(response.body.message).toMatch(/"close_time" is required/);
+            expect(response.body.code).toBe('VALIDATION_ERROR');
+        });
+        // sad path - invalid day 
+        it('should return 400 for invalid day format', async () => {
+            // Arrange: Prepare a business hour data with invalid day format
+            const invalidDayBusinessHour = {
+                day: 'Funday', // Invalid day
+                open_time: '08:00',
+                close_time: '16:00'
+            };
+            const response = await request(app)
+                .post('/api/admin/general-info/business-hours')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .send(invalidDayBusinessHour);
+            
+                // Assert: Check if the application correctly handled the invalid day format
+            expect(response.statusCode).toBe(400);
+            expect(response.body.message).toMatch(/Invalid day format. Use day name \(e.g., 'monday'\) or range \(e.g., 'monday-friday'\)/);
+            expect(response.body.code).toBe('VALIDATION_ERROR');
+        });
+        // sad path - close_time less than 30 minutes after open_time
+        it('should return 400 for close_time less than 30 minutes after open_time', async () => {
+            // Arrange: Prepare a business hour data with close_time less than 30 minutes after open_time
+            const invalidTimeBusinessHour = {
+                day: 'monday',
+                open_time: '10:00',
+                close_time: '10:20' // Less than 30 minutes after open_time
+            };
+            const response = await request(app)
+                .post('/api/admin/general-info/business-hours')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .send(invalidTimeBusinessHour);
+            
+            // Assert: Check if the application correctly handled the invalid time range
+            expect(response.statusCode).toBe(400);
+            expect(response.body.message).toMatch(/close_time must be at least 30 minutes after open_time/);
             expect(response.body.code).toBe('VALIDATION_ERROR');
         });
     });
@@ -98,7 +135,7 @@ describe("General Info API", () => {
         it('should update business hours', async () => {
             // Arrange: Prepare the updated business hours
             const updatedBusinessHours = {
-                "day":"monday-friday",
+                "day":"monday-friday", // use a range format
                 "open_time":"10:00",
                 "close_time":"22:00"
             };
