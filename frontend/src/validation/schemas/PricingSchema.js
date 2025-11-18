@@ -17,13 +17,16 @@ const pricing_plan_base_fields={
         (value) => value === undefined || value === null || /^\d+(\.\d{1,2})?$/.test(value)
     ),
     period:yup.string()
-    .oneOf(['daily', 'weekly', 'monthly', 'annually'],"Period must be one of: daily, weekly, monthly, annually")
+    .oneOf(['daily', 'weekly', 'monthly', 'annually'],"Period must be one of: daily, weekly, monthly, annually"),
+    popular:yup.boolean()
 }
 export const createpricingPlanSchema=yup.object({
     name:pricing_plan_base_fields.name.required("Name is required"),
     description:pricing_plan_base_fields.description,
     price:pricing_plan_base_fields.price.required("Price is required"),
     period:pricing_plan_base_fields.period.required("Period is required"),
+    popular:pricing_plan_base_fields.popular.required("Popular is required")
+
 }).required()
 
 export const updatepricingPlanSchema=yup.object(pricing_plan_base_fields).test('hasChanges',
@@ -32,7 +35,8 @@ export const updatepricingPlanSchema=yup.object(pricing_plan_base_fields).test('
       { name: "name" },
       { name: "description" },
       { name: "price" },
-      { name: "period"}
+      { name: "period"},
+      { name: "popular" }
     ])) 
 
 // plan feature 

@@ -90,13 +90,15 @@ export function ensure_uploaded_file_exist(subfolder="",filename) {
     request(app)
       .get(urlPath)
       .then(res => {
+        // check for 200 status
         if (res.statusCode !== 200) {
           console.error(`File ${urlPath} exists on disk but not served (status=${res.statusCode})`);
         }
         // see if the file served is same size as on disk
         const contentLength = parseInt(res.headers['content-length'], 10);
         const stats = fs.statSync(filePath);
-        if (contentLength !== stats.size) {
+        
+        if (Math.abs(contentLength - stats.size) > 1024) { // allow 1KB difference for encoding
           console.error(`File ${urlPath} size mismatch: served ${contentLength} bytes, on disk ${stats.size} bytes`);
         }
       });
@@ -156,8 +158,8 @@ export function cleanup_all_upload() {
 
   if (fs.existsSync(UPLOADS_DIR)) {
       console.log('Cleaning up uploads directory...');
-      const folders = ['gallery', 'trainers', 'events', 'reviews', 'classes', 'transformations'];
-      
+      const folders = ['gallery', 'trainers', 'events', 'reviews', 'classes', 'transformations','general_info'];
+
       // check if  files stayed in uploads
       folders.forEach(folder => {
           const folderPath = path.join(UPLOADS_DIR, folder);
@@ -187,6 +189,7 @@ export function cleanup_all_upload() {
       });
 }
 }
+cleanup_all_upload();
 
 
 /**

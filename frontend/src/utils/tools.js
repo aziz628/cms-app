@@ -6,7 +6,7 @@ import { useEffect } from "react";
  * @returns {string} - The name of the current page or 'not found' if it doesn't match known pages.
  */
 export function getCurrentPage() {
-  const pages = ['login','classes','schedule','pricing','trainers',"events","gallery","reviews","transformations"];
+  const pages = ['login','classes','schedule','pricing','trainers',"events","gallery","reviews","transformations","general_info"];
   const path = window.location.pathname;
   const pathSegments = path.split('/');
   let currentPage = pages.find(page => pathSegments.includes(page));

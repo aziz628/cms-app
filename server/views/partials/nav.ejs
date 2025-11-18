@@ -1,0 +1,49 @@
+<!-- Navigation -->
+<nav id="main-nav" class=" <%= typeof home_page !== 'undefined'?'':'scrolled' %>  fixed w-full z-50 py-4 transition-all duration-300">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+        <!-- Logo -->
+        <a href="/" class="text-2xl font-bold text-white">
+            <span class="text-primary">Fitness</span>Hub
+        </a>
+        
+        <!-- Desktop Navigation -->
+        <ul class="hidden md:flex items-center space-x-8">
+            <li><a href="/" class="nav-link text-white text-sm hover:text-primary font-normal tracking-widest">HOME</a></li>
+            <li><a href="#about" class="nav-link text-white text-sm hover:text-primary font-normal tracking-widest">ABOUT</a></li>
+            <li><a href="#classes" class="nav-link text-white text-sm hover:text-primary font-normal tracking-widest">CLASSES</a></li>
+            <li><a href="#schedule" class="nav-link text-white text-sm hover:text-primary font-normal tracking-widest">SCHEDULE</a></li>
+            <li><a href="#pricing" class="nav-link text-white text-sm hover:text-primary font-normal tracking-widest">PRICING</a></li>
+            <li><a href="#contact" class="nav-link text-white text-sm hover:text-primary font-normal tracking-widest">CONTACT</a></li>
+        </ul>
+        
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden text-white">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </div>
+</nav>
+    
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="fixed inset-0 bg-dark bg-opacity-95 z-50 transform transition-transform duration-500 translate-x-full">
+    <div class="flex justify-end p-4">
+        <button id="close-menu" class="text-white">
+            <i class="fas fa-times text-2xl"></i>
+        </button>
+    </div>
+    <div class="container mx-auto px-4 h-full flex flex-col justify-center">
+        <ul class="flex flex-col items-center space-y-6">
+            <li><a href="/" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Home</a></li>
+            <li><a href="#about" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">About</a></li>
+            <li><a href="#classes" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Classes</a></li>
+            <li><a href="#schedule" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Schedule</a></li>
+            <li><a href="#pricing" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Pricing</a></li>
+            <li><a href="#contact" class="nav-link text-primary text-xl font-normal tracking-widest">Contact</a></li>
+            <!-- extra page links, reviews,events,gallery,trainers, transformations-->
+            <li><a href="#reviews" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Reviews</a></li>
+            <li><a href="#events" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Events</a></li>
+            <li><a href="#gallery" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Gallery</a></li>
+            <li><a href="#trainers" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Trainers</a></li>
+            <li><a href="#transformations" class="nav-link text-white text-xl font-normal tracking-widest hover:text-primary">Transformations</a></li>
+        </ul>
+    </div>
+</div>

@@ -28,6 +28,21 @@ function validateDayFormat (dayValue) {
   return DAYS.includes(dayValue.trim());
 };
 
+export const hero_title_Schema = yup.object({
+  hero_title: yup.string()
+    .min(5, 'hero title must be at least 5 characters')
+    .max(100, 'hero title cannot exceed 100 characters')
+    .required('hero title is required')
+});
+
+export const hero_subtitle_Schema = yup.object({
+  hero_subtitle: yup.string()
+    .min(5, 'hero subtitle must be at least 5 characters')
+    .max(200, 'hero subtitle cannot exceed 200 characters')
+    .required('hero subtitle is required')
+});
+
+
 export const aboutSchema = yup.object({
   about_summary: yup.string()
   .min(10, "About summary must be at least 10 characters")
@@ -35,6 +50,8 @@ export const aboutSchema = yup.object({
   .required("About summary is required")
   
 });
+
+
 
 const baseBusinessHourSchema = {
   day: yup.string().lowercase().required("Day is required")

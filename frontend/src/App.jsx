@@ -74,7 +74,7 @@ const routes = [
   { path: "/events", element: <Events /> },
   { path: "/reviews", element: <Reviews /> },
   { path: "/transformations", element: <Transformations /> },
-  { path: "/general-info", element: <GeneralInfo /> },
+  { path: "/general_info", element: <GeneralInfo /> },
   { path: "/contact", element: <Contact /> },
   { path: "/settings", element: <Setting /> },
 ];

@@ -22,7 +22,7 @@ const update_class_Schema = joi.object({
   name: base_class_Schema.name,
   description: base_class_Schema.description,
   private_coaching: base_class_Schema.private_coaching,
-});
+}).min(1).required();
 
 // Schema for class ID validation
 const class_id_Schema = joi.object({

@@ -24,9 +24,9 @@
       "<rootDir>/__tests__/helper/",
       "<rootDir>/__tests__/setup/"
     ],
-  "_comment": "This transform field is needed to handle ES modules",
-  "transform": {} 
-},
+    "_comment": "This transform field is needed to handle ES modules",
+    "transform": {}
+  },
   "dependencies": {
     "bcrypt": "^5.1.0",
     "busboy": "^1.6.0",
@@ -43,7 +43,8 @@
     "morgan": "^1.10.1",
     "multer": "^1.4.5-lts.1",
     "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "winston": "^3.18.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.27.2",

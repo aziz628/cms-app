@@ -10,6 +10,7 @@ const pricing_plan_schema = {
     description: joi.string().max(255).allow(''),
     price: joi.number().min(1).max(1000000).precision(2),
     period: joi.string().valid(...periods),
+    popular: joi.boolean(),
 };
 // feature schema
 const add_feature_schema = joi.object({
@@ -25,7 +26,8 @@ const add_pricing_plan_schema = joi.object({
     price: pricing_plan_schema.price.required(),
     period: pricing_plan_schema.period.required(),
     description: pricing_plan_schema.description,
-}).required(); 
+    popular: pricing_plan_schema.popular.required()
+}).required();
 
 // Schema for updating an existing pricing plan
 const update_pricing_plan_schema = joi.object({
@@ -33,6 +35,7 @@ const update_pricing_plan_schema = joi.object({
     price: pricing_plan_schema.price,
     period: pricing_plan_schema.period,
     description: pricing_plan_schema.description,
+    popular: pricing_plan_schema.popular
 }).min(1).required();
 
 // Schema for pricing plan ID validation

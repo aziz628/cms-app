@@ -1,13 +1,17 @@
 import classes_service from "../services/classes_service.js";
 
-// add,update,get_all,delete
-
+/**
+ * Fetch all classes from the service
+ */
 async function get_all_classes(req, res) {
     const classes = await classes_service.get_all();
 
     res.status(200).json(classes);
 }
 
+/**
+ * Add a new class
+ */
 async function add_class(req, res) {
     const classData = req.body;
     classData.image = req.file?.filename;
@@ -19,6 +23,8 @@ async function add_class(req, res) {
     res.status(201).json({ message: "Class added successfully", id: new_class_id ,image: classData.image });
 }
 
+/** Update an existing class
+ */
 async function update_class(req, res) {
     const classData = req.body;
     const image = req?.file?.filename; // Assuming the image is uploaded as a file
@@ -33,7 +39,8 @@ async function update_class(req, res) {
          ...(image && { image })
     });
 }
-
+/** Delete a class
+ */
 async function delete_class(req, res) {
     const classId = req.params.id;
 

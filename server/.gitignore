@@ -16,6 +16,13 @@ package-lock.json
 
 # test files
 __tests__/fixtures/large_file.png
+server/__tests__/fixtures/**/*.bin
+
+#demos
+premium pages demo
+template demo
+public/css/output.css
+
 # Environment files (except example and test)
 .env
 .env.*
@@ -25,10 +32,13 @@ __tests__/fixtures/large_file.png
 # User uploads
 /uploads
 # Logs and editor files
-*.log
-.DS_Store
+logs/
+logs/*.log
 .vscode/
-.idea/
 
 #scripts
 generate_cert.bat
+
+tailwindcss.exe
+server.key
+server.cert

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="minimal">
+    
+<%- include('../partials/head.ejs') %>
+
+<body class="bg-white text-slate-800">    
+   
+     <!-- Navigation -->
+    <%- include('../partials/nav.ejs') %>
+
+    <!-- Transformations Section -->
+    <section id="transformations" class="py-20 bg-slate-50">
+
+        <div class="container mx-auto px-4">
+            <!-- Header -->
+            <div class="text-center mb-16 animate-on-scroll">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Success Stories</span>
+                <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                    Client <span class="text-primary">Transformations</span>
+                </h2>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                    See how our clients have transformed their lives through dedication and expert guidance.
+                </p>
+            </div>
+            <!-- fields are : name, description, before_image, after_image -->
+
+
+            <!-- Transformations Grid -->
+             <!-- add light border on top-->
+            <div class="grid grid-cols-1   md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% if (transformations && transformations.length > 0) { %>
+                    <% transformations.forEach(transformation => { %>   
+                        <div class="bg-white rounded-xl border-t-2 border-slate-200 shadow-lg overflow-hidden hover:shadow-2xl transition-shadow animate-on-scroll">
+                            <!-- Before/After Images -->
+                            <div class="grid grid-cols-2 gap-2">
+                                <!-- Before -->
+                                <div class="relative">
+                                    <img src="/uploads/transformations/<%= transformation.before_image %>" 
+                                        alt="Before" 
+                                        class="w-full h-64 object-cover">
+                                    <div class="absolute top-3 left-3 bg-slate-900 bg-opacity-75 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                        BEFORE
+                                    </div>
+                                </div>
+                                
+                                <!-- After -->
+                                <div class="relative">
+                                    <img src="/uploads/transformations/<%= transformation.after_image %>" 
+                                        data-image="<%= transformation.after_image %>"
+                                        alt="After" 
+                                        class="w-full h-64 object-cover">
+                                    <div class="absolute top-3 left-3 bg-primary bg-opacity-75 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                        AFTER
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Details -->
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-slate-900 mb-2"><%= transformation.name %></h3>
+                                <p class="text-slate-600 mb-4"><%= transformation.description %></p>
+
+                                <!-- Stats coming in soon 
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-slate-50 p-3 rounded">
+                                        <div class="text-sm font-semibold text-primary"><%= transformation.duration %></div>
+                                        <div class="text-xs text-slate-500">Duration</div>
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded">
+                                        <div class="text-sm font-semibold text-primary"><%= transformation.weight_loss %></div>
+                                        <div class="text-xs text-slate-500">Weight Lost</div>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-slate-500 text-lg">Transformation stories coming soon!</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center mt-12 animate-on-scroll">
+                <a href="#contact" class="btn-primary">Start Your Transformation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <%- include('../partials/footer.ejs') %>
+
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js" defer></script>
+
+</body>
+</html>

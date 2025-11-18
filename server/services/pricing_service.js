@@ -18,7 +18,8 @@ async function get_pricing_plans() {
                 'price', c.price,
                 'period', c.period,
                 'description', c.description,
-                'features', COALESCE(features.features, json('[]'))
+                'features', COALESCE(features.features, json('[]')),
+                'popular', c.popular
             )
         ) AS data
         FROM pricing_plans c

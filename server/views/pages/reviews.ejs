@@ -1,0 +1,68 @@
+<!-- Reviews/Testimonials Section -->
+<section id="testimonials" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-on-scroll">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Testimonials</span>
+            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                What Our <span class="text-primary">Members Say</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Hear from our members who have transformed their lives through training at FitnessHub.
+            </p>
+        </div>
+
+        <!-- Testimonials Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <% if (reviews && reviews.length > 0) { %>
+                <% reviews.forEach(review => { %>
+                    <div class="bg-slate-50 rounded-xl p-8 hover:shadow-xl transition-shadow animate-on-scroll">
+                        <!-- Quote Icon -->
+                        <div class="text-primary text-4xl mb-4">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        
+                        <!-- Review Text -->
+                        <p class="text-slate-600 mb-6 italic">
+                            "<%= review.comment %>"
+                        </p>
+                        
+                        <!-- Author Info -->
+                        <div class="flex items-center">
+                            <% if (review.image) { %>
+                                <img src="<%= review.image %>" 
+                                     alt="<%= review.name %>" 
+                                     class="w-12 h-12 rounded-full object-cover mr-4">
+                            <% } else { %>
+                                <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center mr-4">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                            <% } %>
+                            <div>
+                                <h4 class="font-bold text-slate-900"><%= review.name %></h4>
+                                <div class="text-sm text-slate-500">
+                                    <% if (review.rating) { %>
+                                        <% for (let i = 0; i < review.rating; i++) { %>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        <% } %>
+                                    <% } else { %>
+                                        Member
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-span-full text-center py-12">
+                    <p class="text-slate-500 text-lg">No reviews yet. Be the first to share your experience!</p>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center mt-12 animate-on-scroll">
+            <a href="#contact" class="btn-primary">Join Our Community</a>
+        </div>
+    </div>
+</section>

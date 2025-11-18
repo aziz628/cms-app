@@ -1,10 +1,13 @@
 import trainers_service from "../services/trainers_service.js";
-
+/** Fetch all trainers
+ */
 async function get_trainers(req, res) {
     const trainers  = await trainers_service.get_trainers();
     res.status(200).json(trainers);
 }
 
+/** Add a new trainer
+ */
 async function add_trainer(req, res) {
     const trainer_data = req.body;
     trainer_data.image = req.file?.filename; // Assuming the image is uploaded as a file
@@ -12,6 +15,8 @@ async function add_trainer(req, res) {
     res.status(201).json({ message: "Trainer added successfully", id: new_trainer_id , image: trainer_data.image });
 }
 
+/** Update an existing trainer
+ */
 async function update_trainer(req, res) {
     const trainer_id = req.params.id;
     const trainer_data = req.body;
@@ -22,7 +27,8 @@ async function update_trainer(req, res) {
         ...(image && { image })
     });
 }
-
+/** Delete a trainer
+*/
 async function delete_trainer(req, res) {
     const trainer_id = req.params.id;
     await trainers_service.delete_trainer(trainer_id);

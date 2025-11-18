@@ -124,11 +124,11 @@ function Classes() {
             <table  className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-gray-200 '>
               <thead className='bg-[#ebeef2]'>
                 <tr>
-                  {[{ header: 'Class', width: '15%' },
-                    { header: 'Image', width: '25%', minWidth: '112px' },
-                    { header: 'Description', width: '30%' },
+                  {[{ header: 'Class', width: '12.5%' },
+                    { header: 'Image', width: '22.5%', minWidth: '112px' },
+                    { header: 'Description', width: '27.5%' },
                     { header: 'Private Coaching', width: '15%' },
-                    { header: 'Actions', width: '15%' }
+                    { header: 'Actions', width: '12.5%' }
                   ].map(({ header, width, minWidth }) => (
                         <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
                         style={{width:width,minWidth:minWidth}}

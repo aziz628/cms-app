@@ -27,8 +27,8 @@ async function add_class(new_class) {
     return await addWithImage(db, {
         tableName: "classes",
         data: new_class,
-        fields:['name', 'description', 'private_coaching', 'image']
-        ,display_name: "Class",
+        fields:['name', 'description', 'popular', 'private_coaching', 'image'],
+        display_name: "Class",
     });
 }
 
@@ -44,7 +44,7 @@ async function update_class(id, updated_Class={}, image=null) {
         id,
         data: updated_Class,
         image,
-        fields:['name', 'description', 'private_coaching'],
+        fields:['name', 'description', 'popular', 'private_coaching'],
         subfolder: "classes",
         display_name: "Class"
     });

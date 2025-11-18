@@ -1,0 +1,47 @@
+<!-- Gallery Section -->
+<section id="gallery" class="py-20 bg-slate-50">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-on-scroll">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Photo Gallery</span>
+            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                Explore Our <span class="text-primary">Facilities</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Take a look at our state-of-the-art gym facilities and community.
+            </p>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <% if (gallery && gallery.length > 0) { %>
+                <% gallery.forEach((image, index) => { %>
+                    <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer animate-on-scroll">
+                        <img src="<%= image.image_url %>" 
+                             alt="<%= image.title || 'Gallery image ' + (index + 1) %>" 
+                             class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                        
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-end">
+                            <div class="p-6 w-full transform translate-y-6 group-hover:translate-y-0 transition-transform duration-300">
+                                <h3 class="text-white font-bold text-lg"><%= image.title %></h3>
+                                <% if (image.category) { %>
+                                    <p class="text-gray-200 text-sm"><%= image.category %></p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-span-full text-center py-12">
+                    <p class="text-slate-500 text-lg">Gallery coming soon! Check back to see our facilities.</p>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center mt-12 animate-on-scroll">
+            <a href="#contact" class="btn-primary">Visit Us Today</a>
+        </div>
+    </div>
+</section>

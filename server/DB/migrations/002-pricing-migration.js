@@ -7,7 +7,8 @@ export default create_migration({
             name TEXT NOT NULL,
             price REAL NOT NULL,
             period TEXT NOT NULL,
-            description TEXT
+            description TEXT,
+            popular BOOLEAN DEFAULT false
         );`,
         `CREATE TABLE IF NOT EXISTS pricing_features (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

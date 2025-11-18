@@ -1,0 +1,397 @@
+<!-- Hero Section -->
+
+<!-- vars avaialable :
+     general_info,
+      classes,
+      pricing,
+      schedule,
+      contact,
+      classes_count,
+      trainer_count
+      -->
+<!-- bg variable-->
+<section id="home" class="relative min-h-screen flex items-center" 
+
+style="background-image: url('/uploads/general_info/<%= general_info.hero_image %>'); background-size: cover; background-position: center;">
+    <!-- Gradient Overlay -->
+    <div class="absolute z-51 inset-0 bg-black bg-opacity-40"></div>
+
+    <!-- Content -->
+    <div class="container mx-auto px-4 py-20 md:py-0 relative z-10">
+        <div class="max-w-2xl animate-on-scroll">
+            <h1 class="text-5xl mt-[10%]  md:text-6xl font-bold text-white mb-6 leading-tight">
+                <!-- hero title variable here -->
+                <%= general_info.hero_title %>
+            </h1>
+            <p class="text-xl text-gray-200 font-normal  mb-8">
+                <!-- hero subtitle variable here -->
+                <%= general_info.hero_subtitle %>
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="#pricing" class="btn-primary">Join Now</a>
+                <a href="#classes" class="btn-outline">View Classes</a>
+            </div>
+            
+            <!-- Stats -->
+            <div class="mt-12 flex gap-8">
+                <div> <!-- classes number var -->
+                    <div class="text-3xl font-bold text-primary"><%= classes_count %>+</div>
+                    <div class="text-sm text-gray-300">Classes</div>
+                </div>
+                <div>
+                    <!-- trainers number var -->
+                    <div class="text-3xl font-bold text-primary"><%= trainer_count %>+</div>
+                    <div class="text-sm text-gray-300">Trainers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>    
+
+<main class="pt-20">
+
+<!-- About Section -->
+<section id="about" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+            <!-- Image -->
+            <div class="md:w-1/2 animate-on-scroll">
+                <!-- about image var -->
+                <img src="/uploads/general_info/<%= general_info.about_image %>" 
+                     alt="About Us" 
+                     class="w-full rounded-2xl shadow-xl">
+            </div>
+            
+            <!-- Content -->
+            <div class="md:w-1/2 animate-on-scroll">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">About Us</span>
+                <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-6">
+                    Your Journey to Better Health
+                </h2>
+                <!-- about summary var -->
+                <p class="text-lg text-slate-600 mb-6">
+                    <%= general_info.about_summary %>
+                </p>
+                
+                <!-- Business Hours -->
+                <div class="bg-slate-50 rounded-xl p-6 mb-6">
+                    <h4 class="font-semibold text-slate-900 mb-4 flex items-center">
+                        <i class="fas fa-clock text-primary mr-3"></i>
+                        Opening Hours
+                    </h4>
+                    <div class="space-y-2 text-slate-600">
+                        <!-- loop over buisness hours and render the opening hours-->
+                         <% general_info.business_hours.forEach(hour => { %>
+                            <div class="flex justify-between">
+                                <!-- day var of buisness hour -->
+                                <span><%= hour.day %>:</span>
+                                
+                                <!-- open and close var of buisness hour -->
+                                <span class="font-medium"><%= hour.open_time %> - <%= hour.close_time %></span>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>    
+
+<!-- Classes Section -->
+<section id="classes" class="py-20 bg-slate-50">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-on-scroll">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Our Programs</span>
+            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                Find Your Perfect <span class="text-primary-dark">Workout</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Choose from our diverse range of classes designed to help you reach your fitness goals.
+            </p>
+        </div>
+        
+        <!-- class Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- if classes exist  return list of classes else show no classes text-->
+            <% if (classes && classes.length > 0) { %>
+                <% classes.forEach(cls => { %>
+                    <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow animate-on-scroll">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="/uploads/classes/<%= cls.image %>" 
+                                 alt="<%= cls.name %>" 
+                                 class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2"><%= cls.name %></h3>
+                             <% if (cls.private_coaching) { %>
+                                    <span class="bg-primary-dark text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                        Private
+                                    </span>
+                            <% } %>
+                            <p class="text-slate-600 mb-4"><%= cls.description %></p>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p class="col-span-full text-center text-slate-500">No classes available</p>
+            <% } %>
+        </div>
+        
+        <!-- CTA -->
+        <div class="text-center mt-12">
+            <a href="#schedule" class="btn-primary">View Full Schedule</a>
+        </div>
+    </div>
+</section>    
+
+<!-- Schedule Section -->
+ <!-- the schedule is complex ,  it uses row based layout to track and  render the sessions  
+  , it first render the hours label in the first column and it split the week into days by column
+   and then loop over each column and see which sessions exist in each  row and render it , 
+   and among them the cross-rows sessions and the same-cell sessions -->
+<section id="schedule" class="py-20 bg-white">
+
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-on-scroll">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Weekly Schedule</span>
+            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                Plan Your <span class="text-primary">Workout Week</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Browse our weekly class schedule and book your favorite sessions.
+            </p>
+        </div>
+        
+        <!-- Schedule Table -->
+        <div class="bg-white rounded-xl shadow-xl overflow-x-auto animate-on-scroll">
+            <table class="w-full">
+                <thead class="bg-slate-100">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Time</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Monday</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Tuesday</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Wednesday</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Thursday</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Friday</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-6 py-4 font-medium text-slate-700">6:00 AM</td>
+                        <td class="px-6 py-4">
+                            <div class="bg-primary/10 border-l-4 border-primary p-3 rounded">
+                                <div class="font-semibold text-slate-900">Strength Training</div>
+                                <div class="text-sm text-slate-600">John Doe</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="bg-green-50 border-l-4 border-green-600 p-3 rounded">
+                                <div class="font-semibold text-slate-900">Cardio Blast</div>
+                                <div class="text-sm text-slate-600">Jane Smith</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="bg-primary/10 border-l-4 border-primary p-3 rounded">
+                                <div class="font-semibold text-slate-900">Strength Training</div>
+                                <div class="text-sm text-slate-600">John Doe</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-slate-400">-</td>
+                        <td class="px-6 py-4">
+                            <div class="bg-purple-50 border-l-4 border-purple-600 p-3 rounded">
+                                <div class="font-semibold text-slate-900">Yoga</div>
+                                <div class="text-sm text-slate-600">Sarah Lee</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-6 py-4 font-medium text-slate-700">8:00 AM</td>
+                        <td class="px-6 py-4">
+                            <div class="bg-purple-50 border-l-4 border-purple-600 p-3 rounded">
+                                <div class="font-semibold text-slate-900">Yoga</div>
+                                <div class="text-sm text-slate-600">Sarah Lee</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-slate-400">-</td>
+                        <td class="px-6 py-4">
+                            <div class="bg-green-50 border-l-4 border-green-600 p-3 rounded">
+                                <div class="font-semibold text-slate-900">Cardio Blast</div>
+                                <div class="text-sm text-slate-600">Jane Smith</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="bg-primary/10 border-l-4 border-primary p-3 rounded">
+                                <div class="font-semibold text-slate-900">Strength Training</div>
+                                <div class="text-sm text-slate-600">John Doe</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-slate-400">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="py-20 bg-slate-50">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-on-scroll">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Membership Plans</span>
+            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                Choose Your <span class="text-primary">Perfect Plan</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Flexible membership options designed to fit your lifestyle and budget.
+            </p>
+        </div>
+        
+        <!-- Pricing Cards -->
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- if pricing have items  then render them -->
+            <% if (pricing && pricing.length > 0) { %>
+
+                <% pricing.forEach(plan => { %>
+                    <!-- check if the plan is popular to highlight the bg and shadow -->
+                    <div class="<%= plan.popular ? 'bg-primary' : 'bg-white' %> rounded-xl p-8 shadow-lg  flex flex-col justify-between
+                        <%= plan.popular ? 'shadow-2xl transform scale-105 relative' : 'hover:shadow-2xl transition-shadow' %> animate-on-scroll">
+                        <div>
+                            <!-- check for popular -->
+                            <% if (plan.popular) { %>
+                                <div class="absolute top-0 right-0 bg-white text-primary px-4 py-1 rounded-bl-xl rounded-tr-xl text-sm font-bold">
+                                    POPULAR
+                                </div>
+                            <% } %>
+                            <!-- Plan Name --> <!-- text color via var -->
+                            <h3 class="text-2xl font-bold <%= plan.popular ? 'text-white' : 'text-slate-900' %> mb-2"><%= plan.name %></h3>
+                            <div class="mb-6">
+                                <span class="text-4xl font-bold <%= plan.popular ? 'text-white' : 'text-slate-900' %>">$<%= plan.price %></span>
+                                <span class="<%= plan.popular ? 'text-gray-200' : 'text-slate-400' %>">/month</span>
+                            </div>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-center <%= plan.popular ? 'text-white' : 'text-slate-600' %>">
+                                    <i class="fas fa-check <%= plan.popular ? '' : 'text-primary' %> mr-3"></i>
+                                    Plan feature 1
+                                </li>
+                                <li class="flex items-center <%= plan.popular ? 'text-white' : 'text-slate-600' %>">
+                                    <i class="fas fa-check <%= plan.popular ? '' : 'text-primary' %> mr-3"></i>
+                                    Plan feature 2
+                                </li>
+                                <li class="flex items-center <%= plan.popular ? 'text-white' : 'text-slate-600' %>">
+                                    <i class="fas fa-check <%= plan.popular ? '' : 'text-primary' %> mr-3"></i>
+                                    Plan feature 3
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <a href="#contact" class="<%= plan.popular ? 'bg-white text-primary hover:bg-gray-100' : 'btn-outline' %> px-6 py-3 rounded-lg font-semibold transition-all w-full text-center block">
+                                Get Started
+                            </a>
+                        </div>
+                    </div>
+                <% }); %>
+            <!-- if no price plans show text -->
+            <% } else { %>
+                <p class="col-span-full text-center text-slate-500">No pricing plans available</p>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-on-scroll">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Get In Touch</span>
+            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                Start Your <span class="text-primary">Fitness Journey</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Ready to transform your life? Contact us today for a free consultation.
+            </p>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-12">
+            <!-- Contact Info -->
+            <div class="md:w-1/2 space-y-6 animate-on-scroll">
+                <!-- Phone -->
+                <div class="flex items-start">
+                    <div class="bg-primary/10 p-4 rounded-lg mr-4">
+                        <i class="fas fa-phone text-primary text-xl"></i>
+                    </div>
+                    <div>
+                        <!-- phone number var -->
+                        <h4 class="font-semibold text-slate-900 mb-1">Phone</h4>
+                        <p class="text-slate-600"><%= contact.contact_info.phone_number %></p>
+                    </div>
+                </div>
+                
+                <!-- Email -->
+                <div class="flex items-start">
+                    <div class="bg-primary/10 p-4 rounded-lg mr-4">
+                        <i class="fas fa-envelope text-primary text-xl"></i>
+                    </div>
+                    <div>
+                        <!-- email var -->
+                        <h4 class="font-semibold text-slate-900 mb-1">Email</h4>
+                        <p class="text-slate-600"><%= contact.contact_info.email %></p>
+                    </div>
+                </div>
+                
+                <!-- Address -->
+                <div class="flex items-start">
+                    <div class="bg-primary/10 p-4 rounded-lg mr-4">
+                        <i class="fas fa-map-marker-alt text-primary text-xl"></i>
+                    </div>
+                    <div>
+                        <!-- address var -->
+                        <h4 class="font-semibold text-slate-900 mb-1">Address</h4>
+                        <p class="text-slate-600"><%= contact.contact_info.address %></p>
+                    </div>
+                </div>
+                <!-- Social Media -->
+                <div class="flex items-start">
+                    <div class="bg-primary/10 p-4 rounded-lg mr-4">
+                        <i class="fas fa-share-alt text-primary text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-slate-900 mb-2">Follow Us</h4>
+                        <div class="flex gap-3">
+                            <!-- loop through the links(contact.social_media_links) and render the icons and text -->
+                            <% contact.social_media_links.forEach(function({link, platform}) { %>
+                                <a href="<%=link %>" class="text-slate-600 hover:text-primary transition-colors">
+                                    <i class="fab <%= PLATFORMS[platform] %> text-2xl"></i>
+                                </a>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="md:w-1/2 animate-on-scroll">
+                <!--form will be avaiable when email service is ready-->
+                <form id="contact-form" class="space-y-4" action="" method="POST">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <input type="text" id="name" placeholder="Your Name" class="form-control">
+                        </div>
+                        <div>
+                            <input type="email" id="email" placeholder="Your Email" class="form-control">
+                        </div>
+                    </div>
+                    <div>
+                        <textarea id="message" rows="5" placeholder="Your Message" class="form-control"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary w-full">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+

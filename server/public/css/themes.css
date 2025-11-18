@@ -1,0 +1,17 @@
+/* Minimal Theme Variables */
+[data-theme="minimal"] {
+    --primary: #e5ce48;
+    --primary-dark: #c4b233;
+    --primary-light: #f6e58d;
+    --dark: #0f172a;
+    --light: #f8fafc;
+}
+
+/* Typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+}

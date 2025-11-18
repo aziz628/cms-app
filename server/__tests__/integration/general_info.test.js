@@ -1,13 +1,17 @@
 import request  from "supertest";
 import app from "../../app.js";
-import { getAuthCookies } from '../helper/tools.js';
+import { getAuthCookies,get_fixture_image,invalid_fixture_image,ensure_uploaded_file_exist } from '../helper/tools.js';
+
+const DEFAULT_HERO_IMAGE=process.env.DEFAULT_HERO_IMAGE;
+const DEFAULT_ABOUT_IMAGE=process.env.DEFAULT_ABOUT_IMAGE;
+const subfolder="general_info";
 
 describe("General Info API", () => {
 
     // prepare cookies for authentication
     let authCookies;    
     let hours_id;
-
+    
     beforeAll(async () => {
         authCookies = await getAuthCookies();
     });
@@ -35,7 +39,7 @@ describe("General Info API", () => {
             // Save the created business hours ID for later use
             hours_id = response.body.id;
         });
-        
+
         // sad path - missing fields
         it('should return 400 for missing fields', async () => {
             // Arrange: Prepare an incomplete business hour data
@@ -93,6 +97,7 @@ describe("General Info API", () => {
     });
 
     describe("PUT /api/admin/general-info", () => {
+        // update-only general-info
 
         // happy path - update general information
         it('should update general information', async () => {
@@ -110,8 +115,102 @@ describe("General Info API", () => {
             // Assert: Check if the application correctly handled the update
             expect(response.statusCode).toBe(200);
             expect(response.body.message).toBe("About summary updated successfully");
-        })
-        // sad path - missing fields 
+        });
+
+        // happy path - update general with hero_title
+        it('should update general information with hero_title', async () => {
+            // Arrange: update the general information hero_title
+            const updatedGeneralInfo = {
+                hero_title: 'Updated Hero Title',
+            };
+
+            // Act: Make a PUT request to the /api/admin/general-info/hero-title endpoint
+            const response = await request(app)
+                .put('/api/admin/general-info/hero-title')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .send(updatedGeneralInfo);
+
+            // Assert: Check if the application correctly handled the update
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe("Hero title updated successfully");
+        });
+        // happy path - update general with hero_subtitle
+        it('should update general information with hero_subtitle', async () => {
+            // Arrange: update the general information hero_subtitle
+            const updatedGeneralInfo = {
+                hero_subtitle: 'Updated Hero Subtitle',
+            };
+
+            // Act: Make a PUT request to the /api/admin/general-info/hero-subtitle endpoint
+            const response = await request(app)
+                .put('/api/admin/general-info/hero-subtitle')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .send(updatedGeneralInfo);
+
+            // Assert: Check if the application correctly handled the update
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe("Hero subtitle updated successfully");
+        });
+
+        // happy path - update general with hero_image
+        it('should update general information with hero_image', async () => {
+            // no arrange
+            const response = await request(app)
+                .put('/api/admin/general-info/hero-image')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .attach('hero_image', get_fixture_image());
+
+            // Assert: Check if the application correctly handled the update
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe("Hero image updated successfully");
+
+            let hero_image_name=response.body.hero_image;
+
+            // ensure the uploaded file exist
+            const new_image_exist=ensure_uploaded_file_exist(subfolder,hero_image_name);
+            expect(new_image_exist).toBe(true);
+        });
+
+
+        // happy path - update general with about_summary
+        it('should update general information with about_summary', async () => {
+            // Arrange: update the general information about_summary
+            const updatedGeneralInfo = {
+                about_summary: 'Another Updated about summary',
+            };
+            // Act: Make a PUT request to the /api/admin/general-info/about-summary endpoint
+            const response = await request(app)
+                .put('/api/admin/general-info/about-summary')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .send(updatedGeneralInfo);
+
+            // Assert: Check if the application correctly handled the update
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe("About summary updated successfully");
+        });
+
+        // happy path - update about about section image
+        it("should update the about section image", async () => {
+            // no Arrange
+
+            // Act: Make a PUT request to the /api/admin/general-info/about-summary endpoint
+            const response = await request(app)
+                .put('/api/admin/general-info/about-image')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .attach('about_image', get_fixture_image());
+
+            // Assert: Check if the application correctly handled the update
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe("About image updated successfully");
+
+            let about_image_name=response.body.about_image;
+
+            // ensure the uploaded file exist
+            const new_image_exist=ensure_uploaded_file_exist(subfolder,about_image_name);
+            expect(new_image_exist).toBe(true);
+        });
+
+        // sad path - missing fields
         it('should return 400 for missing fields', async () => {
             // Arrange: Prepare an update request with missing fields
             const incompleteUpdate = {
@@ -130,6 +229,21 @@ describe("General Info API", () => {
             expect(response.body.code).toBe('VALIDATION_ERROR');
 
         });
+        // sad path - invalid about section picture
+        it("should return 400 for invalid about section picture", async () => {
+            // Act: Make a PUT request to the /api/admin/general-info/about-summary endpoint
+            const response = await request(app)
+                .put('/api/admin/general-info/about-summary')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+                .attach('about_image', invalid_fixture_image());
+
+            // Assert: Check if the application correctly handled the invalid picture
+            expect(response.statusCode).toBe(400);
+            expect(response.body.message).toMatch("\"about_summary\" is required");
+            expect(response.body.code).toBe('VALIDATION_ERROR');
+        });
+
+        //-- business hours
 
         // happy path - update business hours
         it('should update business hours', async () => {

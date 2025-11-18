@@ -31,6 +31,6 @@ router.use("/review", review_route);
 router.use("/transformation", transformation_route);
 router.use("/contact", contact_route);
 router.use("/general-info", general_info);
-// Add more routes as needed
+
 
 export default router;

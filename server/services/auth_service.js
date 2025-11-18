@@ -12,17 +12,14 @@ import db from '../DB/db_connection.js';
 
 // compare and if false through error
 export async function verify_credentials(username, password) {
-    // just check is user with username exists if yes check his password and btw there is only one user in this system and he have no id just username and pass
-    
+    // check is user with given username exists 
     const user = await db.get('SELECT * FROM admin WHERE username = ?', [username]);
-
     if (!user) {
         throw new App_error('Invalid username', 401, 'INVALID_USERNAME');
     }
-
+    
+    // check if user's password is valid
     const isValidPassword = await bcrypt.compare(password, user.password);
-
-    // if username or password invalid specify the error
     if (!isValidPassword) {
         throw new App_error('Invalid password', 401, 'INVALID_PASSWORD');
     }

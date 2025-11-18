@@ -28,12 +28,26 @@ npm install
 3. Create `.env` file in the server directory with the following variables:
 
 ```
+# Server Configuration
 PORT=3000
 NODE_ENV=development
-ADMIN_USERNAME=admin
+
+# Default Admin Credentials
+ADMIN_USERNAME=your_admin_username_here
 ADMIN_PASSWORD_HASH=your_bcrypt_hash_here
+
+# JWT Configuration
 JWT_ACCESS_SECRET=your_access_secret
 JWT_REFRESH_SECRET=your_refresh_secret
+
+# File Upload Configuration
+UPLOAD_BASE=uploads
+MAX_UPLOAD_FILES_PER_REQUEST=2
+DEFAULT_MAX_UPLOAD_SIZE=2097152
+MAX_TOTAL_STORAGE=1073741824
+
+# Database Configuration
+DB_PATH=./DB/db.sqlite
 ```
 
 To generate a bcrypt hash for your admin password, you can use the hash generator in root of server
@@ -51,56 +65,21 @@ This will start the server with nodemon for automatic reloading on file changes.
 ### Production Mode
 
 ```bash
-npm start
+npm prod:start
 ```
 
 ### Available Scripts
 
-### Available Scripts
+### The following npm scripts are available in `package.json`:
 
-The following npm scripts are available in `package.json`:
-
-- `start`: Start server in production mode
+- `prod:start`: Start the server in production mode with `NODE_ENV=production`
+- `start`: Start the server in default mode
+- `dev`: Start the server in development mode with `nodemon`
 - `lint`: Run ESLint to check code quality
-- `test`: Run Jest tests with experimental VM modules
+- `test`: Run Jest tests with experimental VM modules in test mode
 - `prettier`: Check code formatting with Prettier
 - `migrate`: Run all database migrations
 - `undo-migrate`: Undo all database migrations
-
-## Memory Monitoring
-
-The application includes memory monitoring capabilities to help track memory usage, especially for file upload operations which can be memory-intensive.
-
-### Using the Memory Monitor Middleware
-
-The `memory_monitor` middleware tracks memory usage during request processing:
-
-```javascript
-// Add memory monitoring to routes with file uploads
-router.post("/classes", memory_monitor, upload_middleware, create_class_with_upload, classes_controller.add_class);
-```
-
-This middleware logs memory usage at the beginning and end of the request, showing:
-
-- RSS (Resident Set Size): Total memory allocated to the Node.js process
-- Heap Total: Memory reserved by V8 for objects
-- Heap Used: Memory currently used by JavaScript objects
-- External: Memory used by C++ objects (like file buffers)
-
-### Expected Memory Patterns
-
-For file uploads (typically images):
-
-- Heap Used increase: ~0.7-0.9 MB per request
-- External memory increase: ~1 MB during file processing
-- Total RSS increase: ~1.5-1.7 MB
-
-These values are normal and do not indicate memory leaks. The application is designed to efficiently handle file uploads by:
-
-1. Storing files temporarily in memory using Multer
-2. Validating request data
-3. Saving files to disk only if validation passes
-4. Explicitly freeing memory by nullifying file buffers
 
 ### Memory Constraints
 
@@ -114,7 +93,7 @@ When deploying to environments with limited memory (e.g., Railway with 1GB RAM):
 
 The application uses a structured middleware approach to handle file uploads securely and efficiently.
 
-### File Handling Middleware
+#### File Handling Middleware
 
 The file handling system consists of three main middleware components:
 
@@ -123,22 +102,28 @@ The file handling system consists of three main middleware components:
    - Configures file size limits (5MB by default)
    - Stores uploaded files in memory temporarily
    - Available via `file_middleware.js`
-2. **file_validator**: Validates uploaded files
+2. **post_upload_size_check**: Validates the size of uploaded files and ensures compliance with storage limits
+
+   - Checks for size mismatches between the `Content-Length` header and actual file size
+   - Ensures the upload does not exceed total storage limits
+   - Logs debugging information for zero-size uploads
+   - Available via `post_upload_size_check_middleware.js`
+3. **file_validator**: Validates uploaded files
 
    - Checks file types (limited to images by default)
    - Verifies file size constraints
    - Ensures file integrity
    - Available via `file_validator_middleware.js`
-3. **file_saver**: Saves validated files to the filesystem
+4. **file_saver**: Saves validated files to the filesystem
 
    - Generates unique filenames to prevent conflicts
    - Creates necessary directories if they don't exist
    - Optimizes file storage for performance
    - Available via `file_middleware.js`
 
-### Usage in Routes
+#### Usage in Routes
 
-To implement file upload handling in routes use the pipeline factory exported from `file_middleware.js` (it builds the memory upload → schema validator → file validator → saver chain):
+To implement file upload handling in routes use the pipeline factory exported from `file_middleware.js`
 
 ```javascript
 
@@ -147,14 +132,13 @@ import { create_upload_pipeline } from'../middleware/file_middleware.js';
 
 // create a route-specific pipeline (example for classes)
 
-constadd_class_pipeline = create_upload_pipeline({
-  validator:create_class_validator, // Joi validator middleware
-  section:"classes",
-  uploadMode:"single",     // or "fields"
-  field_name:"image"       // or file_fields for fields mode
-});
 
-router.post("/classes", memory_monitor, add_class_pipeline, classes_controller.add_class);
+const add_class_pipeline = create_upload_pipeline({
+  validator: create_class_validator,
+  section: "classes",
+})
+
+router.post("/classes" , add_class_pipeline, classes_controller.add_class);
 ```
 
 ### Error Handling
@@ -164,7 +148,6 @@ The file handling middleware includes robust error handling:
 - Invalid file types return appropriate 400 error responses
 - File size violations return 413 (Payload Too Large) responses
 - File system errors are caught and logged properly
-- Memory is properly freed even when errors occur
 
 ## Testing the Application
 
@@ -213,13 +196,18 @@ npm install --save-dev jest supertest
 
 ```json
 "jest":{
+
     "globalSetup": "./__tests__/setup/jest.global_setup.js",
-    "globalTeardown": "./__tests__/setup/jest.global_teardown.js"
-    ,"testMatch": ["**/__tests__/**/*.test.[jt]s?(x)"],
+    "globalTeardown": "./__tests__/setup/jest.global_teardown.js",
+    "testMatch": [
+      "**/__tests__/**/*.test.[jt]s?(x)"
+    ],
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/helper/",
       "<rootDir>/__tests__/setup/"
-    ]
+    ],
+    "_comment": "This transform field is needed to handle ES modules",
+    "transform": {}
   }
 ```
 
@@ -237,16 +225,6 @@ __tests__/
     ├── authService.test.js
     ├── contentService.test.js
     └── ...
-```
-
-Sample test for authentication:
-
-// to add
-
-Sample test for file uploads:
-
-```javascript
-// to add
 ```
 
 #### Running Tests
@@ -301,8 +279,8 @@ npm test -- --watch
  **Using Monitoring Tools**:
 
 - Morgan is configured for HTTP request logging
-- Custom logger for application events
-- Review admin action logs for suspicious activity
+- Custom logger for application
+- Review winston app logs and  admin action logs for suspicious activity
 
 ## Project Conventions
 
@@ -331,8 +309,8 @@ npm test -- --watch
 
 ### Adding New Content Types
 
-1. Create a new migration file in `DB/migration` directory  
-2. Run the migration using the CLI to apply database changes  
+1. Create a new migration file in `DB/migration` directory
+2. Run the migration using the CLI to apply database changes
 3. Create validation schema in `/middleware/validators`
 4. Create service in `/services`
 5. Create controller in `/controllers`

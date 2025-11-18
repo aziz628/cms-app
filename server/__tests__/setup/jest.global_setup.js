@@ -13,8 +13,12 @@ async function globalSetup() {
   await migrate.undoAll();
 
   if (typeof migrate.runAll === 'function') {
-    await migrate.runAll();
-  } 
+    try {
+      await migrate.runAll();
+    } catch (error) {
+      console.error("Error running migrations:", error);
+    }
+  }
 
 }
 

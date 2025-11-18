@@ -8,6 +8,7 @@ const baseClassFields = {
   description: yup.string()
     .min(10, 'Description must be at least 10 characters')
     .max(500, 'Description must be less than 500 characters'),
+  popular: yup.boolean(),
   private_coaching: yup.boolean()
 };
 
@@ -15,6 +16,7 @@ const baseClassFields = {
 export const createClassSchema = yup.object({
   name: baseClassFields.name.required('Class name is required'),
   description: baseClassFields.description.required('Description is required'),
+  popular: baseClassFields.popular.required('Popular status is required'),
   private_coaching: baseClassFields.private_coaching.required(),
   image: imageFileValidation.required()
 });
@@ -29,6 +31,7 @@ export const updateClassSchema = yup.object({
   { name: 'name' },
   { name: 'description' },
   { name: 'private_coaching', type:'boolean' },
+  { name: 'popular', type:'boolean' },
   { name: 'image', type: 'image' }
 ])
 );

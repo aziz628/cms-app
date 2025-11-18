@@ -84,22 +84,45 @@ const update_business_hours_schema=joi.object(business_hour_Schema).min(1).requi
 const id_schema = joi.object({
   id: joi.number().integer().required()
 })
-// Main general info validation schema
+
+
+// general info validation schemas (update only)
 const about_summary_Schema = joi.object({
   about_summary: joi.string().min(5).max(500).required()
 }).messages({
   'string.empty': '"about_summary" cannot be empty',
   'any.required': '"about_summary" is required'
 });
+
+const hero_title_Schema = joi.object({
+  hero_title: joi.string().min(5).max(100).required()
+}).messages({
+  'string.empty': '"hero_title" cannot be empty',
+  'any.required': '"hero_title" is required'
+});
+const hero_subtitle_Schema = joi.object({
+  hero_subtitle: joi.string().min(5).max(200).required()
+}).messages({
+  'string.empty': '"hero_subtitle" cannot be empty',
+  'any.required': '"hero_subtitle" is required'
+});
+
+
+
 // Middleware to validate general info
-const about_summary_validator = dynamic_validator([about_summary_Schema]);
 const create_business_hours_validator = dynamic_validator([create_business_hour_schema]);
 const update_business_hours_validator = dynamic_validator([update_business_hours_schema,id_schema])
 const delete_business_hour_validator = dynamic_validator([null , id_schema])
+const about_summary_validator = dynamic_validator([about_summary_Schema]);
+const hero_title_validator = dynamic_validator([hero_title_Schema]);
+const hero_subtitle_validator = dynamic_validator([hero_subtitle_Schema]);
+
 export default {
   about_summary_validator,
   create_business_hours_validator,
   update_business_hours_validator,
   delete_business_hour_validator,
+  hero_title_validator,
+  hero_subtitle_validator,
 };
 

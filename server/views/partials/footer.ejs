@@ -1,0 +1,50 @@
+<!-- Footer -->
+<footer class="bg-dark text-gray-300 py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-white text-xl font-bold mb-4">
+                    <span class="text-primary">Fitness</span>Hub
+                </h3>
+                <p class="text-sm">
+                    Transform your body and mind with our expert trainers and state-of-the-art facilities.
+                </p>
+            </div>
+            
+            <!-- Quick Links -->
+            <div>
+                <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/" class="hover:text-primary transition-colors">Home</a></li>
+                    <li><a href="#about" class="hover:text-primary transition-colors">About Us</a></li>
+                    <li><a href="#classes" class="hover:text-primary transition-colors">Classes</a></li>
+                    <li><a href="#schedule" class="hover:text-primary transition-colors">Schedule</a></li>
+                    <li><a href="#pricing" class="hover:text-primary transition-colors">Pricing</a></li>
+                </ul>
+            </div>
+            
+           
+            
+            <!-- Hours -->
+            <div>
+                <h4 class="text-white font-semibold mb-4">Opening Hours</h4>
+                <ul class="space-y-2 text-sm">
+                   <% general_info.business_hours.forEach(hour => { %>
+                            <div class="flex justify-between">
+                                <!-- day var of buisness hour -->
+                                <span ><%= hour.day %> :</span>
+                                <!-- open and close var of buisness hour -->
+                                <span class="font-medium"><%= hour.open_time %> - <%= hour.close_time %></span>
+                            </div>
+                        <% }); %>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Copyright -->
+        <div class="border-t border-gray-700 pt-8 text-center text-sm">
+            <p>&copy; <span><%= new Date().getFullYear() %></span> FitnessHub. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

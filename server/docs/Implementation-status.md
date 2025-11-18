@@ -46,40 +46,82 @@ This document tracks the progress of the Gym Website CMS implementation.
   - Audit trail for changes
   - Granular update endpoints
 
+## Recently Completed
+
+- **Static HTML Template** ✅
+  - ✅ Complete minimal template (`minimal-demo.html`)
+  - ✅ All sections: Nav, Hero, About, Classes, Schedule, Pricing, Contact, Footer
+  - ✅ Transparent nav with sticky scroll effect
+  - ✅ Hero with background image + gradient overlay + stats
+  - ✅ Business hours in About section (not Contact)
+  - ✅ 3-column pricing cards with featured plan
+  - ✅ Contact form + info cards
+  - ✅ 4-column footer layout
+  - ✅ CSS properly structured (themes.css, custom.css)
+  - ✅ Integrated with existing main.js
+  - ✅ Scroll animations
+  - ✅ Mobile-responsive design
+  - ✅ Removed inline styles
+  - ✅ Reusable button classes
+  - ✅ Clean, minimal design (easy rebranding)
+
 ## In Progress
 
-- Preparation for automated testing framework
-
+- **EJS Conversion** (Next Phase)
+  - 📋 Detailed plan created (`EJS-CONVERSION-PLAN.md`)
+  - ⏱️ Create view service to aggregate database data
+  - ⏱️ Create public routes in Express
+  - ⏱️ Convert HTML to EJS templates with partials
+  - ⏱️ Test with real database data
+  
+- **Database Schema Updates** (When Free Time Available)
+  - 📋 Migration file ready (`add_hero_fields.sql`)
+  - ⏱️ Run migration on database
+  - ⏱️ Update Joi validation schemas
+  - ⏱️ Create hero-specific API endpoints
+  - ⏱️ Write integration tests
+  - ⏱️ Add React admin form components
+  - ⏱️ Add Yup frontend validation
+  
+- **Testing Infrastructure**
   - Unit tests for services
-  - E2E tests
+  - E2E tests for public site
 
 ## Pending Features
 
-Admin interface:
+**Public Site Implementation:**
+- EJS view service (aggregate data from multiple tables)
+- Public routes in Express
+- Responsive template rendering
+- Form submissions (contact, membership inquiries)
 
-- React application setup
-- Dashboard UI
-- Content management forms
-- Preview functionality
+**Database Enhancements:**
+- Add `period` column to classes table
+- Add `trainer_id` foreign key to classes table
+- Link trainers to schedule sessions
+- Image upload functionality for hero/about sections
 
-Public site implementation:
-
-- EJS template creation
-- View routes
-- Dynamic content rendering
-- Responsive design
-
-Media management:
-
+**Media Management:**
 - Image resizing and optimization
-- Gallery management UI
+- Gallery management UI in React admin
 
-Deployment:
+**Testing:**
+- Integration tests for public routes
+- E2E tests for user flows
+- Performance testing
 
+**Deployment:**
 - Production configuration
 - Environment setup
 - CI/CD pipeline
 - Documentation for hosting
+
+**Future Features:**
+- Multi-theme support (different color schemes)
+- Page builder for custom sections
+- Blog/news section
+- Member testimonials section
+- Gallery section on public site
 
 ## Timeline
 
@@ -90,7 +132,7 @@ Deployment:
 | Basic Content Types    | Completed            | ✅     |
 | Advanced Content Types | Week 4               | ✅     |
 | Media Management       | Week 5               | ✅     |
-| Admin React Interface  | Week 6-7             | ⏱️   |
+| Admin React Interface  | Week 6-7             | ✅     |
 | Public Site Templates  | Week 8               | ⏱️   |
 | Testing & QA           | Week 9               | ⏱️   |
 | Deployment             | Week 10              | ⏱️   |
@@ -98,4 +140,4 @@ Deployment:
 ## Next Immediate Tasks
 
 1. Start React admin dashboard setup
-3. Create basic EJS templates for home page
+2. Create basic EJS templates for home page

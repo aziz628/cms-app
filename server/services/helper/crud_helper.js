@@ -14,7 +14,7 @@ import App_error from "../../errors/AppError.js";
  * @return {Promise<Array>} Array of records
  */
 export async function getAll(db, tableName) {
-  return await db.  all(`SELECT * FROM ${tableName};`) 
+  return await db.all(`SELECT * FROM ${tableName};`)
 }
 
 /**

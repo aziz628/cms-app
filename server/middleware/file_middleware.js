@@ -32,20 +32,33 @@ const UPLOAD_DIR_PATH = path.join(__dirname, '../', UPLOAD_BASE_DIR);
       * @returns {Array} An array of middleware functions.
       */
 function create_upload_pipeline(options={}) {
-      const { validator, section, uploadMode = 'single', file_fields = [], field_name = 'image' } = options;
+      const { 
+        validator=(req,res,next)=>next(),
+        section,
+        uploadMode = 'single',
+        file_fields = [],
+        field_name = 'image'
+      } = options;
 
-      if (!validator || !section) {
-        throw new Error('The "validator" and "section" options are required.');
+      // section and validator are required
+      if(!section ){
+        throw new Error('The "section" option is required.');
       }
+      if (!validator ||  typeof validator !== 'function') {
+        throw new Error('The "validator" option is required.');
+      }
+
       // prepare the upload mode
       const memory_upload_options = {
         mode: uploadMode,
         ...(uploadMode === 'fields' ? { fields: file_fields } : { field_name }),
       };
+      
       // prepare the file validator options
       const file_validator_options = {
         fields: uploadMode === 'fields' ? file_fields : [field_name]
       };
+      
       return [
         memory_upload(memory_upload_options),
         post_upload_size_check,

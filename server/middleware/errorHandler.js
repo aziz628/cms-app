@@ -1,4 +1,4 @@
-
+import {logError,logWarning} from '../services/logging_service.js';
 let default_error = {
         status: 500,
         message: "Internal Server Error",
@@ -38,6 +38,7 @@ const errorHandler = (err, req, res, _next) => {
             code: "SERVICE_UNAVAILABLE"
         };
     }
+    
 
     // Find registered  error response
     else {
@@ -53,6 +54,11 @@ const errorHandler = (err, req, res, _next) => {
     // in case of no code in the error
 
     error = error || default_error;
+    
+    // Log the error using logging service
+    if(error.status >= 500){
+        logError(err.message, error.status, req.originalUrl, req.method, err.stack);
+    }
     // Send consistent error response structure
     res.status(error.status).json({
         message: error.message,

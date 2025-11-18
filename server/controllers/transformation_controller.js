@@ -1,10 +1,14 @@
 import transformation_service from "../services/transformation_service.js"
 
-async function get_all(req,res){
+/** Fetch all transformations
+ */
+async function get_all(req,res){ 
     const transformations=await transformation_service.get_all();
     res.status(200).json(transformations)
 }
 
+/** Add a new transformation
+ */
 async function add_transformation(req,res){
     const transformation_data = req.body;
     // add images to the transformation data 
@@ -19,6 +23,8 @@ async function add_transformation(req,res){
           after_image: transformation_data.after_image
     });
 }
+/** Update an existing transformation
+ */
 async function update_transformation(req,res){
     const transformation_id = req.params.id;
     const transformation_data = req.body;
@@ -40,11 +46,14 @@ async function update_transformation(req,res){
         ...(Object.keys(images).length > 0 && images),
     });
 }
+/** Delete a transformation
+ */
 async function delete_transformation(req,res){
     const transformation_id = req.params.id;
     await transformation_service.delete_transformation(transformation_id);
     res.status(204).send(); // No content to return
 }
+
 export default {
     get_all,add_transformation,update_transformation,delete_transformation
 }

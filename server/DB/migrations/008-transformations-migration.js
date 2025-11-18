@@ -9,7 +9,7 @@ export default create_migration({
             before_image TEXT NOT NULL,
             after_image TEXT NOT NULL
         );`
-    ],
+    ], 
     downQueries: [
         `DROP TABLE IF EXISTS transformations;`
     ]

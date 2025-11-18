@@ -166,7 +166,7 @@ function Pricing() {
                     {pricingPlans?.map((plan) => (
                       <div key={plan.id} className="text-center w-[260px] flex flex-col rounded-lg border border-primary shadow-lg">
 
-                        <div id='plan-header' className='border h-[150px] space-y-2 rounded-t-lg flex-col bg-primary p-4 text-white justify-between items-center'>
+                        <div id='plan-header' className={`border h-[150px] space-y-2 rounded-t-lg flex-col ${plan.popular ? 'bg-yellow-500' : 'bg-secondary'} p-4 text-white justify-between items-center`}>
                           <h3 className="text-lg font-bold">{plan.name?.toUpperCase()}</h3>
                           <div className='space-x-2'>{/* show price and currency */}
                             <span className='text-white font-bold text-[30px]'>${plan.price}</span>
@@ -265,7 +265,8 @@ function Pricing() {
             { value: 'weekly', label: 'Weekly' },
             { value: 'monthly', label: 'Monthly' },
             { value: 'annually', label: 'Annually' },
-          ],required:true}
+          ],required:true},
+          { name: 'popular', label: 'Popular Plan', type: 'checkbox' ,required:true },
         ]}
         schema={editingPlan ? updatepricingPlanSchema : createpricingPlanSchema}
         initialData={ editingPlan 
@@ -273,7 +274,8 @@ function Pricing() {
             const { id: _, ...rest } = editingPlan;
             return rest;
           })() 
-          :  { name: '', description: '', price: '', period: 'daily' }}
+          :  { name: '', description: '', price: '', period: 'daily', popular:false}
+        }
         validationMode={editingPlan ? 'edit' : 'create'}
         onSubmit={handleSavePlan}
         onClose={closeModal}

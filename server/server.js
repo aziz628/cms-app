@@ -1,5 +1,3 @@
-//import dotenv from 'dotenv/config'; // Load and exec  config function from dotenv
-// moved dotenv import to app.js for testing purposes
 import http from 'http';
 import app from './app.js';
 import { initialize_storage_state } from './services/upload_storage_state_service.js';

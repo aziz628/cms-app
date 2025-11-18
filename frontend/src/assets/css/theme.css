@@ -8,8 +8,8 @@ button:focus-visible{
    outline: none !important;
 }
    */
-   
 
+/* default theme is light */
 :root{
   /* Colors */
   --color-bg: #f7fafc;
@@ -30,6 +30,7 @@ button:focus-visible{
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-table-header-bg: #f3f4f6; /* Light gray for table headers */
   --color-input-bg: #d1d5db;       /* Light gray for input backgrounds */
+  
   /* Spacing Reference Table:
     | Variable    | rem   | px   | Use Case                    |
     |-------------|-------|------|-----------------------------|

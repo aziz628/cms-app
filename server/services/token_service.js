@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET
-// js docs 
+
 
 /**
  * Generates access and refresh tokens for an admin user.
@@ -11,7 +11,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET
  * @param {string} refresh_token_lifespan - The lifespan of the refresh token (default is '7d' for 7 days).
  * @param {string} username - The username of the admin user (default is 'admin').
  * if u want to set lifespan in seconds for testing use 1 as integer for 1 second
-* The tokens are signed with the user role 'admin' and do not include a user ID.
+ * The tokens are signed with the user role 'admin' and do not include a user ID.
  * The access token is used for authentication in protected routes,
  */
 
@@ -31,8 +31,10 @@ function generateTokens({access_token_lifespan='15m', refresh_token_lifespan='7d
  */
 
 function set_tokens(res, access_token, refresh_token) {
-  // set tokens in cookies , params depends on the environment
+  // determine if in production 
   const isProduction = process.env.NODE_ENV === 'production';
+
+  // set tokens in cookies with httpOnly and secure flags
   res.cookie('access_token', access_token, { 
     httpOnly: true,
     secure: isProduction,
