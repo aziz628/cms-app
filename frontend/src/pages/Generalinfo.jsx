@@ -288,7 +288,7 @@ export default function Info() {
                                         <img src={`/uploads/${getCurrentPage()}/${aboutImage}`} alt="About Summary" className="mt-2 inline size-32 rounded" />
                                     )}
                                     {/* input for the new image file */}
-                                    <input type="file" accept="image/*" onChange={(e) => handleFileChange('about_image', e)} />
+                                    <input type="file" name='about_image' accept="image/*" onChange={(e) => handleFileChange('about_image', e)} />
                                 </div>
                             )
                         }

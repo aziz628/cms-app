@@ -125,6 +125,7 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
     if(validationMode === 'edit') {
         // only include changed fields
         const changedData = {};
+        
         fields.forEach(field => {
           // For file fields, include if a new file is selected
             if (field.type === 'file') {
@@ -132,6 +133,7 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
                     changedData[field.name] = formData[field.name];
                 }
             }else if (field.type === 'datetime-local') {
+              // For date fields, compare timestamps
                 const initialDate = initialData[field.name] ? new Date(initialData[field.name]).getTime() : null;
                 const currentDate = formData[field.name] ? new Date(formData[field.name]).getTime() : null;
                 if (initialDate !== currentDate) {
@@ -154,16 +156,21 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
         if (value instanceof File) {
           // For File objects
           form.append(key, value, value.name);
+
         } else if (value === null || value === undefined) {
           // Skip null/undefined values
           console.log('Skipping null/undefined value for:', key);
+
         } else if (typeof value === 'boolean') {
           // Explicitly convert boolean to string for clarity, though FormData.append would do this implicitly.
           form.append(key, value ? 'true' : 'false');
+        
         } else if (fields.find(f => f.type === 'datetime-local' && f.name === key) && typeof value === 'string') {
+          
           // If the field is a date type and value is a valid date string, convert to timestamp
           const timestamp = new Date(value).getTime();
-          form.append(key, timestamp); // Use 'datetime' as the key for backend compatibility
+          form.append(key, timestamp); 
+        
         } else {
           // Everything else
           form.append(key, value);

@@ -1,5 +1,5 @@
 import express from "express";
-import { async_controller } from "../../utils/async_controller.js";
+import { wrap_all_async_functions } from "../../utils/async_controller.js";
 import  contact_controller from "../../controllers/contact_controller.js";
 // validator
 import contact_validators from "../../middleware/validators/contact_validator.js";
@@ -10,9 +10,9 @@ const {
   address_validator,
   phone_validator,
   email_validator
-} = async_controller(contact_validators);
+} = wrap_all_async_functions  (contact_validators);
 
-const controller = async_controller(contact_controller);
+const controller = wrap_all_async_functions(contact_controller);
 const router = express.Router();
 
 // Define routes for contact information

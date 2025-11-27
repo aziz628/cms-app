@@ -20,7 +20,7 @@ const STORAGE_STATE_FILE = path.join(__dirname, '../',
 
 // In-memory state (default values)
 let storageState = {
-  totalSize: 0,
+  totalSize: 0, // in bytes
   lastUpdated: new Date().toISOString()
 };
 
@@ -146,6 +146,13 @@ function getState() {
 }
 
 /**
+ * Returns the remaining available storage in bytes.
+ */
+function getAvailableStorage() {
+  return MAX_TOTAL_STORAGE - storageState.totalSize;
+}
+
+/**
  * Checks if adding a file would exceed limit
  */
 function canAddFile(fileSizeBytes) {
@@ -262,6 +269,7 @@ export  {
   incrementStorage,
   decrementStorage,
   canAddFile,
+  getAvailableStorage,
   reset,
   initialize_storage_state
 };

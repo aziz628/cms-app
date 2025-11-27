@@ -15,11 +15,9 @@ import {
 import  auth_route from './routes/api/auth_route.js';
 import admin_route from './routes/api/admin_route.js';
 import public_routes from './routes/public.js';
-
 import errorHandler from './middleware/errorHandler.js';
 import { authenticate_session } from './middleware/auth_middleware.js';
 import db from './DB/db_connection.js';
-import fs from 'fs/promises';
 
 const DEFAULT_HERO_IMAGE=process.env.DEFAULT_HERO_IMAGE;
 const DEFAULT_ABOUT_IMAGE=process.env.DEFAULT_ABOUT_IMAGE;
@@ -31,7 +29,6 @@ const app = express();
 // Get the directory name using ES modules approach
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const UPLOAD_DIR_PATH =  process.env.UPLOAD_BASE || '/uploads';
 
 
 // Middleware
@@ -62,7 +59,7 @@ app.use('/assets', publicLimiter, express.static(path.join(__dirname, 'public'))
 // Serve the images from the uploads directory
 // directory is at the root level
 const UPLOAD_BASE = process.env.UPLOAD_BASE || '/uploads';
-app.use('/uploads', publicLimiter,express.static(path.join(__dirname, UPLOAD_BASE)));
+app.use('/uploads',publicLimiter,express.static(path.join(__dirname, UPLOAD_BASE)));
 
 app.use(globalLimiter); // Add global rate limiting to all routes
 
@@ -103,72 +100,14 @@ app.use('/api/admin', (req,res,next)=>{adminLimiter
     else next();
 }, authenticate_session, admin_route);
 
-// Admin health check route - detailed status for admins
-app.get('/api/admin/health', authenticate_session, async (req, res) => {
-    
-    const healthCheck = {
-        status: 'healthy',
-        // datetime timestamp
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()+' seconds',
-        checks: {}
-    };
 
-    try {
-        // Database check with details
-        if (db) {
-            await db.get('SELECT 1');
-            healthCheck.checks.database = {
-                status: 'connected',
-                type: 'sqlite'
-            };
-        } else {
-            healthCheck.checks.database = { status: 'no connection' };
-            healthCheck.status = 'degraded';
-        }
-
-        // File system check
-        
-        // Check if uploads directory exists and is accessible
-        try {
-            await fs.access(UPLOAD_DIR_PATH);
-            const stats = await fs.stat(UPLOAD_DIR_PATH);
-            healthCheck.checks.filesystem = {
-                status: 'accessible',
-                uploadsDirectory: UPLOAD_DIR_PATH,
-                lastModified: stats.mtime
-            };
-        } catch (fsError) {
-            healthCheck.checks.filesystem = { 
-                status: 'missing uploads directory',
-                path: UPLOAD_DIR_PATH
-            };
-            healthCheck.status = 'degraded';
-        }
-        // Memory usage
-        const memUsage = process.memoryUsage();
-        healthCheck.checks.memory = {
-            heapUsed: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB`,
-            heapTotal: `${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`,
-            rss: `${Math.round(memUsage.rss / 1024 / 1024)}MB`
-        };
-
-        if(process.env.NODE_ENV == 'development') {
-            console.log(healthCheck);
-        }
-        res.status(200).json(healthCheck);
-    } catch (error) {
-        healthCheck.checks.database = 'disconnected';
-    }
-
-});
-
-// public health check route - basic status
+/* public health check route - basic status for future reverse proxy to check 
+*/
 app.get('/api/health', publicLimiter, async (req, res) => {
     try {
         // Simple DB query to check connectivity
         await db.get('SELECT 1');
-        console.log(process.env.NODE_ENV);
+
         if(process.env.NODE_ENV == 'development') {
             console.log('Health check OK');
         }
@@ -181,15 +120,18 @@ app.get('/api/health', publicLimiter, async (req, res) => {
 })
 
 
+
+
 // AFTER all API routes, serve the React app static files
 // Assuming your React build is in a 'frontend/dist' folder
 app.use(express.static(path.join(__dirname, './dist')));
 
 
-// check if the requested file is default image for template sections
+// serve default images for template
 app.use('/uploads/general_info/:imageName', async (req, res, next) => {
     const { imageName } = req.params;
-
+    // check if the requested file is default image for template sections
+    
     if (imageName === DEFAULT_ABOUT_IMAGE) {
         // If the requested image is the default about image, serve it
         const filePath = path.join(__dirname, TEMPLATE_IMAGES_DIR,  DEFAULT_ABOUT_IMAGE);

@@ -3,12 +3,14 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import AppError from '../errors/AppError.js';
-import { canAddFile } from '../services/upload_storage_state_service.js';
+import { canAddFile ,getState} from '../services/upload_storage_state_service.js';
 import { save_file_to_disk } from '../services/content_service.js';
+import { logWarning } from '../services/logging_service.js';
+
 // file upload limits
 const MAX_UPLOAD_FILES_PER_REQUEST = parseInt(process.env.MAX_UPLOAD_FILES_PER_REQUEST) || 2;
 const DEFAULT_MAX_UPLOAD_SIZE = parseInt(process.env.DEFAULT_MAX_UPLOAD_SIZE) || 2 * 1024 * 1024; // 2MB
-
+const MAX_TOTAL_STORAGE = parseInt(process.env.MAX_TOTAL_STORAGE) || 1000 * 1024 * 1024; // 1000MB
 // --- Setup ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -63,6 +65,7 @@ function create_upload_pipeline(options={}) {
         memory_upload(memory_upload_options),
         post_upload_size_check,
         validator,
+        
         file_validator(file_validator_options),
         file_saver({ section })
       ];
@@ -97,13 +100,20 @@ function create_upload_pipeline(options={}) {
     // multer checks the file size when it collects the file chunks
     limits: { fileSize: maxSize , files: MAX_UPLOAD_FILES_PER_REQUEST },
     fileFilter: (req, file, cb) => {
+      
+      // Warn if storage is > 80% full
+      const storageState = getState();
+      if (storageState.totalSize > MAX_TOTAL_STORAGE * 0.8) {
+          logWarning('Storage approaching limit', 507, req.originalUrl, 'POST', 
+              `Used: ${storageState.totalSize}B, Limit: ${MAX_TOTAL_STORAGE}B, Available: ${getAvailableStorage()}B`);
+      }
       // check mime type 
       if (!allowedMimeTypes.includes(file?.mimetype)) {
         return cb(new AppError(`Invalid file type. Allowed: ${allowedMimeTypes.join(', ')}`, 400, 'INVALID_FILE_TYPE'), false);
       }
       // Content-Length header presence
-       const contentLength = parseInt(req.headers['content-length'], 10);
-      if (!contentLength || contentLength <= 0 ) {
+      const contentLength = parseInt(req.headers['content-length'], 10);
+      if (!contentLength || contentLength <= 0) {
         return cb(new AppError('Content-Length header is required', 400, 'MISSING_CONTENT_LENGTH'), false);
       }
       // validate size using Content-Length to fail fast and skip multer collection of chunks (buffering)
@@ -114,7 +124,10 @@ function create_upload_pipeline(options={}) {
 
       //  Validate against storage limit using Content-Length
       if (!canAddFile(contentLength)) {
-         return cb(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'), false);
+        logWarning('Upload rejected - storage full', 413, req.originalUrl, 'POST',
+            `Requested: ${contentLength}B, Available: ${getAvailableStorage()}B`);
+
+            return cb(new AppError('Upload would exceed total storage limit', 413, 'STORAGE_LIMIT_EXCEEDED'), false);
       }
       // all checks passed , accept file
       cb(null, true);
@@ -206,14 +219,22 @@ const file_validator = (options = {}) => {
     }
 
     if (req.method === 'POST' ) {
-      if (missingFiles. length > 0) {
+      if (missingFiles.length > 0) {
+        // log warning for missing files
+          logWarning('Missing required file fields', 400, req?.originalUrl, 'POST',
+        `Missing: ${missingFiles.join(', ')}, Expected: ${fields.join(', ')}`);
+   
         return next(new AppError(`Files required: ${missingFiles.join(', ')}`, 400, 'FILE_REQUIRED'));
       }
     }
     else if (req.method === 'PUT' ) {
       const is_body_empty = Object.keys(req.body).length === 0;
       const noFilePresent = missingFiles.length === fields.length;
+     
       if (is_body_empty && noFilePresent) {
+        // log warning for empty update
+        logWarning('Empty update request - no fields or files provided', 400, req?.originalUrl, 'PUT',
+        `No fields or files provided for update. Expected at least one of: [${fields.join(', ')}] or body fields.`);
         return next(new AppError('At least one field or a file must be provided for an update.', 400, 'UPDATE_EMPTY'));
       }
     }
@@ -260,6 +281,7 @@ const file_saver = (options = {}) => {
       next();
     } catch (err) {
       console.error('Error saving file:', err);
+      // better error message for user  
       next(new AppError('Failed to save uploaded file', 500, 'FILE_SAVE_ERROR'));
     }
   };

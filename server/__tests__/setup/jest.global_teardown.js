@@ -13,6 +13,7 @@ export default async function globalTeardown() {
   }
   // Final files cleanup
   cleanup_all_upload();
+  
   // Reset upload storage state
   reset();
 

@@ -3,7 +3,8 @@ const AuthContext = createContext(null);
 // useffect to load user from localStorage on mount
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(()=>
+    // Load user from localStorage if available
+    const [user, setUser] = useState( () =>
         { 
             try {
                 if (typeof window == "undefined" || !window.localStorage) return null;
@@ -16,12 +17,14 @@ export const AuthProvider = ({ children }) => {
         }
     );
 
-    // simulate a login function
+    // Login function to set user and store in localStorage
     const login = (userData) => {
         console.log("Logging in...", userData);
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
     }
+    
+    // Logout function to clear user and remove from localStorage
     const logout = () => {
         console.log("Logging out...");
         setUser(null);

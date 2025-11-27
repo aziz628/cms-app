@@ -6,6 +6,7 @@ function Dashboard() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
+    
     const { error } = useNotification();
 
     useEffect(() => {
@@ -28,6 +29,7 @@ function Dashboard() {
         <div className="space-y-4">
             <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
             <div id='dashboard-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
+                {/* place holder for storage usage element */}
                 <h2 className="text-xl font-semibold mb-2">Recent Activities</h2>
                 {loading 
                 ? (
@@ -80,6 +82,7 @@ function Dashboard() {
                                 </tbody>
                             </table>
                             <div className="flex gap-4 flex-wrap  ">
+                                {/* if totalPages is less than 10, show all page numbers */}
                                 {totalPages < 10 ? (
                                     Array.from({ length: totalPages }, (_, i) => (
                                         <button
@@ -92,9 +95,11 @@ function Dashboard() {
                                     ))
                                 ) : (
                                     <>
+                                    {/*else show a range of page numbers */}
                                         <button onClick={() => setPage(1)} className={`px-4 py-2 border rounded-md ${page === 1 ? 'bg-primary text-white' : 'bg-white text-primary border-primary hover:bg-secondary hover:text-white'}`}>
                                             1
                                         </button>
+                                        {/* Show ellipsis if there are more than 5 pages */}
                                        {page > 5 && <span className="px-4 py-2">...</span>}
                                         {
                                         Array.from({ length: 8 }, (_, i) => {
@@ -110,6 +115,7 @@ function Dashboard() {
                                             ) : null;
                                         })
                                         }
+                                        {/* Show ellipsis if there are more than 5 pages */}
                                         {page < totalPages - 5 && <span className="px-4 py-2">...</span>}
                                         <button onClick={() => setPage(totalPages)} className={`px-4 py-2 border rounded-md ${page === totalPages ? 'bg-primary text-white' : 'bg-white text-primary border-primary hover:bg-secondary hover:text-white'}`}>
                                             {totalPages}

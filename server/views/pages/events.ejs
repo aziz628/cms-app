@@ -3,70 +3,85 @@
     
 <%- include('../partials/head.ejs') %>
 
+<body class="bg-white text-slate-800">    
+   
+     <!-- Navigation -->
+    <%- include('../partials/nav.ejs') %>
 
-<!-- Events Section -->
-<section id="events" class="py-20 bg-slate-50">
-    <div class="container mx-auto px-4">
-        <!-- Header -->
-        <div class="text-center mb-16 animate-on-scroll">
-            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Upcoming Events</span>
-            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
-                Don't Miss <span class="text-primary">Our Events</span>
-            </h2>
-            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                Join our special events, workshops, and training sessions designed to help you reach your fitness goals.
-            </p>
-        </div>
 
-        <!-- Events Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <% if (events && events.length > 0) { %>
-                <% events.forEach(event => { %>
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow animate-on-scroll">
-                        <img src="<%= event.image %>" 
-                             alt="<%= event.title %>" 
-                             class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <!-- Date & Time -->
-                            <div class="flex items-center text-sm text-slate-500 mb-3">
-                                <i class="far fa-calendar mr-2 text-primary"></i>
-                                <span><%= event.date %></span>
-                                <span class="mx-2">•</span>
-                                <i class="far fa-clock mr-2 text-primary"></i>
-                                <span><%= event.time %></span>
+    <!-- Events Section -->
+    <section id="events" class="py-20 bg-slate-50">
+        <div class="container mx-auto px-4">
+            <!-- Header -->
+            <div class="text-center mb-16 animate-on-scroll">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Upcoming Events</span>
+                <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                    Don't Miss <span class="text-primary">Our Events</span>
+                </h2>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                    Join our special events, workshops, and training sessions designed to help you reach your fitness goals.
+                </p>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <% if (events && events.length > 0) { %>
+                    <% events.forEach(event => { %>
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow animate-on-scroll">
+                            <img src="/uploads/events/<%= event.image %>" 
+                                alt="<%= event.title %>" 
+                                class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <!-- there is only param for data which is  event.date is in unix timestamp so we gonna convert it then split into date and time -->
+                                <%  const eventDate = new Date(event.date); %>
+                                <!-- Date & Time -->
+                                <div class="flex items-center text-sm text-slate-500 mb-3">
+                                    <i class="far fa-calendar mr-2 text-primary"></i>
+                                    <span><%= eventDate.toLocaleDateString() %></span>
+                                    <span class="mx-2">•</span>
+                                    <i class="far fa-clock mr-2 text-primary"></i>
+                                    <!--get time from the datetime-->
+                                    <span><%= eventDate.toLocaleTimeString() %></span>
+                                </div>
+                                
+                                <!-- Location -->
+                                <div class="flex items-center text-sm text-slate-500 mb-3">
+                                    <i class="fas fa-map-marker-alt mr-2 text-primary"></i>
+                                    <span><%= event.location %></span>
+                                </div>
+                                
+                                <!-- Title & Description -->
+                                <h3 class="text-xl font-bold text-slate-900 mb-2"><%= event.title %></h3>
+                                <p class="text-slate-600 mb-4">
+                                    <%= event.description %>
+                                </p>
+                                
+                                <!-- CTA -->
+                                <a href="/#contact" class="text-primary font-semibold hover:underline">Register Now →</a>
                             </div>
-                            
-                            <!-- Location -->
-                            <div class="flex items-center text-sm text-slate-500 mb-3">
-                                <i class="fas fa-map-marker-alt mr-2 text-primary"></i>
-                                <span><%= event.location %></span>
-                            </div>
-                            
-                            <!-- Title & Description -->
-                            <h3 class="text-xl font-bold text-slate-900 mb-2"><%= event.title %></h3>
-                            <p class="text-slate-600 mb-4">
-                                <%= event.description %>
-                            </p>
-                            
-                            <!-- CTA -->
-                            <a href="#contact" class="text-primary font-semibold hover:underline">Register Now →</a>
                         </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-slate-500 text-lg">No upcoming events at the moment. Check back soon!</p>
                     </div>
-                <% }); %>
-            <% } else { %>
-                <div class="col-span-full text-center py-12">
-                    <p class="text-slate-500 text-lg">No upcoming events at the moment. Check back soon!</p>
-                </div>
-            <% } %>
-        </div>
+                <% } %>
+            </div>
 
-        <!-- CTA -->
-        <div class="text-center mt-12 animate-on-scroll">
-            <a href="#contact" class="btn-primary">View Full Event Calendar</a>
+            <!-- CTA -->
+            <div class="text-center mt-12 animate-on-scroll">
+                <a href="/#contact" class="btn-primary">View Full Event Calendar</a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
+
+    <!-- Footer -->
+    <%- include('../partials/footer.ejs') %>
+
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js" defer></script>
 
 </body>
 </html>

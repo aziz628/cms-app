@@ -1,47 +1,85 @@
-<!-- Gallery Section -->
-<section id="gallery" class="py-20 bg-slate-50">
-    <div class="container mx-auto px-4">
-        <!-- Header -->
-        <div class="text-center mb-16 animate-on-scroll">
-            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Photo Gallery</span>
-            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
-                Explore Our <span class="text-primary">Facilities</span>
-            </h2>
-            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                Take a look at our state-of-the-art gym facilities and community.
-            </p>
-        </div>
+<!DOCTYPE html>
+<html lang="en" data-theme="minimal">
+    
+<%- include('../partials/head.ejs') %>
 
-        <!-- Gallery Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <% if (gallery && gallery.length > 0) { %>
-                <% gallery.forEach((image, index) => { %>
-                    <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer animate-on-scroll">
-                        <img src="<%= image.image_url %>" 
-                             alt="<%= image.title || 'Gallery image ' + (index + 1) %>" 
-                             class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
-                        
-                        <!-- Overlay -->
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-end">
-                            <div class="p-6 w-full transform translate-y-6 group-hover:translate-y-0 transition-transform duration-300">
-                                <h3 class="text-white font-bold text-lg"><%= image.title %></h3>
-                                <% if (image.category) { %>
-                                    <p class="text-gray-200 text-sm"><%= image.category %></p>
-                                <% } %>
+<body class="bg-white text-slate-800">    
+   
+     <!-- Navigation -->
+    <%- include('../partials/nav.ejs') %>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-slate-50">
+        <div class="container mx-auto px-4">
+            <!-- Header -->
+            <div class="text-center mb-16 animate-on-scroll">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Photo Gallery</span>
+                <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                    Explore Our <span class="text-primary">Facilities</span>
+                </h2>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                    Take a look at our state-of-the-art gym facilities and community.
+                </p>
+            </div>
+            <!--declare categories and images from gallery-->
+            <% const categories=gallery.categories; %>
+            <% const images=gallery.images; %>
+
+            
+            <!-- Category Tabs -->
+            <div class="flex flex-wrap justify-center gap-3 mb-5 animate-on-scroll">
+                <!-- set a default active tab -->
+                <button class="category-tab active px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300 bg-slate-900 text-white" data-category="all">
+                    All
+                </button>
+                <% categories.forEach((category) => { %>
+                    <!-- set the id for each category tab -->
+                    <button class="category-tab px-6 py-2 rounded-full font-semibold text-sm transition-all duration-300 border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white" data-category="<%= category.id %>">
+                        <%= category.name %>
+                    </button>
+                <% }); %>
+            </div>
+            
+            <!-- Gallery Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <% if (images && images.length > 0) { %>
+                    <% images.forEach((image, index) => { %>
+                        <!--save category id in data-category attribute-->
+                        <div class="gallery-item group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer animate-on-scroll" data-category="<%= image.category_id %>">
+                            <img src="/uploads/gallery/<%= image.filename %>" 
+                                alt="<%= image.name || 'Gallery image ' + (index + 1) %>" 
+                                class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                            
+                            <!-- Overlay -->
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-end">
+                                <div class="p-6 w-full transform translate-y-6 group-hover:translate-y-0 transition-transform duration-300">
+                                    <h3 class="text-white font-bold text-lg"><%= image.name %></h3>
+                                    <p class="text-gray-200 text-sm"><%= image.description || 'No description' %></p>
+                                </div>
                             </div>
                         </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-slate-500 text-lg">Gallery coming soon! Check back to see our facilities.</p>
                     </div>
-                <% }); %>
-            <% } else { %>
-                <div class="col-span-full text-center py-12">
-                    <p class="text-slate-500 text-lg">Gallery coming soon! Check back to see our facilities.</p>
-                </div>
-            <% } %>
-        </div>
+                <% } %>
+            </div>
 
-        <!-- CTA -->
-        <div class="text-center mt-12 animate-on-scroll">
-            <a href="#contact" class="btn-primary">Visit Us Today</a>
+            <!-- CTA -->
+            <div class="text-center mt-12 animate-on-scroll">
+                <a href="/#contact" class="btn-primary">Visit Us Today</a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
+
+    <!-- Footer -->
+    <%- include('../partials/footer.ejs') %>
+
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/gallery.js" defer></script>
+</body>
+</html>

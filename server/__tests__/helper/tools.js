@@ -163,10 +163,12 @@ export function cleanup_all_upload() {
       // check if  files stayed in uploads
       folders.forEach(folder => {
           const folderPath = path.join(UPLOADS_DIR, folder);
+
           if (fs.existsSync(folderPath)) {
               const files = fs.readdirSync(folderPath);
-              // any file except .gitkeep
+              // filter .gitkeep files
               const realFiles = files.filter(f => f !== '.gitkeep');
+
               if (realFiles.length > 0) {
                   console.error(` - Found ${realFiles.length} files in ${folder} after tests: ${realFiles.join(', ')}`);
               }
@@ -189,8 +191,6 @@ export function cleanup_all_upload() {
       });
 }
 }
-cleanup_all_upload();
-
 
 /**
  * Ensure the uploads subfolder exists and return its path.

@@ -1,5 +1,5 @@
 import express from "express"
-import { async_controller } from "../../utils/async_controller.js"
+import { wrap_all_async_functions } from "../../utils/async_controller.js"
 import review_controller from "../../controllers/review_controller.js"
 import review_validator from "../../middleware/validators/review_validator.js"
 import { create_upload_pipeline } from "../../middleware/file_middleware.js";
@@ -8,9 +8,9 @@ const {
     add_review_validator,
     update_review_validator,
     delete_review_validator
-} = async_controller(review_validator)
+} = wrap_all_async_functions(review_validator)
 
-const controller = async_controller(review_controller)
+const controller = wrap_all_async_functions(review_controller)
 const router = express.Router()
 
 

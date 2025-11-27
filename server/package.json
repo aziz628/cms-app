@@ -5,14 +5,17 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
+    
     "prod:start": "cross-env NODE_ENV=production node server.js",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "lint": "eslint .",
     "test": "cross-env  NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest  --runInBand",
     "prettier": "prettier --check .",
-    "migrate": "node DB/migrate.js run all",
-    "undo-migrate": "node DB/migrate.js undo all"
+    "migrate": "node ./DB/migrate.js run all",
+    "undo-migrate": "node ./DB/migrate.js undo all",
+    "seed": "node ./DB/seed.js",
+    "load-test": "node scripts/load_test.js"
   },
   "jest": {
     "globalSetup": "./__tests__/setup/jest.global_setup.js",

@@ -26,6 +26,8 @@ import './assets/css/theme.css'; // Import theme styles and variables
 import  './index.css' // Import Tailwind components and utilities
 import './assets/css/output.css'; // Import compiled Tailwind CSS
 
+
+// ProtectedRoute component to guard the authenticated routes
 function ProtectedRoute({children}) {
   const {user,logout} = useAuth();
 
@@ -42,12 +44,15 @@ function ProtectedRoute({children}) {
       
       // Cleanup function to remove the old event listener 
       return () => window.removeEventListener('unauthorized', handleUnauthorized);
-    }, []); // Empty dependency array means "run once on mount"
+    }, []); // run once on mount
 
   console.log("ProtectedRoute user:", user,"from page:", getCurrentPage());
+
+  // If no user logged in, redirect to login page
   if(!user) {
     return <Navigate to="/login" />
   }
+
   return children;
 }
 
@@ -65,7 +70,7 @@ function AdminLayout({children}) {
   )
 }
 const routes = [
-  { path: "/", element: <Dashboard /> },
+  { path: "/dashboard", element: <Dashboard /> },
   { path: "/classes", element: <Classes /> },
   { path: "/schedule", element: <Schedule /> },
   { path: "/pricing", element: <Pricing /> },
@@ -87,8 +92,7 @@ function App() {
       <NotificationProvider>
         <Router>
           <Routes>
-            <Route path="/login" element={  /*check if user authed navigate to dashboard */
-              <Login />} />
+            <Route path="/login" element={<Login />} />
             {/* Protected routes */}
             
             {routes.map((route) => (

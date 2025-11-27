@@ -26,7 +26,6 @@ describe("General Info API", () => {
             const newClass = {
                 name: 'New Class',
                 description: 'This is a new class',
-                popular: true,
                 private_coaching: true
             };
             // Act: Perform a POST request to the /api/admin/classes endpoint
@@ -35,7 +34,6 @@ describe("General Info API", () => {
                 .set('Cookie', authCookies)
                 .field('name', newClass.name)
                 .field('description', newClass.description)
-                .field('popular', newClass.popular)
                 .field('private_coaching', newClass.private_coaching)
                 .attach('image', get_fixture_image()); // Attach an image file
 
@@ -79,30 +77,7 @@ describe("General Info API", () => {
             expect(image_exist).toBe(false);
         });
         
-        // sad path - missing the popular field 
-        it("should return status 400 for missing popular field during update", async () => {
-            expect(test_class_id).toBeDefined(); // Ensure the class ID is available
-
-            // Arrange: Set up an updated class object with the missing popular field
-            const updatedClass = {
-                name: 'Updated Class',
-                description: 'This is an updated class',
-                private_coaching: false
-            };
-
-            // Act: Perform a PUT request to the /api/admin/classes/:id endpoint
-            const response = await request(app)
-                .post(`/api/admin/classes`)
-                .set('Cookie', authCookies)
-                .field('name', updatedClass.name)
-                .field('description', updatedClass.description)
-                .field('private_coaching', updatedClass.private_coaching);
-
-            // Assert: Check if the application correctly handled the missing popular field
-            expect(response.statusCode).toBe(400);
-            expect(response.body.message).toBe('"popular" is required');
-            expect(response.body.code).toBe('VALIDATION_ERROR');
-        });
+       
 
         // sad path -  missing image
         it('should return status code 400 for missing image', async () => {
@@ -110,7 +85,6 @@ describe("General Info API", () => {
             const incompleteClass = {
                 name: 'Incomplete Class',
                 description: 'This class has no image',
-                popular: false,
                 private_coaching: false
             };
 
@@ -120,7 +94,6 @@ describe("General Info API", () => {
                 .set('Cookie', authCookies)
                 .field('name', incompleteClass.name)
                 .field('description', incompleteClass.description)
-                .field('popular', incompleteClass.popular)
                 .field('private_coaching', incompleteClass.private_coaching);
 
             // Assert: Check if the application correctly handled the missing image
@@ -135,7 +108,6 @@ describe("General Info API", () => {
             const invalidImageClass = {
                 name: 'Invalid Image Class',
                 description: 'This class has an invalid image type',
-                popular: false,
                 private_coaching: false
             };
 
@@ -145,7 +117,6 @@ describe("General Info API", () => {
                 .set('Cookie', authCookies)
                 .field('name', invalidImageClass.name)
                 .field('description', invalidImageClass.description)
-                .field('popular', invalidImageClass.popular)
                 .field('private_coaching', invalidImageClass.private_coaching)
                 .attach('image', invalid_fixture_image());
 
@@ -170,7 +141,6 @@ describe("General Info API", () => {
             const updatedClass = {
                 name: 'Updated Class',
                 description: 'This is an updated class',
-                popular: false,
                 private_coaching: false
             };
             // Act: Perform a PUT request to the /api/admin/classes/:id endpoint
@@ -191,7 +161,6 @@ describe("General Info API", () => {
             const updatedClass = {
                 name: 'Updated Class',
                 description: 'This is an updated class',
-                popular: false,
                 private_coaching: false
             };
 
@@ -201,7 +170,6 @@ describe("General Info API", () => {
                 .set('Cookie', authCookies)
                 .field('name', updatedClass.name)
                 .field('description', updatedClass.description)
-                .field('popular', updatedClass.popular)
                 .field('private_coaching', updatedClass.private_coaching)
                 .attach('image', get_fixture_image(1)); // Attach a new image file
             
@@ -306,7 +274,6 @@ describe("General Info API", () => {
                 expect(typeof item).toBe('object');
                 // value object have name , private_coaching,image
                 expect(item).toHaveProperty('name');
-                expect(item).toHaveProperty('popular');
                 expect(item).toHaveProperty('private_coaching');
                 expect(item).toHaveProperty('image');
             }

@@ -7,7 +7,7 @@ import transformation_service from '../services/transformation_service.js';
 import review_service from '../services/review_service.js';
 import contact_service from '../services/contact_service.js';
 import trainer_service from '../services/trainers_service.js'
-
+import gallery_service from '../services/gallery_service.js';
 
 const router = express.Router();
 const PLATFORMS = {'facebook':"fa-facebook", 'instagram':"fa-instagram", 'twitter':"fa-twitter", 'youtube':"fa-youtube", 'linkedin':"fa-linkedin", 'tiktok':"fa-tiktok", 'pinterest':"fa-pinterest", 'snapchat':"fa-snapchat"}
@@ -53,13 +53,15 @@ router.get('/', async (req, res,next) => {
 });
 
 // Events page
-router.get('/events', (req, res) => {
+router.get('/events', async (req, res) => {
   try {
-    const events =[];
+    const events = await events_service.get_all_events();
+    let general_info = await general_info_service.get_info();
 
-    res.render('layouts/main',{
+    res.render('pages/events', {
       title: 'Upcoming Events - FitnessHub',
-      events: events
+      events: events,
+      general_info
     });
   } catch (error) {
     console.error('Error rendering events page:', error);
@@ -68,13 +70,15 @@ router.get('/events', (req, res) => {
 });
 
 // Reviews page
-router.get('/reviews', (req, res) => {
+router.get('/reviews', async (req, res) => {
   try {
-    const reviews = []
+    let general_info = await general_info_service.get_info();
+    const reviews = await review_service.get_reviews();
 
     res.render('pages/reviews', {
       title: 'Member Reviews - FitnessHub',
-      reviews: reviews
+      reviews,
+      general_info
     });
   } catch (error) {
     console.error('Error rendering reviews page:', error);
@@ -96,68 +100,14 @@ router.get('/transformations', async(req, res) => {
 });
 
 // Trainers page
-router.get('/trainers', (req, res) => {
+router.get('/trainers', async (req, res) => {
   try {
-    const trainers = [
-      {
-        id: 1,
-        name: 'Coach James Anderson',
-        specialization: 'Strength & Conditioning',
-        bio: 'With 10+ years of experience in strength training, James helps clients build muscle and achieve their strength goals safely and effectively.',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300',
-        social_instagram: 'coachJamesA',
-        social_twitter: 'coachJamesA'
-      },
-      {
-        id: 2,
-        name: 'Sarah Mitchell',
-        specialization: 'Yoga & Flexibility',
-        bio: 'Certified yoga instructor with a passion for helping clients improve flexibility and mental wellness. Sarah creates personalized programs for all levels.',
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300',
-        social_instagram: 'sarahYogaMitchell',
-        social_facebook: 'SarahMitchellYoga'
-      },
-      {
-        id: 3,
-        name: 'Marcus Thompson',
-        specialization: 'Cardio & HIIT',
-        bio: 'High-energy trainer specializing in cardio workouts and HIIT training. Marcus will push you to your limits and help you exceed your fitness potential.',
-        image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300',
-        social_instagram: 'marcusCardioKing',
-        social_twitter: 'MarcusCardio'
-      },
-      {
-        id: 4,
-        name: 'Emma Rodriguez',
-        specialization: 'Weight Loss & Nutrition',
-        bio: 'Certified nutritionist and personal trainer. Emma combines nutrition coaching with fitness training to help clients achieve sustainable weight loss results.',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300',
-        social_instagram: 'emmaFitnessNutrition',
-        social_facebook: 'EmmaRodriguezFitness'
-      },
-      {
-        id: 5,
-        name: 'David Lopez',
-        specialization: 'CrossFit & Functional Fitness',
-        bio: 'Former athlete and CrossFit specialist. David designs functional training programs that improve real-world strength and athletic performance.',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300',
-        social_instagram: 'davidCrossFitLopez',
-        social_twitter: 'DavidCrossFit'
-      },
-      {
-        id: 6,
-        name: 'Jessica Chen',
-        specialization: 'Women\'s Fitness & Boxing',
-        bio: 'Empowering women through fitness and boxing. Jessica specializes in building confidence and strength in female clients of all fitness levels.',
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300',
-        social_instagram: 'jessicaBoxingChampion',
-        social_facebook: 'JessicaChenFitness'
-      }
-    ];
-
+    const trainers = await trainer_service.get_trainers();
+    let general_info = await general_info_service.get_info();
     res.render('pages/trainers', {
       title: 'Our Trainers - FitnessHub',
-      trainers: trainers
+      trainers,
+      general_info
     });
   } catch (error) {
     console.error('Error rendering trainers page:', error);
@@ -166,62 +116,16 @@ router.get('/trainers', (req, res) => {
 });
 
 // Gallery page
-router.get('/gallery', (req, res) => {
+router.get('/gallery', async (req, res) => {
   try {
-    const galleryImages = [
-      {
-        id: 1,
-        image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400',
-        title: 'Group Training',
-        category: 'Classes'
-      },
-      {
-        id: 2,
-        image: 'https://images.unsplash.com/photo-1517836357463-d25ddfcbf042?w=400',
-        title: 'Women\'s Strength',
-        category: 'Training'
-      },
-      {
-        id: 3,
-        image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400',
-        title: 'Personal Training',
-        category: 'Training'
-      },
-      {
-        id: 4,
-        image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400',
-        title: 'Yoga Session',
-        category: 'Classes'
-      },
-      {
-        id: 5,
-        image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400',
-        title: 'Fitness Event',
-        category: 'Events'
-      },
-      {
-        id: 6,
-        image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400',
-        title: 'Cardio Zone',
-        category: 'Facilities'
-      },
-      {
-        id: 7,
-        image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400',
-        title: 'Flexibility Training',
-        category: 'Classes'
-      },
-      {
-        id: 8,
-        image: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400',
-        title: 'Strength Equipment',
-        category: 'Facilities'
-      }
-    ];
+    const gallery = await gallery_service.get_all_categories_and_images();
+    let general_info = await general_info_service.get_info();
+    console.log(gallery);
 
     res.render('pages/gallery', {
       title: 'Gallery - FitnessHub',
-      images: galleryImages
+      gallery,
+      general_info
     });
   } catch (error) {
     console.error('Error rendering gallery page:', error);

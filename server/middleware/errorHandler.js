@@ -1,4 +1,4 @@
-import {logError,logWarning} from '../services/logging_service.js';
+import {logError,} from '../services/logging_service.js';
 let default_error = {
         status: 500,
         message: "Internal Server Error",
@@ -96,7 +96,7 @@ const errorMapping = {
     // File system - Just the essential one
     ENOENT: { status: 404, message: "Resource not found", code: "NOT_FOUND" },
     
-    // database constraint
+    // database constraint (custom SQLite error message)
     "SQLITE_CONSTRAINT: UNIQUE constraint failed: gallery_category.name": { status: 400, message: "Category name must be unique", code: "DUPLICATE_CATEGORY_NAME" },    
     
     // db errors

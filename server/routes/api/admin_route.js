@@ -10,12 +10,7 @@ import gallery_route from "./gallery_route.js";
 import events_route from "./events_route.js";
 import review_route from "./review_route.js";
 import transformation_route from "./transformation_route.js";
-
-// comment the yet to exist routes
-/*
-*/
 import contact_route  from "./contact_route.js";
-// Import general info route
 import general_info from "./general_info_route.js";
 
 const router = express.Router();
@@ -31,6 +26,7 @@ router.use("/review", review_route);
 router.use("/transformation", transformation_route);
 router.use("/contact", contact_route);
 router.use("/general-info", general_info);
+
 
 
 export default router;

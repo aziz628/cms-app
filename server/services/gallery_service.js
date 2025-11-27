@@ -47,30 +47,7 @@ async function get_all_categories_and_images() {
         data = data ? JSON.parse(data) : {categories:[],images:[]};
 
         return data;
-          /*
-          (`
-        SELECT json_group_array(
-            json_object(
-                'id', c.id,
-                'name', c.name,
-                'images', COALESCE(images.images, json('[]'))
-            )
-        ) AS data
-        FROM gallery_category c
-        LEFT JOIN (
-            SELECT category_id,
-                   json_group_array(
-                       json_object(
-                           'id', id,
-                           'name', name,
-                           'filename', filename,
-                           'description', description
-                       )
-                   ) AS images
-            FROM gallery_image
-            GROUP BY category_id
-        ) images ON images.category_id = c.id;
-    `);*/
+          
 }
 
  /**

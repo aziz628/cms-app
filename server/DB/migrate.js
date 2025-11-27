@@ -47,7 +47,7 @@ function getMigrationFiles() {
  */
 function getPendingMigrations(status) {
   const allFiles = getMigrationFiles();
-  return allFiles.filter(f => !status.applied.includes(f));
+  return allFiles.filter(f => !status.applied?.includes(f));
 }
 
 /**

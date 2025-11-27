@@ -5,7 +5,7 @@ function Sidebar() {
   
   // Navigation items with paths and labels
   const navItems = [
-    { path: "/", label: "Dashboard" , icon : "fa-solid fa-gauge" },
+    { path: "/dashboard", label: "Dashboard" , icon : "fa-solid fa-gauge" },
     { path: "/classes", label: "Classes", icon: "fa-solid fa-chalkboard-teacher" },
     { path: "/schedule", label: "Schedule", icon: "fa-solid fa-calendar" },
     { path: "/pricing", label: "Pricing", icon: "fa-solid fa-dollar-sign" },

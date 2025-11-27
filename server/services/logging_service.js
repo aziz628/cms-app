@@ -1,5 +1,5 @@
 /* 
-Three transports are set up:
+two transports are set up:
    - File Transport for Errors: Logs with 'error' level are written to 'error.log', with file size and rotation settings.
    - File Transport for General Logs: All logs are written to 'app.log', also with file size and rotation settings
 

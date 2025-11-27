@@ -1,77 +1,76 @@
-<!-- Trainers Section -->
-<section id="trainers" class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-        <!-- Header -->
-        <div class="text-center mb-16 animate-on-scroll">
-            <span class="text-primary font-semibold text-sm uppercase tracking-wider">Our Team</span>
-            <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
-                Meet Our <span class="text-primary">Expert Trainers</span>
-            </h2>
-            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                Our certified and experienced trainers are dedicated to helping you achieve your fitness goals.
-            </p>
-        </div>
+<!DOCTYPE html>
+<html lang="en" data-theme="minimal">
+    
+<%- include('../partials/head.ejs') %>
 
-        <!-- Trainers Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <% if (trainers && trainers.length > 0) { %>
-                <% trainers.forEach(trainer => { %>
-                    <div class="bg-slate-50 rounded-xl overflow-hidden hover:shadow-2xl transition-shadow animate-on-scroll">
-                        <!-- Image -->
-                        <div class="aspect-square overflow-hidden bg-slate-200">
-                            <img src="<%= trainer.image %>" 
-                                 alt="<%= trainer.name %>" 
-                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
-                        </div>
-                        
-                        <!-- Info -->
-                        <div class="p-6 text-center">
-                            <h3 class="text-xl font-bold text-slate-900 mb-1"><%= trainer.name %></h3>
-                            <p class="text-primary font-semibold text-sm mb-3"><%= trainer.specialization %></p>
-                            <p class="text-slate-600 text-sm mb-4"><%= trainer.bio %></p>
-                            
-                            <!-- Social Links -->
-                            <div class="flex justify-center gap-3">
-                                <% if (trainer.social_instagram) { %>
-                                    <a href="<%= trainer.social_instagram %>" 
-                                       target="_blank" 
-                                       class="text-slate-600 hover:text-primary transition-colors">
-                                        <i class="fab fa-instagram text-lg"></i>
-                                    </a>
-                                <% } %>
-                                <% if (trainer.social_facebook) { %>
-                                    <a href="<%= trainer.social_facebook %>" 
-                                       target="_blank" 
-                                       class="text-slate-600 hover:text-primary transition-colors">
-                                        <i class="fab fa-facebook text-lg"></i>
-                                    </a>
-                                <% } %>
-                                <% if (trainer.social_twitter) { %>
-                                    <a href="<%= trainer.social_twitter %>" 
-                                       target="_blank" 
-                                       class="text-slate-600 hover:text-primary transition-colors">
-                                        <i class="fab fa-twitter text-lg"></i>
-                                    </a>
-                                <% } %>
+<body class="bg-white text-slate-800">    
+   
+     <!-- Navigation -->
+    <%- include('../partials/nav.ejs') %>
+
+        
+    <!-- Trainers Section -->
+    <section id="trainers" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <!-- Header -->
+            <div class="text-center mb-16 animate-on-scroll">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Our Team</span>
+                <h2 class="text-4xl font-bold text-slate-900 mt-3 mb-4">
+                    Meet Our <span class="text-primary">Expert Trainers</span>
+                </h2>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                    Our certified and experienced trainers are dedicated to helping you achieve your fitness goals.
+                </p>
+            </div>
+
+            <!-- Trainers Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <% if (trainers && trainers.length > 0) { %>
+                    <% trainers.forEach(trainer => { %>
+                        <div class="bg-slate-50 rounded-xl overflow-hidden hover:shadow-2xl transition-shadow animate-on-scroll">
+                            <!-- Image -->
+                            <div class="aspect-square overflow-hidden bg-slate-200">
+                                <img src="/uploads/trainers/<%= trainer.image %>" 
+                                    alt="<%= trainer.name %>" 
+                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                             </div>
                             
-                            <!-- Contact Button -->
-                            <a href="#contact" class="mt-4 inline-block btn-primary text-sm">
-                                Book Session
-                            </a>
+                            <!-- Info -->
+                            <div class="p-6 text-center">
+                                <h3 class="text-xl font-bold text-slate-900 mb-1"><%= trainer.name %></h3>
+                                <p class="text-primary font-semibold text-sm mb-3"><%= trainer.speciality %></p>
+                                <!--certificate, years_of_experience, -->
+                                <p class="text-slate-600 text-sm ">
+                                    <strong>Experience:</strong> <%= trainer.years_of_experience %> years<br>
+                                    <strong>Certifications:</strong> <%= trainer.certificate %>
+                                </p>
+                                <!-- Contact Button -->
+                                <a href="/#contact" class="mt-4 inline-block btn-primary text-sm ">
+                                    Book Session
+                                </a>
+                            </div>
                         </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-slate-500 text-lg">Our trainer profiles are being updated!</p>
                     </div>
-                <% }); %>
-            <% } else { %>
-                <div class="col-span-full text-center py-12">
-                    <p class="text-slate-500 text-lg">Our trainer profiles are being updated!</p>
-                </div>
-            <% } %>
-        </div>
+                <% } %>
+            </div>
 
-        <!-- CTA -->
-        <div class="text-center mt-12 animate-on-scroll">
-            <a href="#contact" class="btn-primary">Get a Free Consultation</a>
+            <!-- CTA -->
+            <div class="text-center mt-12 animate-on-scroll">
+                <a href="#contact" class="btn-primary">Get a Free Consultation</a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
+
+    <!-- Footer -->
+    <%- include('../partials/footer.ejs') %>
+
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js" defer></script>
+</body>
+</html>

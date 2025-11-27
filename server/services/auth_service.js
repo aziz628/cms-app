@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import App_error  from '../errors/AppError.js';
- 
+import { logWarning } from './logging_service.js';
+
 import db from '../DB/db_connection.js';
 
 /**
@@ -12,6 +13,7 @@ import db from '../DB/db_connection.js';
 
 // compare and if false through error
 export async function verify_credentials(username, password) {
+    try {
     // check is user with given username exists 
     const user = await db.get('SELECT * FROM admin WHERE username = ?', [username]);
     if (!user) {
@@ -22,6 +24,11 @@ export async function verify_credentials(username, password) {
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
         throw new App_error('Invalid password', 401, 'INVALID_PASSWORD');
+    }
+    } catch (error) {
+        logWarning('Failed login attempt', 400, '/api/auth/login', 'POST',
+            `Username: ${username}, Reason: Invalid credentials`);
+        throw error;
     }
 }
 

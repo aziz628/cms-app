@@ -11,8 +11,8 @@ const authService = {
     const response = await api.post("/auth/logout");
     if (response.status === 200) {
       // Dispatch unauthorized event to handle global logout
-    window.dispatchEvent(new Event('unauthorized'));
-  }
+      window.dispatchEvent(new Event('unauthorized'));
+    }
     return response.data;
   },
   updatePassword: async (passwordData) => {

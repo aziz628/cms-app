@@ -22,6 +22,8 @@ describe("Pricing API", () => {
                 name: 'Premium Plan',
                 price: 29.99,
                 period: 'monthly',
+                popular:true,
+
             };
 
             // Act: Make a POST request to the /api/admin/pricing-plans endpoint
@@ -40,6 +42,7 @@ describe("Pricing API", () => {
             // Store the created pricing plan ID for later use
             pricing_plan_id = response.body.id;
         });
+        
 
         // happy path - create a feature
         it('should create a new feature for a pricing plan', async () => {
@@ -61,6 +64,31 @@ describe("Pricing API", () => {
             // Store the created feature ID for later use
             feature_id = response.body.id;
         });
+
+         // sad path - missing the popular field 
+        it("should return status 400 for missing popular field during create", async () => {
+            expect(pricing_plan_id).toBeDefined(); // Ensure the pricing plan ID is available
+
+            // Arrange: Set up an updated pricing plan object with the missing popular field
+            const updatedPricingPlan = {
+                name: 'Updated Plan',
+                price: 19.99,
+                period: 'monthly',
+                features: [feature_id]
+            };
+
+            // Act: Perform a POST request to the /api/admin/pricing/:id endpoint
+            const response = await request(app)
+                .post(`/api/admin/pricing`)
+                .set('Cookie', authCookies)
+                .send(updatedPricingPlan);
+
+            // Assert: Check if the application correctly handled the missing popular field
+            expect(response.statusCode).toBe(400);
+            expect(response.body.message).toBe('"popular" is required');
+            expect(response.body.code).toBe('VALIDATION_ERROR');
+        });
+
         // sad path - missing feature fields 
         it('should return 400 for empty request body', async () => {
             // Arrange: Set up an empty request body

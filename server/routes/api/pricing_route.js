@@ -1,7 +1,8 @@
 import express from "express";
-import { async_controller } from "../../utils/async_controller.js";
+import { wrap_all_async_functions } from "../../utils/async_controller.js";
 import  pricing_controller from "../../controllers/pricing_controller.js";
 import pricing_validator from "../../middleware/validators/pricing_validator.js";
+
 const {
   add_pricing_validator,
   update_pricing_validator,
@@ -9,9 +10,10 @@ const {
   update_feature_validator,
   delete_feature_validator,
   delete_pricing_validator
-} = async_controller(pricing_validator);
+} = wrap_all_async_functions(pricing_validator);
+
 // Wrap controller with async error handler
-const controller = async_controller(pricing_controller);
+const controller = wrap_all_async_functions(pricing_controller);
 
 const router = express.Router();
 

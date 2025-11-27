@@ -7,7 +7,7 @@ export default function NotFound() {
       <button 
       style={{ marginTop: '30px' }}
         className=" px-4 py-2 bg-primary text-white rounded"
-        onClick={() => window.location.href = '/'}
+        onClick={() => window.location.href = '/dashboard'}
       >
         Return to Dashboard
       </button>
