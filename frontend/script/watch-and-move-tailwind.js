@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url';
 
 // Get the directory of the current script
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const sourceFile = path.join(__dirname, './tailwind-output/output.css');
-const destFile = path.join(__dirname, './src/assets/css/output.css');
+const sourceFile = path.join(__dirname, '../tailwind-output/output.css');
+const destFile = path.join(__dirname, '../src/assets/css/output.css');
 
 /**
  * Initialize the output.css file by copying it from the source to the destination.

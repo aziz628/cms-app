@@ -158,6 +158,7 @@ async function update_about_image(about_image){
     const row = await db.get(`SELECT ${GENERAL_INFO.ABOUT_IMAGE} FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1`);
 
     if (!row) {
+      await delete_image(about_image,'general_info');
       throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
     }
     
@@ -208,7 +209,10 @@ export async function update_hero_subtitle(subtitle) {
 export async function update_hero_image(image) {
   return await run_in_transaction(db,async () => {
     const row = await db.get(`SELECT ${GENERAL_INFO.HERO_IMAGE} FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1`);
+    
     if (!row) {
+      // If no row exists, delete the new image and throw an error
+      await delete_image(image,'general_info');
       throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
     }
     await db.run(`UPDATE ${GENERAL_INFO.TABLE_NAME} SET ${GENERAL_INFO.HERO_IMAGE} = ?`, [image]);

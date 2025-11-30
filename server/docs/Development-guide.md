@@ -6,7 +6,7 @@ This guide explains how to run, debug, and test the Gym Website CMS.
 
 ### Prerequisites
 
-- Node.js 14+ and npm
+- Node.js 22.12.02 and npm 10.9.0
 - Git
 - VS Code (recommended)
 

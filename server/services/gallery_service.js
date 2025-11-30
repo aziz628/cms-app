@@ -96,6 +96,7 @@ async function add_image(category_id, new_image_data) {
         // Check if category exists
         const category = await db.get(`SELECT * FROM ${GALLERY_CATEGORY.TABLE_NAME} WHERE id = ?`, [category_id]);
         if (!category) {
+            await delete_image(new_image_data.filename, "gallery");
             throw new App_Error("Category not found", 404, "CATEGORY_NOT_FOUND");
         }
 
@@ -209,7 +210,7 @@ async function delete_category(category_id) {
             throw new App_Error("Category not found", 404, "CATEGORY_NOT_FOUND");
         }
         // get all images in that category
-        const images = await db.all(`SELECT filename FROM ${GALLERY_IMAGE.TABLE_NAME} WHERE ${GALLERY_IMAGE.CATEGORY_ID} = ?`, [category_id]);
+        const images = await db.all(`SELECT ${GALLERY_IMAGE.FILENAME} FROM ${GALLERY_IMAGE.TABLE_NAME} WHERE ${GALLERY_IMAGE.CATEGORY_ID} = ?`, [category_id]);
 
         // delete all images in that category from the database
         await db.run(`DELETE FROM ${GALLERY_IMAGE.TABLE_NAME} WHERE ${GALLERY_IMAGE.CATEGORY_ID} = ?`, [category_id]);

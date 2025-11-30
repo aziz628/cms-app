@@ -2,19 +2,22 @@
 echo Starting all processes...
 
 REM Start the server in a new tab
-wt -w 0 nt -d ".\server" cmd /k "node server.js"
+wt -w 0 nt -d "..\server" cmd /k "node server.js"
 echo Server started.
 
+REM compile the server template tailwind
+wt -w 0 nt -d "..\server" cmd /k "template_tailwind_compile.bat --watch"
+
 REM Start the React app in a new tab
-wt -w 0 nt -d ".\frontend" cmd /k "npm run dev"
+wt -w 0 nt -d "..\frontend" cmd /k "npm run dev"
 echo React app started.
 
 REM Start the node watcher in a new tab
-wt -w 0 nt -d ".\frontend" cmd /k "node watch-and-move-tailwind.js"
+wt -w 0 nt -d "..\frontend\script" cmd /k "node watch-and-move-tailwind.js"
 echo Node watcher started.
 
 REM Start the Tailwind CSS compiler in a new tab
-wt -w 0 nt -d ".\frontend" cmd /k "compile_tailwind.bat --watch"
+wt -w 0 nt -d "..\frontend" cmd /k "compile_tailwind.bat --watch"
 echo Tailwind CSS compiler started.
 
 echo All processes have been started.

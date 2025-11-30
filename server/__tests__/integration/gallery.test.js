@@ -1,10 +1,18 @@
 import request from "supertest";
 import app from "../../app.js";
-import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image,check_no_file_in_uploads} from '../helper/tools.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image,get_uploaded_files_in_subfolder} from '../helper/tools.js';
+
 const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/avif"];
 
-// global variables 
 const upload_subfolder = "gallery";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const UPLOAD_BASE =  '__tests__/uploads';
+const UPLOADS_DIR = path.join(__dirname, '..', '..', UPLOAD_BASE, upload_subfolder);
+
+
 // main describe block 
 describe("Gallery API", () => {
     // prepare  the variables used across tests
@@ -88,7 +96,8 @@ describe("Gallery API", () => {
                     .field('name', imageData.name)
                     .field('description', imageData.description)
                     .attach('image', get_fixture_image());
-                //assert if the image was uploaded successfully
+              
+                    //assert if the image was uploaded successfully
                 expect(response.statusCode).toBe(201);
                 expect(response.body.message).toBe('Image added successfully');
                 expect(response.body.image_id).toBeDefined();
@@ -149,6 +158,9 @@ describe("Gallery API", () => {
                     name: 'Test Image',
                     description: 'Test Image Description'
                 };
+                // read the files names under gallery
+                let folder_state= get_uploaded_files_in_subfolder(UPLOADS_DIR);
+
                 const nonExistentCategoryId = 9999; // Assuming this ID does not exist
 
                 // Act: Attempt to upload an image to a non-existent category
@@ -164,9 +176,11 @@ describe("Gallery API", () => {
                 expect(response.body.message).toBe('Category not found');
                 expect(response.body.code).toBe('CATEGORY_NOT_FOUND');
 
-                // Check if the image file was deleted
-                const deleted_image_exist = ensure_uploaded_file_exist(upload_subfolder,imageData.name);
-                expect(deleted_image_exist).toBe(false);
+                // Check if the image file was deleted (same files should exist)
+                const new_folder_state= get_uploaded_files_in_subfolder(UPLOADS_DIR);
+                new_folder_state.forEach(file => { 
+                    expect(folder_state.includes(file)).toBe(true);
+                });
             })
         // sad path - upload an invalid image file
             it('should return 400 for invalid image file', async () => {
@@ -317,6 +331,7 @@ describe("Gallery API", () => {
             const updated_image_exists = ensure_uploaded_file_exist(upload_subfolder,response.body.image_name);
             expect(updated_image_exists).toBe(true);
 
+        
             // update the image_id and image_name for later use
             image_name = response.body.image_name;
         })
@@ -391,6 +406,7 @@ describe("Gallery API", () => {
                 .field('name', newImageData.name)
                 .field('description', newImageData.description)
                 .attach('image', "__tests__/fixtures/testing_image.jpg");
+
             expect(body.message).toBe('Image added successfully');
             expect(body.image_id).toBeDefined();
             const newImageId = body.image_id;

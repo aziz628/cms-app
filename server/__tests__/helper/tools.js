@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RELATIVE_FIXTURES_DIR = "__tests__/fixtures";
 
-const UPLOAD_BASE = process.env.UPLOAD_BASE || '__tests__/uploads';
+const UPLOAD_BASE =  '__tests__/uploads';
 const UPLOADS_DIR = path.join(__dirname, '..', '..', UPLOAD_BASE);
 const fixture_images= ['testing_image.jpg', 'testing_image2.webp', 'testing_image3.jpg',"testing_image4.jpg"];
 
@@ -165,18 +165,18 @@ export function cleanup_all_upload() {
           const folderPath = path.join(UPLOADS_DIR, folder);
 
           if (fs.existsSync(folderPath)) {
-              const files = fs.readdirSync(folderPath);
-              // filter .gitkeep files
-              const realFiles = files.filter(f => f !== '.gitkeep');
+              const real_files = get_uploaded_files_in_subfolder(folderPath);
 
-              if (realFiles.length > 0) {
-                  console.error(` - Found ${realFiles.length} files in ${folder} after tests: ${realFiles.join(', ')}`);
+              if (real_files.length > 0) {
+                  console.error(` - Found ${real_files.length} files in ${folder} after tests: ${real_files.join(', ')}`);
               }
           }
       });
 
       // Remove everything
       fs.rmSync(UPLOADS_DIR, { recursive: true, force: true });
+        
+     
 
       // remake the root folder
       fs.mkdirSync(UPLOADS_DIR);
@@ -190,6 +190,11 @@ export function cleanup_all_upload() {
           fs.writeFileSync(path.join(folderPath, '.gitkeep'), '');
       });
 }
+}
+
+// get files names un a subfolder filtering .gitkeep
+export function get_uploaded_files_in_subfolder(folder_path) {
+  return fs.readdirSync(folder_path).filter(file => file !== '.gitkeep');
 }
 
 /**

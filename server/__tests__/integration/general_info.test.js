@@ -1,7 +1,7 @@
 import request  from "supertest";
 import app from "../../app.js";
 import { getAuthCookies,get_fixture_image,invalid_fixture_image,ensure_uploaded_file_exist } from '../helper/tools.js';
-
+import   {delete_image} from "../../services/content_service.js";
 const DEFAULT_HERO_IMAGE=process.env.DEFAULT_HERO_IMAGE;
 const DEFAULT_ABOUT_IMAGE=process.env.DEFAULT_ABOUT_IMAGE;
 const subfolder="general_info";
@@ -11,12 +11,38 @@ describe("General Info API", () => {
     // prepare cookies for authentication
     let authCookies;    
     let hours_id;
+    let images=[]
     
     beforeAll(async () => {
         authCookies = await getAuthCookies();
     });
+    afterAll(async () => {
+        // general_info images are update only - so in testing the uploads cleanup will be manual
+        for(const image of images){
+            await delete_image(image,subfolder);
+        }
+    });
 
-   
+   describe("GET /api/general-info", () => {
+
+        // happy path - get default images in general information
+        it('should return default images in general information', async () => {
+
+            // Act: Make a GET request to the /api/admin/general-info endpoint
+            const response = await request(app)
+                .get('/api/admin/general-info')
+                .set('Cookie', authCookies) // Use the auth cookies for authentication
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toBeDefined();
+
+            // check if default values are returned
+            expect(response.body.hero_image).toBe(DEFAULT_HERO_IMAGE);
+            expect(response.body.about_image).toBe(DEFAULT_ABOUT_IMAGE);
+        });
+
+    });
+
     describe("POST /api/admin/general-info/business-hours", () => {
         // happy path - add business hours
         it('should add business hours', async () => {
@@ -169,6 +195,9 @@ describe("General Info API", () => {
             // ensure the uploaded file exist
             const new_image_exist=ensure_uploaded_file_exist(subfolder,hero_image_name);
             expect(new_image_exist).toBe(true);
+
+            // add the uploaded image to images array for later cleanup
+            images.push(hero_image_name);
         });
 
 
@@ -208,6 +237,9 @@ describe("General Info API", () => {
             // ensure the uploaded file exist
             const new_image_exist=ensure_uploaded_file_exist(subfolder,about_image_name);
             expect(new_image_exist).toBe(true);
+
+            // add the uploaded image to images array for later cleanup
+            images.push(about_image_name);
         });
 
         // sad path - missing fields

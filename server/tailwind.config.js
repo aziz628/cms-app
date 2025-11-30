@@ -4,7 +4,7 @@ module.exports = {
     // parse all html files in public directory
     './public/*.html',
     // parse all js files in this directory and subdirectories
-    './js/**/*.js',
+    './**/js/**/*.js',
     // parse all ejs files in views directory and subdirectories
     './views/**/*.ejs'
   ],

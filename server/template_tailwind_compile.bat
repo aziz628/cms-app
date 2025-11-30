@@ -1,15 +1,16 @@
 @echo off
 echo Building Tailwind CSS...
 echo.
+REM print current directory
+echo Current Directory: %cd%
 
 REM Check if tailwindcss.exe exists in the current directory
-if exist "./tailwindcss.exe" (
+
+if exist ..\tailwindcss.exe (
     echo Using tailwindcss.exe from current directory
-    tailwindcss.exe -i public/css/input.css -o public/css/output.css --watch
+     ..\tailwindcss.exe -c tailwind.config.js -i public\css\input.css -o public\css\output.css --minify %*
 ) else (
     echo tailwindcss.exe not found in current directory
-    echo Trying to use globally installed tailwindcss
-    tailwindcss -c tailwind.config.js -i public/css/input.css -o public/css/output.css --watch
 )
 
 echo.

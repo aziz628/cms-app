@@ -16,6 +16,9 @@
     "seed": "node ./DB/helper/seed.js",
     "reset":"node ./script/reset_environment.js"
   },
+  "engines": {
+    "node": "22.12.0"
+  },
   "jest": {
     "globalSetup": "./__tests__/setup/jest.global_setup.js",
     "globalTeardown": "./__tests__/setup/jest.global_teardown.js",
