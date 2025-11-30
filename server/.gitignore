@@ -43,5 +43,6 @@ logs/*.log
 generate_cert.bat
 
 tailwindcss.exe
+tailwindcss-windows.exe
 server.key
 server.cert

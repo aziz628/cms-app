@@ -11,6 +11,7 @@ console.log('Starting project setup...');
 // Configuration
 const SERVER_DIR = path.join(__dirname, 'server');
 const FRONTEND_DIR = path.join(__dirname, 'frontend');
+
 const UPLOAD_DIRS = ['gallery', 'trainers', 'events', 'reviews', 'classes', 'transformations','general_info'];
 const UPLOAD_BASE = path.join(SERVER_DIR, 'uploads');
 
@@ -46,8 +47,12 @@ async function setupProject() {
     
     // 3. compile tailwind and move to src/assets/css
     console.log('   Compiling Tailwind CSS...');
-    execSync('npm run compile_tailwind', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+    execSync('npm run compile_tailwind.bat', { cwd: FRONTEND_DIR, stdio: 'inherit' });
 
+    // compile server template tailwind
+    execSync('npm run template_tailwind_compile.bat', { cwd: SERVER_DIR, stdio: 'inherit' });
+
+    
     // 4. Build frontend and copy to server
     console.log('\n Building frontend...');
     execSync('npm run build', { cwd: FRONTEND_DIR, stdio: 'inherit' });

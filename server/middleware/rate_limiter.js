@@ -31,7 +31,7 @@ export const adminLimiter = createLimiter(
 
 export const publicLimiter = createLimiter(
   60 * 1000,      // 1 minute
-  100,            // 100 requests
+  1000,            // 100 requests
   'RATE_LIMITED_PUBLIC',
   'Too many requests'
 );
