@@ -47,4 +47,4 @@ tailwindcss-windows.exe
 server.key
 server.cert
 
-./docs/file-db-operations.md
+**/file-db-operations
