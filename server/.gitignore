@@ -22,6 +22,9 @@ server/__tests__/fixtures/**/*.bin
 premium pages demo
 template demo
 public/css/output.css
+!public/css
+!public/img
+!public/js
 
 # Environment files (except example and test)
 .env
