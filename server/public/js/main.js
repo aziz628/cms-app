@@ -47,16 +47,22 @@ function setupMobileMenu() {
     const mobileMenu = document.getElementById('mobile-menu');
     const closeMenu = document.getElementById('close-menu');
     const mobileLinks = document.querySelectorAll('#mobile-menu .nav-link');
+    // select the body
+    const body = document.body;
     
     if (menuButton && mobileMenu) {
         // show the menu by removing the translate-x-full class
         menuButton.addEventListener('click', function() {
             mobileMenu.classList.remove('translate-x-full');
+            // prevent body from scrolling when menu is open
+            body.classList.add('overflow-hidden');
         });
         //  hide the menu by adding the translate-x-full class
         if (closeMenu) {
             closeMenu.addEventListener('click', function() {
                 mobileMenu.classList.add('translate-x-full');
+                // allow body to scroll when menu is closed
+                body.classList.remove('overflow-hidden');
             });
         }
         

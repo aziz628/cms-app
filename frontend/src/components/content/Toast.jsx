@@ -1,4 +1,3 @@
-// src/components/common/Toast.jsx
 
 const toastClasses = {
   success: 'bg-green-50 border-green-500 text-success',

@@ -28,7 +28,7 @@ describe("Trainer API", () => {
             expect(response.statusCode).toBe(200);
             expect(response.body).toBeDefined();
            
-            for(const trainer of response.body) {
+            for(const trainer of response.body.data) {
                 expect(trainer).toHaveProperty('id');
                 expect(trainer).toHaveProperty('name');
                 expect(trainer).toHaveProperty('speciality');

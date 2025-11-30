@@ -5,6 +5,7 @@ import {
     record_entity_update,
     record_entity_deletion
 } from "../dashboard_service.js";
+import { get_total_pages, PAGE_SIZE } from "./pagination_helper.js";
 import App_error from "../../errors/AppError.js";
 
 /**
@@ -13,8 +14,25 @@ import App_error from "../../errors/AppError.js";
  * @param {string} tableName - The name of the table
  * @return {Promise<Array>} Array of records
  */
-export async function getAll(db, tableName) {
-  return await db.all(`SELECT * FROM ${tableName};`)
+export async function getAll(db, tableName, page=1) {
+    const offset = (page - 1) * PAGE_SIZE;
+    const data = await db.all(`SELECT * FROM ${tableName} LIMIT ${PAGE_SIZE} OFFSET ${offset};`);
+
+    // Add pagination info
+    const total_pages = await get_total_pages(db, tableName);
+    return { data, total_pages, PAGE_SIZE };
+}
+
+
+/**
+ * Generic function to get the count of records in a table
+ * @param {Object} db - The database connection
+ * @param {string} tableName - The name of the table
+ * @return {Promise<number>} The count of records
+ */
+export async function getCount(db, tableName) {
+    const row = await db.get(`SELECT COUNT(*) as count FROM ${tableName};`);
+    return row.count;
 }
 
 /**

@@ -1,4 +1,4 @@
-import authService from "../../services/authService";
+import authService from "../../services/authService.js";
 import { useState } from "react";
 import { useNotification } from '../../context/NotificationContext.jsx';
 function Header() {

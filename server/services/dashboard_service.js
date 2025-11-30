@@ -1,5 +1,6 @@
 import db from "../DB/db_connection.js"
-
+import { get_total_pages, PAGE_SIZE } from "./helper/pagination_helper.js";
+import {DASHBOARD} from '../DB/db_constants.js';
 
 /**
  * Reads the admin actions log from a JSON file.
@@ -8,16 +9,15 @@ import db from "../DB/db_connection.js"
  * @throws {App_error} If reading the log file fails.
  */
 async function get_admin_actions(page) {
-    const pageSize = 10;
+
     // Calculate offset based on page number
-    const offset = (page - 1) * pageSize;
-    const logs = await db.all(`SELECT action, timestamp, icon FROM admin_log LIMIT ${pageSize} OFFSET ${offset}`);
-    
+    const offset = (page - 1) * PAGE_SIZE;
+    const data = await db.all(`SELECT ${DASHBOARD.ACTION}, ${DASHBOARD.TIMESTAMP}, ${DASHBOARD.ICON} FROM ${DASHBOARD.TABLE_NAME} LIMIT ${PAGE_SIZE} OFFSET ${offset}`);
+
     // Add pagination info
-    const countResult = await db.get(`SELECT COUNT(*) as count FROM admin_log`);
-    const totalCount = countResult.count;
-    const totalPages = Math.ceil(totalCount / pageSize);
-    return { logs, totalPages };
+    const totalPages = await get_total_pages(db, DASHBOARD.TABLE_NAME);
+
+    return { data, totalPages, PAGE_SIZE };
 }
 
 /**
@@ -30,16 +30,15 @@ async function save_action(action, icon) {
 
        // Insert the action into the database
         await db.run(
-            "INSERT INTO admin_log (action, icon) VALUES (?, ?)",
+            `INSERT INTO ${DASHBOARD.TABLE_NAME} (${DASHBOARD.ACTION}, ${DASHBOARD.ICON}) VALUES (?, ?)`,
             [action, icon]
         );
     
-
     if (process.env.NODE_ENV === 'development') console.log('Action logged successfully');
 }
 
 
-// -- Helper functions for specific actions
+// -- Helper functions for logging admin actions
 
 async function record_entity_creation(entity_name) {
     await save_action(`${entity_name} created`, "create");

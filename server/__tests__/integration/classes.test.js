@@ -270,7 +270,7 @@ describe("General Info API", () => {
             expect(response.body).toBeDefined();
 
             // body is array of objects with each having ids and name, private_coaching,image 
-            for (const item of response.body) {
+            for (const item of response.body.data) {
                 expect(typeof item).toBe('object');
                 // value object have name , private_coaching,image
                 expect(item).toHaveProperty('name');

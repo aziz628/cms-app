@@ -5,14 +5,16 @@ import {
   updateWithImage,
   deleteWithImage
 } from "./helper/crud_helper.js";
+import {CLASSES} from '../DB/db_constants.js';
 
-
+const tableName = CLASSES.TABLE_NAME;
+const fields = [CLASSES.NAME, CLASSES.DESCRIPTION,  CLASSES.PRIVATE_COACHING, CLASSES.IMAGE];
 /**
  * Retrieves all classes from the content storage.
  * @returns {Promise<Object>} An object containing all classes and the next item ID.
  */
-async function get_all() {
-    return await getAll(db, "classes"); 
+async function get_all(page=1) {
+    return await getAll(db, CLASSES.TABLE_NAME, page); 
 }
 
 
@@ -25,9 +27,9 @@ async function get_all() {
  */
 async function add_class(new_class) {
     return await addWithImage(db, {
-        tableName: "classes",
+        tableName,
         data: new_class,
-        fields:['name', 'description', 'popular', 'private_coaching', 'image'],
+        fields,
         display_name: "Class",
     });
 }
@@ -40,11 +42,11 @@ async function add_class(new_class) {
  */
 async function update_class(id, updated_Class={}, image=null) {
     return await updateWithImage(db, {
-        tableName: "classes",
+        tableName,
         id,
         data: updated_Class,
         image,
-        fields:['name', 'description', 'popular', 'private_coaching'],
+        fields,
         subfolder: "classes",
         display_name: "Class"
     });
@@ -58,9 +60,9 @@ async function update_class(id, updated_Class={}, image=null) {
  */
 async function delete_class(class_id) {
      return await deleteWithImage(db, {
-        tableName: "classes",
+        tableName,
         id: class_id,
-        imageField: "image",
+        imageField: CLASSES.IMAGE,
         subfolder: "classes",
         display_name: "Class"
     });

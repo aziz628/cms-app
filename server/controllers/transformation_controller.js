@@ -3,7 +3,8 @@ import transformation_service from "../services/transformation_service.js"
 /** Fetch all transformations
  */
 async function get_all(req,res){ 
-    const transformations=await transformation_service.get_all();
+    const page = req.query.page || 1;
+    const transformations=await transformation_service.get_all(page);
     res.status(200).json(transformations)
 }
 

@@ -319,7 +319,7 @@ describe('Transformation API', () => {
             expect(response.statusCode).toBe(200);
 
             // check the response body
-            for (const transformation of response.body) {
+            for (const transformation of response.body.data) {
                 expect(transformation).toHaveProperty('id');
                 expect(transformation).toHaveProperty('name');
                 expect(transformation).toHaveProperty('description');

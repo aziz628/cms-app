@@ -2,16 +2,25 @@ import { delete_image } from "./content_service.js";
 import {record_entity_creation,record_entity_update,record_entity_deletion } from "./dashboard_service.js";
 import db from "../DB/db_connection.js";
 import { run_in_transaction } from "../utils/db_utils.js";
+import { get_total_pages, PAGE_SIZE } from "./helper/pagination_helper.js";
+import {TRANSFORMATIONS} from '../DB/db_constants.js';
 
 import AppError from "../errors/AppError.js";
 
-async function get_all() {
-        return await db.all(`SELECT * FROM transformations`);
-}
+async function get_all(page=1) {
+        const offset = (page - 1) * PAGE_SIZE;
+
+        const data= await db.all(`SELECT * FROM ${TRANSFORMATIONS.TABLE_NAME} LIMIT ? OFFSET ?`, [PAGE_SIZE, offset]);
+
+    // Add pagination info
+    const total_pages = await get_total_pages(db, TRANSFORMATIONS.TABLE_NAME);
+    return { data, total_pages, PAGE_SIZE };
+    }
 
 async function add_transformation(new_transformation) {
+
     return await run_in_transaction(db, async () => {
-        const result = await db.run(`INSERT INTO transformations (name, description, before_image, after_image) VALUES (?, ?, ?, ?)`,
+        const result = await db.run(`INSERT INTO ${TRANSFORMATIONS.TABLE_NAME} (${TRANSFORMATIONS.NAME}, ${TRANSFORMATIONS.DESCRIPTION}, ${TRANSFORMATIONS.BEFORE_IMAGE}, ${TRANSFORMATIONS.AFTER_IMAGE}) VALUES (?, ?, ?, ?)`,
             [new_transformation.name, new_transformation.description || null, new_transformation.before_image || null, new_transformation.after_image || null]);
         // should i check if the insertion was successful?
         await record_entity_creation("transformation");
@@ -22,7 +31,7 @@ async function add_transformation(new_transformation) {
 async function update_transformation(transformation_id, updated_data) {
     return await run_in_transaction(db, async () => {
         // Check if the transformation exists before updating
-        const existingTransformation = await db.get(`SELECT before_image, after_image FROM transformations WHERE id = ?`, [transformation_id]);
+        const existingTransformation = await db.get(`SELECT ${TRANSFORMATIONS.BEFORE_IMAGE}, ${TRANSFORMATIONS.AFTER_IMAGE} FROM ${TRANSFORMATIONS.TABLE_NAME} WHERE id = ?`, [transformation_id]);
         if (!existingTransformation) {
             // delete the uploaded images if transformation not found
             if (updated_data.before_image) await delete_image(updated_data.before_image, "transformations");
@@ -36,7 +45,7 @@ async function update_transformation(transformation_id, updated_data) {
         let set_clause = fields.map(field => `${field} = ?`).join(", ");
         values.push(transformation_id); // for the WHERE clause
 
-        await db.run(`UPDATE transformations SET ${set_clause} WHERE id = ?`, values);
+        await db.run(`UPDATE ${TRANSFORMATIONS.TABLE_NAME} SET ${set_clause} WHERE id = ?`, values);
 
         if (db.changes === 0) {
             throw new AppError("No changes applied to the transformation", 400, "NO_CHANGES_APPLIED");
@@ -58,13 +67,13 @@ async function update_transformation(transformation_id, updated_data) {
 async function delete_transformation(transformation_id) {
     return await run_in_transaction(db, async () => {
         // Check if the transformation exists before deleting
-        const existingTransformation = await db.get(`SELECT before_image, after_image FROM transformations WHERE id = ?`, [transformation_id]);
+        const existingTransformation = await db.get(`SELECT ${TRANSFORMATIONS.BEFORE_IMAGE}, ${TRANSFORMATIONS.AFTER_IMAGE} FROM ${TRANSFORMATIONS.TABLE_NAME} WHERE id = ?`, [transformation_id]);
         if (!existingTransformation) {
             throw new AppError(`Transformation with ID ${transformation_id} not found`, 404, "TRANSFORMATION_NOT_FOUND");
         }
-        
-        await db.run(`DELETE FROM transformations WHERE id = ?`, [transformation_id]);
-        
+
+        await db.run(`DELETE FROM ${TRANSFORMATIONS.TABLE_NAME} WHERE id = ?`, [transformation_id]);
+
         await record_entity_deletion("transformation");
 
         // Delete the images associated with the transformation

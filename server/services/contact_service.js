@@ -4,6 +4,7 @@ import {
 }from "./dashboard_service.js";
 import { run_in_transaction } from "../utils/db_utils.js";
 import AppError from "../errors/AppError.js";
+import {CONTACT,SOCIAL_MEDIA_LINKS} from '../DB/db_constants.js';
 
 /**
  * Retrieves contact information along with associated social media links.
@@ -14,13 +15,13 @@ async function get_info() {
     let {data=null} = await db.get(`
         SELECT json_object(
                 'contact_info', (
-                    SELECT json_object('address', address, 'phone_number', phone_number, 'email', email)
-                    FROM contact LIMIT 1
+                    SELECT json_object('address', ${CONTACT.ADDRESS}, 'phone_number', ${CONTACT.PHONE_NUMBER}, 'email', ${CONTACT.EMAIL})
+                    FROM ${CONTACT.TABLE_NAME} LIMIT 1
                 ),
                 'social_media_links', (
                     SELECT json_group_array(
-                    json_object('id', id, 'platform', platform, 'link', link)
-                    ) FROM social_media_link
+                    json_object('id', ${SOCIAL_MEDIA_LINKS.ID}, 'platform', ${SOCIAL_MEDIA_LINKS.PLATFORM}, 'link', ${SOCIAL_MEDIA_LINKS.LINK})
+                    ) FROM ${SOCIAL_MEDIA_LINKS.TABLE_NAME}
                 )
         ) AS data;
         `);
@@ -40,7 +41,7 @@ async function create_social_media_link(link_data) {
 
         // insert the link_data
         const result = await db.run(`
-            INSERT INTO social_media_link (platform, link)
+            INSERT INTO ${SOCIAL_MEDIA_LINKS.TABLE_NAME} (${SOCIAL_MEDIA_LINKS.PLATFORM}, ${SOCIAL_MEDIA_LINKS.LINK})
             VALUES (?, ?)
         `, [link_data.platform, link_data.link]);
 
@@ -67,7 +68,7 @@ async function update_social_media(link_data, link_id) {
    const placeholders = Object.keys(link_data).map((key) => `${key} = ?`).join(', ');
    const values = Object.values(link_data);
 
-   const query=`UPDATE social_media_link SET ${placeholders} WHERE id = ?`
+   const query=`UPDATE ${SOCIAL_MEDIA_LINKS.TABLE_NAME} SET ${placeholders} WHERE id = ?`
     const result = await db.run(query, [...values, link_id]);
 
     if (result.changes === 0) {
@@ -83,7 +84,7 @@ async function delete_social_media(link_id) {
     await run_in_transaction(db, async () => {
         // delete the link_data
         const result = await db.run(`
-            DELETE FROM social_media_link
+            DELETE FROM ${SOCIAL_MEDIA_LINKS.TABLE_NAME}
             WHERE id = ?
         `, [link_id]);
 
@@ -106,13 +107,13 @@ async function update_address(address) {
     await run_in_transaction(db, async () => {
         
         // check if contact info exists
-        const data = await db.get(`SELECT 1 FROM contact LIMIT 1`);
+        const data = await db.get(`SELECT 1 FROM ${CONTACT.TABLE_NAME} LIMIT 1`);
         if (!data) {
             throw new AppError("No contact info found to update address", 404, "CONTACT_NOT_FOUND");
         }
 
         // update the address
-        await db.run(`UPDATE contact SET address = ? `, [address]);
+        await db.run(`UPDATE ${CONTACT.TABLE_NAME} SET address = ? `, [address]);
 
         await record_entity_update("contact address");
     });
@@ -120,13 +121,13 @@ async function update_address(address) {
 
 async function update_phone_number(phone_number) {
     await run_in_transaction(db, async () => {
-        const data = await db.get(`SELECT * FROM contact LIMIT 1`);
-        
+        const data = await db.get(`SELECT * FROM ${CONTACT.TABLE_NAME} LIMIT 1`);
+
         if (!data) {
             throw new AppError("No contact info found to update phone number", 404, "CONTACT_NOT_FOUND");
         }
         // update the phone number
-        await db.run(`UPDATE contact SET phone_number = ?  `, [phone_number]);
+        await db.run(`UPDATE ${CONTACT.TABLE_NAME} SET ${CONTACT.PHONE_NUMBER} = ?  `, [phone_number]);
 
         await record_entity_update("contact phone number");
     });
@@ -134,12 +135,12 @@ async function update_phone_number(phone_number) {
 
 async function update_email(email) {
     await run_in_transaction(db, async () => {
-        const data = await db.get(`SELECT * FROM contact LIMIT 1`);
+        const data = await db.get(`SELECT * FROM ${CONTACT.TABLE_NAME} LIMIT 1`);
         if (!data) {
             throw new AppError("No contact info found to update email", 404, "CONTACT_NOT_FOUND");
         }
         // update the email
-        await db.run(`UPDATE contact SET email = ?  `, [email]);
+        await db.run(`UPDATE ${CONTACT.TABLE_NAME} SET ${CONTACT.EMAIL} = ?  `, [email]);
 
         await record_entity_update("contact email");
     });

@@ -2,25 +2,13 @@
 import api from './api';
 
 const scheduleService = {
-  getSchedule: async () => {
-    const response = await api.get('/admin/schedule');
-    return response.data;
-  },
-  
-  createSession: async (scheduleData) => {
-    const response = await api.post('/admin/schedule', scheduleData);
-    return response.data;
-  },
-  
-  updateSession: async (id, scheduleData) => {
-    const response = await api.put(`/admin/schedule/${id}`, scheduleData);
-    return response.data;
-  },
-  
-  deleteSession: async (id) => {
-    const response = await api.delete(`/admin/schedule/${id}`);
-    return response.data;
-  }
+  getSchedule: async () => (await api.get('/admin/schedule'))?.data,
+
+  createSession: async (scheduleData) => (await api.post('/admin/schedule', scheduleData))?.data,
+
+  updateSession: async (id, scheduleData) => (await api.put(`/admin/schedule/${id}`, scheduleData))?.data,
+
+  deleteSession: async (id) => (await api.delete(`/admin/schedule/${id}`))?.data
 };
 
 export default scheduleService;

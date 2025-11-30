@@ -2,7 +2,8 @@ import trainers_service from "../services/trainers_service.js";
 /** Fetch all trainers
  */
 async function get_trainers(req, res) {
-    const trainers  = await trainers_service.get_trainers();
+    const page = req.query.page || 1;
+    const trainers  = await trainers_service.get_trainers(page);
     res.status(200).json(trainers);
 }
 

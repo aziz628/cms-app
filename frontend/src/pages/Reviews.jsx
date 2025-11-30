@@ -5,6 +5,9 @@ import {createReviewSchema,updateReviewSchema} from "../validation/schemas/revie
 import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools.js';
 import { useNotification } from '../context/NotificationContext.jsx';
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+
 function Reviews() {
   const [reviews, setReviews] =useState([])
   const [loading, setLoading] = useState(false);
@@ -12,15 +15,19 @@ function Reviews() {
   const [editingReview,setEditingReview]=useState(null)
   const [deletingReviewId,setDeletingReviewId]=useState(null)
   const [showDeleteModal,setShowDeleteModal]=useState(false)
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
   const { success ,error} = useNotification();
-
   // Fetch reviews from the server
   async function fetchReviews(){
     try{
       setLoading(true)
-      const response = await reviewService.getReviews();
-      console.log('Fetched reviews:', response);
-      setReviews(response);
+      const response = await reviewService.getReviews(page);
+
+      setTotalPages(response.total_pages || 1);
+      setPageSize(response.PAGE_SIZE || 10);
+      setReviews(response.data || []);
     }catch(err){
       error('Failed to load reviews');
       console.error(err); 
@@ -30,7 +37,8 @@ function Reviews() {
   }
   useEffect(()=>{
     fetchReviews()
-  },[])
+  }, [page]);
+
 
   // Prevent background scrolling when delete modal is open
   useBodyOverflow(showDeleteModal);
@@ -119,9 +127,7 @@ function Reviews() {
       {/* loading spinner */}
         {loading 
         ? (
-          <div className="flex bg-red justify-center items-center h-64">
-            <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
+            <LoadingSpinner />
         ) : (
             <div id='review-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
               {reviews.length === 0 
@@ -174,10 +180,10 @@ function Reviews() {
                                 </button>
                               </td>
                             </tr>
-                          ))}
-                        </tbody>
+                          ))}                        </tbody>
                       </table>
                     </div>
+                    <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
                   </>
                   )
               }

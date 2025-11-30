@@ -1,5 +1,5 @@
 import Joi from "joi";
-
+import { logWarning } from "../services/logging_service.js";
  const custum_joi = Joi.defaults((schema) =>
     schema.messages({
         "any.required": "{#label} is required",
@@ -36,14 +36,15 @@ const dynamic_validator = ([bodySchema = null, paramsSchema = null, querySchema 
                 if (process.env.NODE_ENV === "development") {
                     console.log("all errors", error.details, "\n\n", "error message is ", err_message);
                 }
+                // (message, statusCode, endpoint, method, stack)
+                logWarning(`Validation error: ${err_message}`, 400, req.originalUrl, req.method);
+                
                 // Return the first error message
                 return res.status(400).json({ message: err_message, code: "VALIDATION_ERROR" });
             }
 
             targets[i] = value; // Update validated data
         }
-        
-
         
 
         // Assign validated data back to request
@@ -57,15 +58,16 @@ const dynamic_validator = ([bodySchema = null, paramsSchema = null, querySchema 
         next();
     };
 
-    function validateAllowedBodyKeys(bodySchema, body) {
-        const schemaKeys = new Set(Object.keys(bodySchema.describe().keys));
+// Validate allowed keys in the request body against the Joi schema
+function validateAllowedBodyKeys(bodySchema, body) {
+    const schemaKeys = new Set(Object.keys(bodySchema.describe().keys));
 
-        for (const key of Object.keys(body)) {
-            if (!schemaKeys.has(key)) {
-                throw new Error(`Security: Unexpected key "${key}" in request body`);
-            }
+    for (const key of Object.keys(body)) {
+        if (!schemaKeys.has(key)) {
+            throw new Error(`Security: Unexpected key "${key}" in request body`);
         }
     }
+}
 
 export  {
     dynamic_validator,

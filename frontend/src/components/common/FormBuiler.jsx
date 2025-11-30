@@ -9,20 +9,25 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
 
  
   useEffect(() => {
-      // Reset form data and errors when initialData or mode changes
+    // Reset form data and errors when initialData or mode changes
     setFormData(initialData || {});
     setErrors({}); // Clear any previous errors
 
     // Set up initial previews from initialdata for file fields and format date fields
     if (validationMode === 'edit') {
       fields.forEach(field => {
+
+        // Check if the field is a file and has initial data
         if (field.type === 'file' && initialData[field.name]) {
+          // Construct the image URL
           const imageUrl = getUploadUrl(getCurrentPage(), initialData[field.name]);
-          console.log('fetching : ', imageUrl)
+          
+          // Fetch the image and convert to data URL for preview
           fetch(imageUrl)
                 .then(response => response.blob())
                 .then(blob => {
-                   // Use FileReader instead of URL.createObjectURL
+
+                   // Use FileReader
                     const reader = new FileReader();
                     reader.onload = (e) => {
                       setInitialImages(prev => ({...prev, [field.name]: e.target.result}));
@@ -39,15 +44,18 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
     }
   }, [initialData, validationMode]); // Watch for changes in initialData or mode
 
-  
+  // Validate form data with schema and collect errors
   const validate = async () => {
     try {
       await schema.validate(formData, {
         abortEarly: false,
         context: { initialData }
       });
+      
+      // If validation passes clear errors and return valid
       setErrors({});
       return { isValid: true };
+
     } catch (err) {
        // Collect all validation errors
       const validationErrors = {};
@@ -67,27 +75,34 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
           validationErrors.form = error.message;
         }
       });
+
       // If there are no field-specific errors, set the form-level error
       if(Object.keys(validationErrors).length === 0){
         validationErrors.form = err.message;
       }
-      console.log(err?.inner)
 
       return { isValid: false, errors: validationErrors };
     }
   };
+
   const handleFileChange = (fieldName, e) => {
     const file = e?.target?.files?.[0];
 
     if (file) {
         // Validate file type if it's an image
         if (file.type.startsWith('image/') === false) {
-            // Clear the input and show error
-            e.target.value = ''; // Clear the file input visual value
+
+            // Clear the input 
+            e.target.value = ''; 
             setFormData({...formData, [fieldName]: null});
-            const updatedPreviews = {...previews};
-            delete updatedPreviews[fieldName];
-            setPreviews(updatedPreviews);
+            
+            // Clear the preview
+            setPreviews(prev => {
+              const newPreviews = { ...prev };
+              delete newPreviews[fieldName];
+              return newPreviews;
+            });
+
             setErrors({form: 'Please select a valid image file'});
             return;
         }
@@ -122,8 +137,8 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
 
     let ProcessedData = {...formData};
 
+    // filter out unchanged fields in edit mode
     if(validationMode === 'edit') {
-        // only include changed fields
         const changedData = {};
         
         fields.forEach(field => {
@@ -132,14 +147,17 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
                 if (formData[field.name] instanceof File) {
                     changedData[field.name] = formData[field.name];
                 }
-            }else if (field.type === 'datetime-local') {
-              // For date fields, compare timestamps
+            } 
+
+            // For date fields, compare timestamps
+            else if (field.type === 'datetime-local') {
                 const initialDate = initialData[field.name] ? new Date(initialData[field.name]).getTime() : null;
                 const currentDate = formData[field.name] ? new Date(formData[field.name]).getTime() : null;
                 if (initialDate !== currentDate) {
                     changedData[field.name] = formData[field.name];
                 }
             }
+
             // For other fields, include if value has changed 
             else if (ProcessedData[field.name] !== initialData[field.name]) {
                 changedData[field.name] = ProcessedData[field.name];
@@ -148,19 +166,19 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
         ProcessedData = changedData;
     }
     
+    // in case of using FormData for file uploads do the conversion
     if(useFormData){
       let form = new FormData();
+
       // Append all fields to FormData
       Object.entries(ProcessedData).forEach(([key, value]) => {
-        console.log('Appending to FormData:', key, typeof value, value);
+
         if (value instanceof File) {
-          // For File objects
           form.append(key, value, value.name);
 
         } else if (value === null || value === undefined) {
           // Skip null/undefined values
-          console.log('Skipping null/undefined value for:', key);
-
+          return;
         } else if (typeof value === 'boolean') {
           // Explicitly convert boolean to string for clarity, though FormData.append would do this implicitly.
           form.append(key, value ? 'true' : 'false');
@@ -172,22 +190,21 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
           form.append(key, timestamp); 
         
         } else {
-          // Everything else
+          // other expected inputs
           form.append(key, value);
         }
       });
-      for (let pair of form.entries()) {
-        console.log('formdata pair : ',pair[0]+ ', ' + pair[1]);
-      }
+
       ProcessedData=form;
     }
-    console.log('Final FormData to submit:', ProcessedData);
-  
+
+    // submit the processed data
     onSubmit(ProcessedData);
   }
   return (
     <div className="p-4 shadow-md rounded-lg bg-white space-y-4 max-w-[800px] ">
       <h2 className="text-xl font-semibold">{title}</h2>
+      
       {errors.form && (
           <div className="bg-red-100 bg-opacity-10 border-l-4 border-danger text-danger p-4">
             <p className="text-danger">{errors.form}</p>
@@ -279,11 +296,7 @@ function FormField({field,value,onChange,preview=null}) {
       case 'file':
           return (
             <div >
-              {/* Custom file picker 
-              <label htmlFor={field.name} className=" cursor-pointer">
-                <span className="text-white  font-semibold bg-black p-2 rounded">Choose File</span>
-              </label>
-              */}
+
               <input name={field.name} id={field.name} type="file" className="input" accept="image/*"
                 onChange={e => onChange(field.name,e)} ></input>
                 

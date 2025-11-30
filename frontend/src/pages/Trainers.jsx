@@ -5,24 +5,29 @@ import DeleteModal from '../components/common/DeleteModal';
 import { createTrainerSchema, updateTrainerSchema } from '../validation/schemas/TrainerSchema';
 import { useNotification } from '../context/NotificationContext';
 import { useBodyOverflow } from '../utils/tools';
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
 
 function Trainers() {
     const [Trainers, setTrainers] = useState([]);
     const [loading, setLoading] = useState(false);
-    // const [error, setError] = useState(null);
     const [isModalOpen , setIsModalOpen] = useState(false); // Controls modal visibility (true/false)
     const [editingTrainer, setEditingTrainer] = useState(null); // Stores Trainer being edited (null for new Trainer, object for editing)
     const [deletingTrainerId, setDeletingTrainerId] = useState(null); // ID of Trainer being deleted
     const [showDeleteModal, setShowDeleteModal] = useState(false); // Controls delete confirmation dialog visibility
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
     const { success ,error} = useNotification();
-  
+    
     // fetch Trainers from backend
     async function fetchTrainers() {
         try {
             setLoading(true);
-            const response = await TrainerService.getTrainers();
-            console.log('Fetched Trainers:', response);
-            setTrainers(response);
+            const response = await TrainerService.getTrainers(page);
+
+            setTotalPages(response.total_pages || 1);
+            setPageSize(response.PAGE_SIZE || 10);
+            setTrainers(response.data || []);
           } catch (err) {
             error('Failed to load Trainers');
             console.error(err); 
@@ -32,7 +37,8 @@ function Trainers() {
       }
     useEffect( ()=>{
       fetchTrainers();
-    }, []);
+    }, [page]);
+
     
     // Scroll to form when modal opens
     useEffect(() => {
@@ -173,9 +179,9 @@ function Trainers() {
                       </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
+                ))}              </tbody>
           </table>
+          <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
           </div>
           </>
         )

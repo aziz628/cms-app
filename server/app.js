@@ -49,7 +49,7 @@ app.use(cors({
         credentials: true,}));
 
 
-// Serve static files (CSS, JS, images):
+// Serve public static files (CSS, JS, images):
 
 //  when URL is '/assets/<requested_file_path>'
 // express looks in 'public/<requested_file_path>'
@@ -122,10 +122,13 @@ app.get('/api/health', publicLimiter, async (req, res) => {
 
 
 
-// AFTER all API routes, serve the React app static files
-// Assuming your React build is in a 'frontend/dist' folder
-app.use(express.static(path.join(__dirname, './dist')));
+// serve the admin cms react app static files
+app.use('/cms', express.static(path.join(__dirname, './dist')));
 
+// Admin app routing - only for authenticated users
+app.get('/cms/*', authenticate_session, (req, res) => {
+    res.sendFile(path.join(__dirname, './dist', 'index.html'));
+});
 
 // serve default images for template
 app.use('/uploads/general_info/:imageName', async (req, res, next) => {
@@ -147,21 +150,17 @@ app.use('/uploads/general_info/:imageName', async (req, res, next) => {
 });
 
 
-// For any other route, send the React app's index.html
-// This enables client-side routing with React Router and redirect to 404 page
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, './dist', 'index.html'));
-});
 
-/*
-
-/*
 // Handle 404 errors for unmatched routes
 // This will handle both API and non-API routes
 app.use((req, res) => {
     // Check if request expects JSON (XHR or Accept header includes application/json)
-    const expectsJson = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'));
-    
+      const expectsJson = 
+        req.xhr ||  // XMLHttpRequest (older AJAX)
+        req.method === 'GET' && req.path.startsWith('/api/') ||  // API routes
+        req.headers['content-type']?.includes('application/json') ||  // Request sends JSON
+        req.headers.accept?.includes('application/json');  // Client accepts JSON
+        
     if (expectsJson) {
         return res.status(404).json({ message: 'Page not found' });
     } else {
@@ -170,9 +169,8 @@ app.use((req, res) => {
         return res.status(404).sendFile(path.join(__dirname, 'public', "static", "error.html"));
     }
 });
-*/
 
 // Error handling middleware
-app.use(errorHandler);  
+app.use(errorHandler);
 
 export default app;

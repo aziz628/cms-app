@@ -81,6 +81,9 @@
                 <% } %>
             </div>
 
+            <!-- Pagination -->
+            <%- include('../partials/pagination.ejs', { page, totalPages, pageSize, section: 'transformations' }) %>
+
             <!-- CTA -->
             <div class="text-center mt-12 animate-on-scroll">
                 <!--link to contact section-->

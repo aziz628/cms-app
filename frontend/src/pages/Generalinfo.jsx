@@ -5,8 +5,11 @@ import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools.js';
 import { useScrollToForm } from '../utils/tools.js';
 import { useNotification } from '../context/NotificationContext.jsx';
-import { aboutSchema, createBusinessHourSchema, updateBusinessHourSchema,hero_title_Schema,hero_subtitle_Schema } from '../validation/schemas/generalinfoSchema.js';
+import {createBusinessHourSchema, updateBusinessHourSchema } from '../validation/schemas/GeneralinfoSchema.js';
 import { getCurrentPage } from '../utils/tools.js';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+import { AboutSummaryForm, HeroTitleForm, HeroSubtitleForm } from '../components/forms/GeneralInfoForms.jsx';
+
 export default function Info() {
     // data holding states
     const [aboutSummary, setAboutSummary] = useState('');
@@ -23,9 +26,11 @@ export default function Info() {
     const [HeroSubtitleLoading, setLoadingHeroSubtitle] = useState(false);
     const [HeroImageLoading, setLoadingHeroImage] = useState(false);
     const [HoursLoading, setLoadingHours] = useState(false);
+    
     // modal appearance states
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    
     // editing states
     const [EditingHour, setEditingHour] = useState(false);
     const [hourToDeleteID, setHourToDeleteID] = useState(null);
@@ -37,6 +42,7 @@ export default function Info() {
 
     // Fetch initial data
     async function fetchData() {
+             // set loading states
             setLoadingAboutSummary(true);
             setLoadingHours(true);
             setLoadingHeroTitle(true);
@@ -45,16 +51,21 @@ export default function Info() {
             setLoadingAboutImage(true);
             try {
                 const data = await generalService.getGeneralInfo();
+
+                // set data states
                 setAboutSummary(data.about_summary);
                 setBusinessHours(data.business_hours);
                 setHeroTitle(data.hero_title);
                 setHeroSubtitle(data.hero_subtitle);
                 setHeroImage(data.hero_image);
                 setAboutImage(data.about_image);
+
             } catch (err) {
                 error("Failed to load data");
                 console.error("Error fetching data:", err);
+                
             } finally {
+                // reset loading states
                 setLoadingHeroTitle(false);
                 setLoadingHeroSubtitle(false);
                 setLoadingHeroImage(false);
@@ -89,6 +100,7 @@ export default function Info() {
         setHourToDeleteID(null);
         setIsDeleteModalOpen(false);
     }
+   
     // form submission handlers
     const handleAboutSubmit = async (formData) => {
         try {
@@ -103,7 +115,7 @@ export default function Info() {
             setLoadingAboutSummary(false);
         }
     }
-    // handle title , subtitle , about image , hero image updates
+    // form submit handlers 
 
     const handleFormSubmit = async (formData) => {
         try {
@@ -177,6 +189,8 @@ export default function Info() {
             setLoadingAboutImage(false);
         }
     };
+
+    // delete confirmation handler
     const handleDeleteConfirm = async () => {
         try {
             // Call delete API
@@ -214,6 +228,7 @@ export default function Info() {
 
     return (
         <div className='space-y-4'>
+            {/* General Information Header */}
             <div className='flex justify-between items-center'>
                 <h1 className="text-2xl font-bold mb-4">General Information</h1>
                 <button onClick={() => openModal()} className="btn-primary">
@@ -221,35 +236,35 @@ export default function Info() {
                     Add Business Hour
                 </button>
             </div>
+
+            {/* Business Hours Section */}
             <div  className='bg-containerBg shadow-shadowColor max-w-[800px] p-4 shadow-md rounded-lg space-y-8'>                
-                            
+                    
+                    {/* Business Hours Form */}
                     <div className='space-y-2'>
                         <h2 className="text-xl font-semibold ">Hero Title</h2>
                         {HeroTitleLoading ? (
-                            <div className="flex bg-red justify-center items-center p-2">
-                                <div className="animate-spin color-blue rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
+                            <LoadingSpinner size='small'/>
                             ) : (
                                     <HeroTitleForm HeroTitle={heroTitle} onSubmit={handleHeroTitleSubmit} />
                             )
                         }
                     </div>
+                    { /* Hero Subtitle Form */}
                     <div className='space-y-2'>
                         <h2 className="text-xl font-semibold ">Hero Subtitle</h2>
                         {HeroSubtitleLoading ? (
-                            <div className="flex bg-red justify-center items-center p-2">
-                                <div className="animate-spin color-blue rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
+                            <LoadingSpinner size='small'/>
                         ) : (
                             <HeroSubtitleForm HeroSubtitle={heroSubtitle} onSubmit={handleHeroSubtitleSubmit} />
                         )}
                     </div>
+
+                    { /* Hero Image Form */}
                     <div className='space-y-2'>
                         <h2 className="text-xl font-semibold ">Hero Image</h2>
                         {HeroImageLoading ? (
-                            <div className="flex bg-red justify-center items-center p-2">
-                                <div className="animate-spin color-blue rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
+                            <LoadingSpinner size='small'/>
                             ) : (
                                 <div className='flex flex-col space-y-2'>
                                     {/* preview for image */}
@@ -264,23 +279,21 @@ export default function Info() {
                         }
                     </div>
                     
+                    { /* Hero Image Form */}
                     <div className='space-y-2'>
                         <h2 className="text-xl font-semibold ">About Summary</h2>
                         {AboutSummaryLoading ? (
-                            <div className="flex bg-red justify-center items-center p-2">
-                                <div className="animate-spin color-blue rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
+                            <LoadingSpinner size='small'/>
                         ) : (
                             <AboutSummaryForm AboutSummary={aboutSummary} onSubmit={handleAboutSubmit} />
                         )}
                     </div>
-
+                    
+                    { /* About Image Form */}
                     <div className='space-y-2'>
                         <h2 className="text-xl font-semibold ">About Summary image</h2>
                         {AboutImageLoading ? (
-                            <div className="flex bg-red justify-center items-center p-2">
-                                <div className="animate-spin color-blue rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
+                            <LoadingSpinner size='small'/>
                             ) : (
                                 <div className='flex flex-col space-y-2'>
                                     {/* preview for image */}
@@ -294,16 +307,21 @@ export default function Info() {
                         }
                     </div>
                 
-                
+                {/* Business Hours Table */}
                 <div className='space-y-2'>
                     <h2 className="text-xl font-semibold mb-4">Business Hours</h2>
-                        {HoursLoading ? (
-                            <div className="flex bg-red justify-center items-center p-4">
-                                <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
-                            ) : (
-                                <>
-                                {businessHours?.length > 0 ? (
+                        
+                        {HoursLoading 
+                        ?   (
+                            <>                   
+                            {/* Loading Indicator  */}
+                               <LoadingSpinner  />
+                            </>
+                            ) 
+                        : (<>
+                           { /* Business Hours Table */}
+                                {businessHours?.length > 0 
+                                ? (
                                         <div className='overflow-x-auto'>
                                             <table className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-gray-200'>
                                                 <thead className='bg-[#ebeef2]'>
@@ -339,15 +357,18 @@ export default function Info() {
                                             </tbody>
                                         </table>
                                         </div>
-                                    ) : (
+                                   ) 
+                                : (
                                     <p className='text-muted'>No business hours found.</p>
                                 )}
-                                </>
-                                )
+                            </>
+                            )
                         }
                 </div>
                
             </div>
+            
+            { /* Modal for Adding/Editing Business Hours */}
              {isModalOpen &&
                     <div id='form'>
                         <FormBuilder
@@ -371,6 +392,8 @@ export default function Info() {
                         />
                     </div>
                 }
+
+                { /* Delete Confirmation Modal */}
                 {
                 isDeleteModalOpen && 
                     <div>
@@ -387,110 +410,4 @@ export default function Info() {
     )
 
 }
-function AboutSummaryForm({ AboutSummary, onSubmit }) {
-    const [summary, setAboutSummary] = useState(AboutSummary || '');
-    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        setAboutSummary(AboutSummary || '');
-    }, [AboutSummary]);
-
-    const handleSubmit = async (e) => {
-        try {
-            e.preventDefault();
-            await aboutSchema.validate({ about_summary: summary })
-            onSubmit({ about_summary: summary });
-        } catch (err) {
-            setError(err.message);
-        }
-    }
-    return (
-        <form onSubmit={handleSubmit} className=''>
-            <div className='flex flex-wrap items-center space-x-3'>
-            <textarea
-                id="about-summary"
-                value={summary}
-                onChange={(e) => setAboutSummary(e.target.value)}
-                className="h-20 min-w-48 p-2 border border-gray-300 rounded"
-                rows="4"
-                placeholder="Enter your gym summary..."
-            />
-            <button type="submit" className="btn-primary">
-                      <i className="fa-solid fa-save"></i>
-                  </button>
-            </div>
-            {error && <p className="text-danger text-sm mt-2">{error} <i className="fas fa-exclamation-circle"></i></p>}
-        </form>
-    );
-}
-
-function HeroTitleForm({ HeroTitle, onSubmit }) {
-    const [title, setHeroTitle] = useState(HeroTitle || '');
-    const [error, setError] = useState(null);
-    useEffect(() => {
-        setHeroTitle(HeroTitle || '');
-    }, [HeroTitle]);
-
-    const handleSubmit = async (e) => {
-        try {
-            e.preventDefault();
-            await hero_title_Schema.validate({ hero_title: title })
-            onSubmit({ hero_title: title });
-        } catch (err) {
-            setError(err.message);
-        }
-    }
-    return (
-        <form onSubmit={handleSubmit} className=''>
-            <div className='flex flex-wrap items-center space-x-3'>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setHeroTitle(e.target.value)}
-                    className="border border-gray-300 rounded p-2"
-                    placeholder="Enter hero title..."
-                />
-                <button type="submit" className="btn-primary">
-                    <i className="fa-solid fa-save"></i>
-                </button>
-            </div>
-            {error && <p className="text-danger text-sm mt-2">{error} <i className="fas fa-exclamation-circle"></i></p>}
-        </form>
-    );
-}
-function HeroSubtitleForm({ HeroSubtitle, onSubmit }) {
-    const [subtitle, setHeroSubtitle] = useState(HeroSubtitle || '');
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        setHeroSubtitle(HeroSubtitle || '');
-    }, [HeroSubtitle]);
-
-    const handleSubmit = async (e) => {
-        try {
-            e.preventDefault();
-            await hero_subtitle_Schema.validate({ hero_subtitle: subtitle })
-            onSubmit({ hero_subtitle: subtitle });
-        } catch (err) {
-            setError(err.message);
-        }
-    }
-
-    return (
-        <form onSubmit={handleSubmit} className=''>
-            <div className='flex flex-wrap items-center space-x-3'>
-                <input
-                    type="text"
-                    value={subtitle}
-                    onChange={(e) => setHeroSubtitle(e.target.value)}
-                    className="border border-gray-300 rounded p-2"
-                    placeholder="Enter hero subtitle..."
-                />
-                <button type="submit" className="btn-primary">
-                    <i className="fa-solid fa-save"></i>
-                </button>
-            </div>
-            {error && <p className="text-danger text-sm mt-2">{error} <i className="fas fa-exclamation-circle"></i></p>}
-        </form>
-    );
-}

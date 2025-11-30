@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import authService from '../services/authService';
 import { useNotification } from '../context/NotificationContext.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -27,7 +28,7 @@ function Login() {
 
         try {
             const response = await authService.login({ username, password });
-            console.log('Login response:', response);
+
             login({ username: response.username });
             // Redirect or update UI after successful login
             success('Login successful');
@@ -50,9 +51,7 @@ function Login() {
             <div className='text-black bg-white p-8 rounded shadow-md w-full max-w-md'>
                 <h1 className='text-2xl font-bold mb-6 text-center'>Gym cms Login</h1>
                 {loading
-                    ?  <div className="flex bg-red justify-center items-center h-64">
-                            <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                        </div>
+                    ?  <LoadingSpinner />
                     :
                     <>
                         <form onSubmit={handleSubmit}>

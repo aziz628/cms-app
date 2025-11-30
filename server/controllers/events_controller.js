@@ -4,7 +4,8 @@ import event_service from "../services/events_service.js";
  * Fetch all events from the service
  */
 async function get_all_events(req, res) {
-    const events = await event_service.get_all_events();
+    const page = req.query.page || 1;
+    const events = await event_service.get_all_events(page);
 
     res.status(200).json(events);
 }

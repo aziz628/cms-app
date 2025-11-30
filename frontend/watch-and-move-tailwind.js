@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import { watch } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 // Get the directory of the current script
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sourceFile = path.join(__dirname, './tailwind-output/output.css');

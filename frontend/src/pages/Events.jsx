@@ -5,6 +5,8 @@ import DeleteModal from '../components/common/DeleteModal';
 import { createEventSchema, updateEventSchema } from '../validation/schemas/eventSchema.js';
 import { useNotification } from '../context/NotificationContext';
 import { useBodyOverflow } from '../utils/tools';
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 function Events() {
   const [Events, setEvents] = useState([]);
@@ -14,15 +16,21 @@ function Events() {
   const [editingEvent, setEditingEvent] = useState(null); // Stores Trainer being edited (null for new Trainer, object for editing)
   const [deletingEventId, setDeletingEventId] = useState(null); // ID of Trainer being deleted
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Controls delete confirmation dialog visibility
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
   const { success ,error} = useNotification();
+
   
     // fetch Events from backend
     async function fetchEvents() {
         try {
             setLoading(true);
-            const response = await EventService.getEvents();
-            console.log('Fetched Events:', response);
-            setEvents(response);
+            const response = await EventService.getEvents(page);
+
+            setTotalPages(response.total_pages || 1);
+            setPageSize(response.PAGE_SIZE || 10);
+            setEvents(response.data || []);
           } catch (err) {
             error('Failed to load Events');
             console.error(err); 
@@ -32,7 +40,10 @@ function Events() {
       }
     useEffect( ()=>{
       fetchEvents();
-    }, []);
+    }, [page]);
+
+
+
     useEffect(() => {
       if (isModalOpen) {
         // Scroll to the form when modal opens
@@ -117,9 +128,7 @@ function Events() {
       {
       loading 
       ? (
-        <div className="flex  justify-center items-center h-64">
-          <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500'></div>
-        </div>
+        <LoadingSpinner />
       )
       :<div id='events-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
         {Events.length === 0 ? (
@@ -154,7 +163,7 @@ function Events() {
                     <td className='px-2 py-3 text-md font-semibold text-gray-900'> {EventItem.title}</td>
                     <td className='  px-2 py-3 text-md font-semibold text-gray-900'>
                       <img 
-                      src={ `/uploads/Events/${EventItem.image}` } 
+                      src={ `/uploads/events/${EventItem.image}` } 
                       alt={EventItem.title} className='inline size-24 rounded ' />
                     </td>
                     <td className='px-2 py-3 text-sm text-gray-900'>{EventItem.description}</td>
@@ -186,6 +195,8 @@ function Events() {
                 ))}
               </tbody>
             </table>
+            <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
+
           </div>
           </>
         ) }

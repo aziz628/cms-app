@@ -4,8 +4,9 @@ import {
 }from "./dashboard_service.js";
 import { run_in_transaction } from "../utils/db_utils.js";
 import App_error from "../errors/AppError.js";
-
+import { timeToMinutes } from "../utils/time_format.js";
 const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+import {SCHEDULE,CLASSES} from '../DB/db_constants.js';
 
 
 async function get_schedule() {
@@ -13,34 +14,34 @@ async function get_schedule() {
         
      let {data=null} = await db.get(`
         SELECT json_object(
-            'sessionsByDay' , (
+            'sessions_by_day' , (
                 SELECT json_group_object(
                     day_of_week,
                     sessions
                 ) FROM (
                     SELECT 
-                        s.day_of_week,
+                        s.${SCHEDULE.DAY_OF_WEEK} ,
                         json_group_array(
                             json_object(
-                                'id', s.id,
-                                'start_time', s.start_time,
-                                'end_time', s.end_time,
-                                'class_id', s.class_id,
-                                'day_of_week', s.day_of_week
+                                'id', s.${SCHEDULE.ID},
+                                'start_time', s.${SCHEDULE.START_TIME},
+                                'end_time', s.${SCHEDULE.END_TIME},
+                                'class_id', s.${SCHEDULE.CLASS_ID},
+                                'day_of_week', s.${SCHEDULE.DAY_OF_WEEK}
                             )
                         ) as sessions
                     FROM schedule s
-                    GROUP BY s.day_of_week
+                    GROUP BY s.${SCHEDULE.DAY_OF_WEEK}
                 )
             ) ,
             'classes', (
                 SELECT json_group_array(
                     json_object(
-                        'id', c.id,
-                        'name', c.name
+                        'id', c.${CLASSES.ID},
+                        'name', c.${CLASSES.NAME}
                     )
                 )
-                FROM classes c
+                FROM ${CLASSES.TABLE_NAME} c
             )
         ) as data
          `)
@@ -48,26 +49,26 @@ async function get_schedule() {
         // parse data if it exists, if not then return empty schedule structure
         data = data ? JSON.parse(data) : {
             classes: [],
-            sessionsByDay: {},
+            sessions_by_day: {},
         };
         // parse the sessions from JSON strings to array of objects
-        Object.entries(data.sessionsByDay)?.forEach(([day, sessions]) => {
-            data.sessionsByDay[day] = JSON.parse(sessions);
+        Object.entries(data.sessions_by_day)?.forEach(([day, sessions]) => {
+            data.sessions_by_day[day] = JSON.parse(sessions);
         });
         // Order days of the week 
-        const orderedSessionsByDay = {};
-        
+        const ordered_sessions_by_day = {};
+
         dayOrder.forEach(day => {
-            if (data.sessionsByDay[day]) {
-                orderedSessionsByDay[day] = data.sessionsByDay[day];
+            if (data.sessions_by_day[day]) {
+                ordered_sessions_by_day[day] = data.sessions_by_day[day];
             }
         });
-        
-        data.sessionsByDay = orderedSessionsByDay;
-        
+
+        data.sessions_by_day = ordered_sessions_by_day;
+
         // order by start_time and duration, complexity O(n log n)
-        for (const day in data.sessionsByDay) {
-            data.sessionsByDay[day].sort((a, b) => {
+        for (const day in data.sessions_by_day) {
+            data.sessions_by_day[day].sort((a, b) => {
                 const startA = timeToMinutes(a.start_time);
                 const startB = timeToMinutes(b.start_time);
                 
@@ -87,10 +88,7 @@ async function get_schedule() {
         return data;
 }
 
-const timeToMinutes = (time) => {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours * 60 + minutes;
-        };
+
 
 /**
  * Adds a new session to the schedule.
@@ -103,7 +101,7 @@ async function add_session(new_session) {
         validate_new_session_time(new_session);
         let result;
         try {
-            result = await db.run(`INSERT INTO schedule (day_of_week, start_time, end_time, class_id) VALUES (?, ?, ?, ?)`,
+            result = await db.run(`INSERT INTO ${SCHEDULE.TABLE_NAME} (${SCHEDULE.DAY_OF_WEEK}, ${SCHEDULE.START_TIME}, ${SCHEDULE.END_TIME}, ${SCHEDULE.CLASS_ID}) VALUES (?, ?, ?, ?)`,
             [new_session.day_of_week, new_session.start_time, new_session.end_time, new_session.class_id]);
         } catch (err) {
             if (err.message.includes("FOREIGN KEY constraint failed")) {
@@ -126,7 +124,7 @@ async function add_session(new_session) {
 async function update_session(session_id, updated_session) {
     return await run_in_transaction(db, async () => {
         // Check if the session exists before updating
-        const existingSession = await db.get(`SELECT * FROM schedule WHERE id = ?`, [session_id]);
+        const existingSession = await db.get(`SELECT * FROM ${SCHEDULE.TABLE_NAME} WHERE ${SCHEDULE.ID} = ?`, [session_id]);
         if (!existingSession) {
             throw new App_error("Session not found", 404, "SESSION_NOT_FOUND");
         }
@@ -140,14 +138,14 @@ async function update_session(session_id, updated_session) {
         // check if class_id in updated_session
         if (updated_session.class_id !== undefined) {
             // check if class_id exists in classes table
-            const classExists = await db.get(`SELECT id FROM classes WHERE id = ?`, [updated_session.class_id]);
+            const classExists = await db.get(`SELECT ${CLASSES.ID} FROM ${CLASSES.TABLE_NAME} WHERE ${CLASSES.ID} = ?`, [updated_session.class_id]);
             if (!classExists) {
                 throw new App_error("Class not found", 404, "CLASS_NOT_FOUND");
             }
         }
         const setClause = fields.map(field => `${field} = ?`).join(', ');
         values.push(session_id); // for the WHERE clause
-        const query = `UPDATE schedule SET ${setClause} WHERE id = ?`;
+        const query = `UPDATE ${SCHEDULE.TABLE_NAME} SET ${setClause} WHERE ${SCHEDULE.ID} = ?`;
 
         const result = await db.run(query, values);
 
@@ -160,7 +158,7 @@ async function update_session(session_id, updated_session) {
 
 async function delete_session(session_id) {
     return await run_in_transaction(db, async () => {
-        const result = await db.run(`DELETE FROM schedule WHERE id = ?`, [session_id]);
+        const result = await db.run(`DELETE FROM ${SCHEDULE.TABLE_NAME} WHERE ${SCHEDULE.ID} = ?`, [session_id]);
 
         if (result.changes === 0) {
             throw new App_error("Session not found", 404, "SESSION_NOT_FOUND");

@@ -272,7 +272,7 @@ describe("Schedule API", () => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toBeDefined();
                 expect(response.body).toHaveProperty('classes');
-                expect(response.body).toHaveProperty('sessionsByDay');
+                expect(response.body).toHaveProperty('sessions_by_day');
                 
                 // Check the structure of each schedule
                 // body is object of objects
@@ -282,8 +282,8 @@ describe("Schedule API", () => {
                     expect(Class).toHaveProperty('name');
                 }
 
-                for(const day in response.body.sessionsByDay) {
-                    for(const session of response.body.sessionsByDay[day]) {
+                for(const day in response.body.sessions_by_day) {
+                    for(const session of response.body.sessions_by_day[day]) {
                         expect(session).toHaveProperty('id');
                         expect(session).toHaveProperty('start_time');
                         expect(session).toHaveProperty('end_time');

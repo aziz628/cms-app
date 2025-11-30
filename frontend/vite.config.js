@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+
+  base: '/cms/',  // add the prefix /cms/ to all asset urls
    server: {
     proxy:  {
       '/api': {

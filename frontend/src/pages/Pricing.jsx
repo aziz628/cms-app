@@ -10,7 +10,8 @@ import {
   addFeatureSchema,
   updateFeatureSchema
 } from '../validation/schemas/PricingSchema.js';
- 
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
+
 function Pricing() {
   const [pricingPlans, setPricingPlans] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,14 +21,20 @@ function Pricing() {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingPlanId, setDeletingPlanId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1); 
   const { success, error } = useNotification();
 
   useBodyOverflow(showDeleteModal);
   const fetchPricingPlans = async () => {
     setLoading(true);
     try {
-      const plans = await pricingService.getAllPlans();
-      setPricingPlans(plans);
+      const response = await pricingService.getAllPlans(page);
+      
+      setTotalPages(response.total_pages || 1);
+      setPageSize(response.PAGE_SIZE || 10);
+      setPricingPlans(response.data || []);
     } catch (err) {
       error("Failed to fetch pricing plans");
       console.error(err);
@@ -37,7 +44,8 @@ function Pricing() {
   };
   useEffect(() => {
     fetchPricingPlans();
-  }, []);
+  }, [page]);
+
   useEffect(() => {
     if (showModal) {
       const formElement = document.getElementById("form");
@@ -189,20 +197,21 @@ function Pricing() {
                                 </div>
                               </div>
                               )
-                              /* Otherwise, render as normal list item */
+                              /* Otherwise, render as  item list  */
                               :( <li key={i} style={{borderTop: i === 0 ? 'none' : '1px solid grey'}} className={'text-sm py-1  flex justify-between items-center'}>
                                 <p className='space-x-1'>
-                                <i style={{color:'green'}} className="fa-solid fa-check"></i>
-                                <span>{feature.feature.charAt(0).toUpperCase() + feature.feature.slice(1)}</span>
+                                  <i style={{color:'green'}} className="fa-solid fa-check"></i>
+                                  <span>{feature.feature.charAt(0).toUpperCase() + feature.feature.slice(1)}</span>
                                 </p>
+
                                 <div className='space-x-2 flex'>
                                   <button onClick={()=>{setEditingFeature(feature)}}  
                                     type='button' 
                                     className=' px-2 py-1 rounded flex items-center justify-center bg-green-600 hover:bg-green-700 text-white p-[2px]'>
-                                    <i className="fa-solid fa-pen-to-square "></i>
+                                     <i className="fa-solid fa-pen-to-square "></i>
                                     </button>
                                    <button onClick={()=>deleteFeature(feature.id)} type='button' className=' px-2 py-1 rounded flex items-center justify-center  bg-red-600 hover:bg-red-700 text-white p-[2px]'> 
-                                    <i className="fa-solid fa-trash"></i>
+                                      <i className="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
                                 </li>
@@ -247,6 +256,7 @@ function Pricing() {
                       </div>
                     ))}
                   </div>
+                  <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
                 </div>
             )
           )

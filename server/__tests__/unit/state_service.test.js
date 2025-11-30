@@ -40,7 +40,7 @@ describe('Upload Storage State Service - Unit Tests', () => {
         jest.clearAllMocks();
         reset();
 
-            
+           
         // Setup default mock behaviors
         // Make writeFile "succeed" (return undefined)
         fs.writeFile.mockResolvedValue(undefined);

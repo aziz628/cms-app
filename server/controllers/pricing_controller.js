@@ -3,7 +3,8 @@ import pricing_service from "../services/pricing_service.js";
 /** Fetch all pricing plans
  */
 async function get_pricing_plans(req, res) {
-    const pricing_plans  = await pricing_service.get_pricing_plans();
+    const page = req.query.page || 1;
+    const pricing_plans  = await pricing_service.get_pricing_plans(page);
     res.status(200).json(pricing_plans);
 }
 

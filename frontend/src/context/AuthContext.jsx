@@ -19,14 +19,13 @@ export const AuthProvider = ({ children }) => {
 
     // Login function to set user and store in localStorage
     const login = (userData) => {
-        console.log("Logging in...", userData);
+
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
     }
     
     // Logout function to clear user and remove from localStorage
     const logout = () => {
-        console.log("Logging out...");
         setUser(null);
         localStorage.removeItem("user");
     }

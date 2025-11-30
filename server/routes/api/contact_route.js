@@ -1,6 +1,7 @@
 import express from "express";
 import { wrap_all_async_functions } from "../../utils/async_controller.js";
 import  contact_controller from "../../controllers/contact_controller.js";
+
 // validator
 import contact_validators from "../../middleware/validators/contact_validator.js";
 const {

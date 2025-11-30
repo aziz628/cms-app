@@ -26,7 +26,6 @@ export const createpricingPlanSchema=yup.object({
     price:pricing_plan_base_fields.price.required("Price is required"),
     period:pricing_plan_base_fields.period.required("Period is required"),
     popular:pricing_plan_base_fields.popular.required("Popular is required")
-
 }).required()
 
 export const updatepricingPlanSchema=yup.object(pricing_plan_base_fields).test('hasChanges',
@@ -36,14 +35,8 @@ export const updatepricingPlanSchema=yup.object(pricing_plan_base_fields).test('
       { name: "description" },
       { name: "price" },
       { name: "period"},
-      { name: "popular" }
+      { name: "popular",type:"boolean" },
     ])) 
-
-// plan feature 
-/*
-const add_feature_schema = joi.object({
-    feature: joi.string().min(2).max(100).required()
-}); */
 
 const feature_base_fields={
     feature:yup.string()

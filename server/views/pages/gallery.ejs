@@ -65,6 +65,9 @@
                     </div>
                 <% } %>
             </div>
+            <!-- Pagination -->
+            <%- include('../partials/pagination.ejs', { page, totalPages, pageSize, section: 'gallery' }) %>
+
 
             <!-- CTA -->
             <div class="text-center mt-12 animate-on-scroll">

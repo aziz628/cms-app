@@ -1,14 +1,6 @@
 <!-- Hero Section -->
 
-<!-- vars avaialable :
-     general_info,
-      classes,
-      pricing,
-      schedule,
-      contact,
-      classes_count,
-      trainer_count
-      -->
+
 <!-- bg variable-->
 <section id="home" class="relative min-h-screen flex items-center" 
 
@@ -137,7 +129,19 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
                 <p class="col-span-full text-center text-slate-500">No classes available</p>
             <% } %>
         </div>
-        
+        <!-- Pagination -->
+            <!-- Classes Pagination -->
+        <% if (classes_pagination) { %>
+            <% 
+                const page = classes_pagination.page;
+                const totalPages = classes_pagination.totalPages;
+                const pageSize = classes_pagination.pageSize;
+            %>
+            <!--pass the vars to the pagination partial-->
+            <% const section = 'classes'; %>
+            <%- include('../partials/pagination.ejs', { page, totalPages, pageSize, section }) %>
+        <% } %>
+
         <!-- CTA -->
         <div class="text-center mt-12">
             <a href="#schedule" class="btn-primary">View Full Schedule</a>
@@ -165,73 +169,73 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
         </div>
         
         <!-- Schedule Table -->
-        <div class="bg-white rounded-xl shadow-xl overflow-x-auto animate-on-scroll">
-            <table class="w-full">
-                <thead class="bg-slate-100">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Time</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Monday</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Tuesday</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Wednesday</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Thursday</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Friday</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200">
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 font-medium text-slate-700">6:00 AM</td>
-                        <td class="px-6 py-4">
-                            <div class="bg-primary/10 border-l-4 border-primary p-3 rounded">
-                                <div class="font-semibold text-slate-900">Strength Training</div>
-                                <div class="text-sm text-slate-600">John Doe</div>
+        <div id="schedule" class="flex flex-col p-2  rounded-lg text-center overflow-x-auto">
+            <!--columns headers-->
+            <div class="h-fit w-fit mx-[auto]  border rounded-lg shadow-lg bg-white">
+                <div class=" flex w-fit  bg-gray-50 text-xl h-14 border-b text-center font-semibold">
+                    <div class="header-empty w-[110px]  h-14 "></div>
+                    <% for (const day in layoutByDay) { %>
+                        <div class="day-header h-14 w-[inherit] border-l border-gray-200 flex justify-center items-center  text-center font-semibold" style="width:<%= Widths[day] %>px">
+                            <span><%= day.charAt(0).toUpperCase() + day.slice(1) %></span>
+                        </div>
+                    <% } %>
+
+                </div>
+                <div class="schedule-body flex">
+                <!-- Hours Column -->
+                    <div class="hours-col flex flex-col border-r">
+                        <% hoursSlots.forEach(h => { %>
+                            <!--disable breakline -->
+                            <div class="hour-cell h-[60px] w-[110px] text-nowrap border-b px-2 py-4 text-sm font-medium text-gray-600">
+                                <%= h.hourStart %> - 
+                                <%= h.hourEnd === "24:00" ? "00:00" : h.hourEnd %>
                             </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="bg-green-50 border-l-4 border-green-600 p-3 rounded">
-                                <div class="font-semibold text-slate-900">Cardio Blast</div>
-                                <div class="text-sm text-slate-600">Jane Smith</div>
+                        <% }) %>
+                    </div>
+
+                <!-- Day Columns -->
+                    <% for (const day in layoutByDay) { %>
+                    <div class="day-col border-r " style="width:<%= Widths[day] %>px">
+
+                    
+                        <div class="day-body w-[inherit] relative " style="height:<%= hoursSlots.length * ROW_HEIGHT %>px; background-image: linear-gradient(to bottom, transparent calc(100% - 1px), #e5e7eb calc(100% - 1px)); background-size: 100% <%= ROW_HEIGHT %>px;">
+
+                            <!--loop over hourslots and render both empty slots and filled sessions-->
+                            <% hoursSlots.forEach((slot) => { %>
+                                <!-- don't give z index to parent because of stacking context , the absolute positioned child cannot show up in front of parent  -->
+                                <div id="row"  class="relative   w-full h-[60px] ">
+                                    <% const sessionsInSlot = layoutByDay[day][timeToMinutes(slot.hourStart)] || []; %>
+                                    <% sessionsInSlot.forEach((s) => { %>
+                                    <div class="session-box absolute z-10 rounded text-white bg-secondary flex flex-col justify-between"
+                                        style="
+                                            top:<%= s.top %>px;
+                                            left:<%= s.left %>px;
+                                            height:<%= s.height %>px;
+                                            width:<%= s.width %>px;
+                                            border:1px solid black;
+                                        ">
+
+                                        <div class="p-1 text-xs text-black font-semibold">
+                                            <%= s.class_name.charAt(0).toUpperCase() + s.class_name.slice(1) %>
+                                            <div class="text-[11px] mt-1">
+                                                <%= s.start_time %> — <%= s.end_time %>
+                                            </div>
+                                        </div>
+
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            <% }) %>
+
                             </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="bg-primary/10 border-l-4 border-primary p-3 rounded">
-                                <div class="font-semibold text-slate-900">Strength Training</div>
-                                <div class="text-sm text-slate-600">John Doe</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-400">-</td>
-                        <td class="px-6 py-4">
-                            <div class="bg-purple-50 border-l-4 border-purple-600 p-3 rounded">
-                                <div class="font-semibold text-slate-900">Yoga</div>
-                                <div class="text-sm text-slate-600">Sarah Lee</div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 font-medium text-slate-700">8:00 AM</td>
-                        <td class="px-6 py-4">
-                            <div class="bg-purple-50 border-l-4 border-purple-600 p-3 rounded">
-                                <div class="font-semibold text-slate-900">Yoga</div>
-                                <div class="text-sm text-slate-600">Sarah Lee</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-400">-</td>
-                        <td class="px-6 py-4">
-                            <div class="bg-green-50 border-l-4 border-green-600 p-3 rounded">
-                                <div class="font-semibold text-slate-900">Cardio Blast</div>
-                                <div class="text-sm text-slate-600">Jane Smith</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="bg-primary/10 border-l-4 border-primary p-3 rounded">
-                                <div class="font-semibold text-slate-900">Strength Training</div>
-                                <div class="text-sm text-slate-600">John Doe</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-400">-</td>
-                    </tr>
-                </tbody>
-            </table>
+
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
         </div>
+
     </div>
 </section>
 
@@ -298,6 +302,16 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
                 <p class="col-span-full text-center text-slate-500">No pricing plans available</p>
             <% } %>
         </div>
+
+        <% if (pricing_pagination) { %>
+            <% 
+                const page = pricing_pagination.page;
+                const totalPages = pricing_pagination.totalPages;
+                const pageSize = pricing_pagination.pageSize;
+            %>
+            <% const section = 'pricing'; %>
+            <%- include('../partials/pagination.ejs', { page, totalPages, pageSize, section }) %>
+        <% } %>
     </div>
 </section>
 

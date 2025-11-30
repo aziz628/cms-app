@@ -6,6 +6,8 @@ import {record_entity_creation,
 import { delete_image } from "./content_service.js";
 import AppError from "../errors/AppError.js";
 import { run_in_transaction } from "../utils/db_utils.js";
+import {GENERAL_INFO,BUSINESS_HOURS} from '../DB/db_constants.js';
+
 
 const DEFAULT_HERO_IMAGE=process.env.DEFAULT_HERO_IMAGE;
 const DEFAULT_ABOUT_IMAGE=process.env.DEFAULT_ABOUT_IMAGE;
@@ -28,15 +30,15 @@ async function get_info() {
         'business_hours',
         (
           SELECT json_group_array(
-            json_object('id', id, 'day', day, 'open_time', open_time, 'close_time', close_time)
+            json_object('id', ${BUSINESS_HOURS.ID}, 'day', ${BUSINESS_HOURS.DAY}, 'open_time', ${BUSINESS_HOURS.OPEN_TIME}, 'close_time', ${BUSINESS_HOURS.CLOSE_TIME})
           )
-          FROM business_hour
+          FROM ${BUSINESS_HOURS.TABLE_NAME}
         ),
-        'about_summary' , (SELECT about_summary FROM general_info LIMIT 1) ,
-        'about_image' , (SELECT about_image FROM general_info LIMIT 1) ,
-        'hero_title' , (SELECT hero_title FROM general_info LIMIT 1) ,
-        'hero_subtitle' , (SELECT hero_subtitle FROM general_info LIMIT 1) ,
-        'hero_image', (SELECT hero_image FROM general_info LIMIT 1) 
+        'about_summary' , (SELECT about_summary FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1) ,
+        'about_image' , (SELECT about_image FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1) ,
+        'hero_title' , (SELECT hero_title FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1) ,
+        'hero_subtitle' , (SELECT hero_subtitle FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1) ,
+        'hero_image', (SELECT hero_image FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1) 
       ) as data
     `);
     data = data ? JSON.parse(data) : { 
@@ -77,7 +79,7 @@ const getDayIndex = (dayStr) => {
 async  function create_business_hour (new_business_hour){
   return await run_in_transaction(db,async ()=>{
 
-    const result = await db.run(`INSERT into business_hour (day, open_time, close_time) values (?, ?, ?)`, [
+    const result = await db.run(`INSERT into ${BUSINESS_HOURS.TABLE_NAME} (${BUSINESS_HOURS.DAY}, ${BUSINESS_HOURS.OPEN_TIME}, ${BUSINESS_HOURS.CLOSE_TIME}) values (?, ?, ?)`, [
       new_business_hour.day,
       new_business_hour.open_time,
       new_business_hour.close_time
@@ -102,8 +104,8 @@ async  function create_business_hour (new_business_hour){
     const set_clause = Object.keys(business_hours).map(field => `${field} = ?`).join(", ");
     const values = Object.values(business_hours);
     values.push(id); // for the WHERE clause
-    
-    const result=await db.run(`UPDATE business_hour SET ${set_clause} Where id = ?`, values);
+
+    const result=await db.run(`UPDATE ${BUSINESS_HOURS.TABLE_NAME} SET ${set_clause} Where ${BUSINESS_HOURS.ID} = ?`, values);
     if(result.changes === 0){
       throw new AppError(`No business hour found with ID ${id}`, 404, "BUSINESS_HOUR_NOT_FOUND");
     }
@@ -116,7 +118,7 @@ async  function create_business_hour (new_business_hour){
 async function delete_business_hour(id) {
   return await run_in_transaction(db,async ()=>{
 
-    const result = await db.run(`DELETE from  business_hour where id = ?`,[id]) 
+    const result = await db.run(`DELETE from ${BUSINESS_HOURS.TABLE_NAME} where ${BUSINESS_HOURS.ID} = ?`,[id]) 
     if(result.changes === 0){
       throw new AppError(`No business hour found with ID ${id}`, 404, "BUSINESS_HOUR_NOT_FOUND");
     }
@@ -137,11 +139,11 @@ async function delete_business_hour(id) {
 async function update_about_summary(summary) {
   return await run_in_transaction(db,async () => {
     // check if general_info row exists
-    const row = await db.get(`SELECT 1 FROM general_info LIMIT 1`);
+    const row = await db.get(`SELECT 1 FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1`);
     if (!row) {
       throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
     }
-    await db.run(`UPDATE general_info SET about_summary = ?`, [summary]);
+    await db.run(`UPDATE ${GENERAL_INFO.TABLE_NAME} SET about_summary = ?`, [summary]);
 
     await record_entity_update("about summary");
   });
@@ -153,14 +155,14 @@ async function update_about_summary(summary) {
  */
 async function update_about_image(about_image){
   return await run_in_transaction(db,async ()=>{
-    const row = await db.get(`SELECT about_image FROM general_info LIMIT 1`);
-    
+    const row = await db.get(`SELECT ${GENERAL_INFO.ABOUT_IMAGE} FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1`);
+
     if (!row) {
       throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
     }
     
     // replace with new one
-    await db.run(`UPDATE general_info SET about_image = ?`, [about_image]);
+    await db.run(`UPDATE ${GENERAL_INFO.TABLE_NAME} SET ${GENERAL_INFO.ABOUT_IMAGE} = ?`, [about_image]);
 
     await record_entity_update("about image");
     
@@ -175,12 +177,12 @@ async function update_about_image(about_image){
 async function update_hero_title(title) {
   return await run_in_transaction(db,async () => {
     // check if row exist
-    const row = await db.get(`SELECT 1 FROM general_info LIMIT 1`);
+    const row = await db.get(`SELECT 1 FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1`);
     if (!row) {
       throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
     }
     // update the title
-    await db.run(`UPDATE general_info SET hero_title = ?`, [title]);
+    await db.run(`UPDATE ${GENERAL_INFO.TABLE_NAME} SET ${GENERAL_INFO.HERO_TITLE} = ?`, [title]);
 
     await record_entity_update("hero title");
   });
@@ -191,12 +193,12 @@ export async function update_hero_subtitle(subtitle) {
   return await run_in_transaction(db,async () => {
     
     // check if row exist
-    const row = await db.get(`SELECT 1 FROM general_info LIMIT 1`);
+    const row = await db.get(`SELECT 1 FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1`);
 
     if (!row) {
       throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
     }
-    await db.run(`UPDATE general_info SET hero_subtitle = ?`, [subtitle]);
+    await db.run(`UPDATE ${GENERAL_INFO.TABLE_NAME} SET ${GENERAL_INFO.HERO_SUBTITLE} = ?`, [subtitle]);
 
     await record_entity_update("hero subtitle");
   });
@@ -205,12 +207,12 @@ export async function update_hero_subtitle(subtitle) {
 /* Update hero image */
 export async function update_hero_image(image) {
   return await run_in_transaction(db,async () => {
-    const row = await db.get(`SELECT hero_image FROM general_info LIMIT 1`);
+    const row = await db.get(`SELECT ${GENERAL_INFO.HERO_IMAGE} FROM ${GENERAL_INFO.TABLE_NAME} LIMIT 1`);
     if (!row) {
       throw new AppError(`General info not found`, 404, "GENERAL_INFO_NOT_FOUND");
     }
-    await db.run(`UPDATE general_info SET hero_image = ?`, [image]);
-    
+    await db.run(`UPDATE ${GENERAL_INFO.TABLE_NAME} SET ${GENERAL_INFO.HERO_IMAGE} = ?`, [image]);
+
     await record_entity_update("hero image");
     
     // delete the old image

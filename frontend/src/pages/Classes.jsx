@@ -6,6 +6,8 @@ import { createClassSchema, updateClassSchema } from '../validation/schemas/clas
 import { useNotification } from '../context/NotificationContext';
 import { useBodyOverflow } from '../utils/tools';
 import { useScrollToForm } from '../utils/tools';
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 function Classes() {
   const [classes, setClasses] = useState([]);
@@ -14,15 +16,20 @@ function Classes() {
   const [editingClass, setEditingClass] = useState(null); // Stores class being edited (null for new class, object for editing)
   const [deletingClassId, setDeletingClassId] = useState(null); // ID of class being deleted
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Controls delete confirmation dialog visibility
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);  
   const {success , error} = useNotification();
 
   // fetch classes from backend
   async function fetchClasses() {
       try {
           setLoading(true);
-          const response = await classService.getClasses();
-          console.log('Fetched classes:', response);
-          setClasses(response);
+          const response = await classService.getClasses(page);
+
+          setTotalPages(response.total_pages || 1);
+          setPageSize(response.PAGE_SIZE || 10);
+          setClasses(response.data || []);
         } catch (err) {
           error('Failed to load classes');
           console.error(err); 
@@ -32,7 +39,7 @@ function Classes() {
     }
   useEffect( ()=>{
     fetchClasses();
-  }, []);
+  }, [page]);
 
   useScrollToForm(isModalOpen);
 
@@ -107,73 +114,74 @@ function Classes() {
               Add New Class
             </button>
         </div>
-        {/* loading spinner */}
-        {loading ? (
-          <div className="flex bg-red justify-center items-center h-64">
-            <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
-        ) :
+
+        { loading 
+        ?   <LoadingSpinner />
+        :
         // class table container
-        <div id='class-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
-        {classes.length === 0 ? (
-           <p className='text-gray-500'>No classes found.</p>
-        ) : (
-          <>
-          <h2 className='text-xl font-semibold mb-4'>Class List</h2>
-          <div className=' overflow-x-auto'>
-            <table  className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-gray-200 '>
-              <thead className='bg-[#ebeef2]'>
-                <tr>
-                  {[{ header: 'Class', width: '12.5%' },
-                    { header: 'Image', width: '22.5%', minWidth: '112px' },
-                    { header: 'Description', width: '27.5%' },
-                    { header: 'Private Coaching', width: '15%' },
-                    { header: 'Actions', width: '12.5%' }
-                  ].map(({ header, width, minWidth }) => (
-                        <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
-                        style={{width:width,minWidth:minWidth}}
-                        >
-                          {header}
-                        </th>
-                      ))}
+          <div id='class-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
+          {classes.length === 0 ? (
+            <p className='text-gray-500'>No classes found.</p>
+          ) : (
+            <>
+            <h2 className='text-xl font-semibold mb-4'>Class List</h2>
+            <div className=' overflow-x-auto'>
+              <table  className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-gray-200 '>
+                <thead className='bg-[#ebeef2]'>
+                  <tr>
+                    {[{ header: 'Class', width: '12.5%' },
+                      { header: 'Image', width: '22.5%', minWidth: '112px' },
+                      { header: 'Description', width: '27.5%' },
+                      { header: 'Private Coaching', width: '15%' },
+                      { header: 'Actions', width: '12.5%' }
+                    ].map(({ header, width, minWidth }) => (
+                          <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                          style={{width:width,minWidth:minWidth}}
+                          >
+                            {header}
+                          </th>
+                        ))}
 
-                </tr>
-              </thead>
-              <tbody className='bg-white divide-y divide-gray-200'>
-                {classes?.map(classItem => (
-                  <tr key={classItem.id}>
-                    <td className='px-2 py-3 text-md font-semibold text-gray-900'>
-                      {classItem.name}
-                    </td>
-                    <td className='px-2 py-3 text-md font-semibold text-gray-900'>
-                      <img 
-                      src={ `/uploads/classes/${classItem.image}` } 
-                      alt={classItem.name} className='inline  size-24 rounded ' />
-                    </td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>{classItem.description}</td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>{classItem.private_coaching ? 'Yes' : 'No'}</td>
-                    <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
-                      <button 
-                        onClick={() => openModal(classItem)} // Open modal for editing this class
-                        className='bg-success m-[auto] block hover:bg-hoverSuccess text-btnText px-3 py-1 rounded '
-                      >
-                        Edit
-                        <i className="fa-solid fa-pencil-alt ml-1"></i>
-                      </button>
-                      <button  onClick={() => openDeleteModal(classItem.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded'>
-                        <span >Delete</span>
-                        <i className="fa-solid fa-trash ml-1"></i>
-                      </button>
-                    </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          </>
-        ) }
+                </thead>
+                <tbody className='bg-white divide-y divide-gray-200'>
+                  {classes?.map(classItem => (
+                    <tr key={classItem.id}>
+                      <td className='px-2 py-3 text-md font-semibold text-gray-900'>
+                        {classItem.name}
+                      </td>
+                      <td className='px-2 py-3 text-md font-semibold text-gray-900'>
+                        <img 
+                        src={ `/uploads/classes/${classItem.image}` } 
+                        alt={classItem.name} className='inline  size-24 rounded ' />
+                      </td>
+                      <td className='px-2 py-3 text-sm text-gray-900'>{classItem.description}</td>
+                      <td className='px-2 py-3 text-sm text-gray-900'>{classItem.private_coaching ? 'Yes' : 'No'}</td>
+                      <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
+                        <button 
+                          onClick={() => openModal(classItem)} // Open modal for editing this class
+                          className='bg-success m-[auto] block hover:bg-hoverSuccess text-btnText px-3 py-1 rounded '
+                        >
+                          Edit
+                          <i className="fa-solid fa-pencil-alt ml-1"></i>
+                        </button>
+                        <button  onClick={() => openDeleteModal(classItem.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded'>
+                          <span >Delete</span>
+                          <i className="fa-solid fa-trash ml-1"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
 
-        </div>
+            </div>
+            </>
+          ) }
+
+          </div>
+          
         }
         {isModalOpen && 
         <div id="form" >
@@ -200,7 +208,7 @@ function Classes() {
         />
         </div>
         }
-        {/* this extra div so space-y don't add margin to y axis of delete modal */}
+        {/*  extra div to prevent space-y from adding margin to y axis of delete modal */}
         {showDeleteModal && 
         <div>
           <div className="fixed  inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

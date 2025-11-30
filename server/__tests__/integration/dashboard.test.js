@@ -17,10 +17,10 @@ describe('Dashboard Integration Tests', () => {
 
         expect(response.statusCode).toBe(200);
         // Check that the response body is an array
-        expect(Array.isArray(response.body.logs)).toBe(true);
+        expect(Array.isArray(response.body.data)).toBe(true);
         expect(response.body.totalPages).toBeDefined();
 
-        for (const logEntry of response.body.logs) {
+        for (const logEntry of response.body.data) {
             expect(logEntry).toHaveProperty('action');
             expect(logEntry).toHaveProperty('timestamp');
             expect(logEntry).toHaveProperty('icon');
@@ -29,10 +29,9 @@ describe('Dashboard Integration Tests', () => {
     });
     // happy path - pagination
     it('should return paginated admin actions logs', async () => {
-        // save number of pages before running the test
-        // save logs count from last page
-        let pages_count;
-        let last_page_logs_number;
+        
+        let pages_count; // number of pages before running the test
+        let last_page_logs_number; //logs count from last page
         let total_logs;
 
         // do multiple requests to create more than 10 log entries
@@ -45,9 +44,9 @@ describe('Dashboard Integration Tests', () => {
 
         // Check response
         expect(response.statusCode).toBe(200);
-        expect(response.body).toHaveProperty('logs');
+        expect(response.body).toHaveProperty('data');
         expect(response.body).toHaveProperty('totalPages');
-        expect(Array.isArray(response.body.logs)).toBe(true);
+        expect(Array.isArray(response.body.data)).toBe(true);
 
         // set the pagination info
         pages_count = response.body.totalPages;
@@ -57,7 +56,7 @@ describe('Dashboard Integration Tests', () => {
                 .get(`/api/admin/dashboard?page=${Math.max(pages_count, 1)}`)
                 .set('Cookie', authCookies);
 
-        last_page_logs_number = response_2.body.logs.length;
+        last_page_logs_number = response_2.body.data.length;
         // calculate total logs 
         total_logs = pages_count > 0 
             ? (pages_count - 1) * 10 + last_page_logs_number 
@@ -86,12 +85,12 @@ describe('Dashboard Integration Tests', () => {
             .set('Cookie', authCookies);
 
         expect(response3.statusCode).toBe(200);
-        expect(response3.body).toHaveProperty('logs');
+        expect(response3.body).toHaveProperty('data');
         expect(response3.body).toHaveProperty('totalPages');
 
         // the expected number of total pages should be total/10+total%10
         expect(response3.body.totalPages).toBeGreaterThanOrEqual(pages_count);
-        expect(response3.body.logs.length).toBeGreaterThanOrEqual(total_logs % 10);
+        expect(response3.body.data.length).toBeGreaterThanOrEqual(total_logs % 10);
 
         // delete all the categories
         for (const category_id of categories_list) {

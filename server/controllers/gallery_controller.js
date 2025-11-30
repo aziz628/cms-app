@@ -4,7 +4,8 @@ import gallery_service from "../services/gallery_service.js";
  */
 
 async function get_all_categories_and_images(req, res) {
-    const data = await gallery_service.get_all_categories_and_images();
+    const page = req.query.page || 1;
+    const data = await gallery_service.get_all_categories_and_images(page);
     res.status(200).json(data);
 }
 

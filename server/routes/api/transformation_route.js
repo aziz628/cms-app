@@ -2,6 +2,7 @@ import express from "express"
 import  {wrap_all_async_functions} from "../../utils/async_controller.js"
 import transformation_controller from "../../controllers/transformation_controller.js"
 import transformation_validator from "../../middleware/validators/transformation_validator.js"
+import { pagination_validator } from "../../middleware/validators/pagination_validator.js";
 import { create_upload_pipeline } from "../../middleware/file_middleware.js";
 
 const router = express.Router()
@@ -29,7 +30,7 @@ const update_transformation_pipeline = create_upload_pipeline({
 });
 
 // define the routes for transformation management
-router.get("/", controller.get_all)
+router.get("/", pagination_validator, controller.get_all)
 router.post("/", add_transformation_pipeline, controller.add_transformation)
 router.put("/:id", update_transformation_pipeline, controller.update_transformation)
 router.delete("/:id", delete_transformation_validator, controller.delete_transformation)

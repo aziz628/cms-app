@@ -301,7 +301,7 @@ describe("Pricing API", () => {
             expect(response.body).toBeDefined();
             
             // pricing plans should be an array of objects
-            for (const pricing_plan of response.body) {
+            for (const pricing_plan of response.body.data) {
                 expect(pricing_plan.id).toBeDefined();
                 expect(pricing_plan.name).toBeDefined();
                 expect(pricing_plan.price).toBeDefined();

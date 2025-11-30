@@ -1,6 +1,6 @@
 // src/context/NotificationContext.jsx
 import  { createContext, useContext,useEffect, useState } from 'react';
-import { Toast } from '../components/common/Toast';
+import { Toast } from '../components/content/Toast';
 
 const NotificationContext = createContext();
 

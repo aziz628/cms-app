@@ -32,7 +32,7 @@ describe("Event api",() => {
             // body is an object 
             expect(typeof response.body).toBe('object');
 
-            for (const event of response.body) {
+            for (const event of response.body.data) {
                 expect(event.id).toBeDefined();
                 expect(event.title).toBeDefined();
                 expect(event.date).toBeDefined();

@@ -31,7 +31,6 @@ export const updateClassSchema = yup.object({
   { name: 'name' },
   { name: 'description' },
   { name: 'private_coaching', type:'boolean' },
-  { name: 'popular', type:'boolean' },
   { name: 'image', type: 'image' }
 ])
 );

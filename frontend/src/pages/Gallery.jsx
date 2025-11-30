@@ -10,6 +10,9 @@ import {
     createImageSchema,
     updateImageSchema
 } from '../validation/schemas/gallerySchema.js';
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+
 
 function Gallery() {
   const [categories, setCategories] = useState([]);
@@ -22,15 +25,21 @@ function Gallery() {
   const [deletingItemId, setDeletingItemId] = useState(null);
   const [showDeleteCategoryModal, setShowDeleteCategoryModal] = useState(false);
   const [showDeleteImageModal , setShowDeleteImageModal] = useState(false)
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1); 
   const { success, error } = useNotification();
 
   // Fetch gallery items from the server
   async function fetchGalleryItems() {
     try {
       setLoading(true);
-      const response = await galleryService.getGalleryItems();
+      const response = await galleryService.getGalleryItems(page);
+    
       setCategories(response.categories);
       setImages(response.images);
+      setTotalPages(response.total_pages || 1);
+      setPageSize(response.PAGE_SIZE || 10);
     } catch (err) {
       console.error("Error fetching gallery items:", err);
       error("Failed to fetch gallery items");
@@ -40,7 +49,8 @@ function Gallery() {
   }
   useEffect(() => {
     fetchGalleryItems();
-  }, []);
+  }, [page]);
+
   // Prevent background scrolling when delete modal is open
   useBodyOverflow(showDeleteCategoryModal || showDeleteImageModal);
   // Scroll to form when modal opens
@@ -97,9 +107,8 @@ function Gallery() {
             data.delete('category_id'); // Remove it from FormData
           }
         }
-      // log the data form by pairs
-      console.log("Submitting image data:", [...data.entries()]);
-
+        
+      // Call create or update based on whether we're editing
       if (editingImage) {
         await galleryService.updateImage(editingImage.id,data,editingImage.category_id);
         success("Image updated successfully");
@@ -180,9 +189,7 @@ function Gallery() {
         <div>
           {loading 
             ? (
-              <div className="flex bg-red justify-center items-center h-64">
-                  <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                </div>
+              <LoadingSpinner />
             )
             : (
               <>
@@ -236,9 +243,7 @@ function Gallery() {
         <div>
           {loading 
             ? (
-              <div className="flex bg-red justify-center items-center h-64">
-                  <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                </div>
+              <LoadingSpinner />
             )
             : (
               <>
@@ -291,6 +296,12 @@ function Gallery() {
                     ))}
                   </tbody>
                 </table>
+                <PaginationButtons
+                  page={page}
+                  setPage={setPage}
+                  pageSize={pageSize}
+                  totalPages={totalPages}
+                />
               </div>
               }
             </>

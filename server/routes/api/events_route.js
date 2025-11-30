@@ -2,6 +2,8 @@ import express from "express";
 import { wrap_all_async_functions } from "../../utils/async_controller.js";
 import  events_controller  from "../../controllers/events_controller.js";
 import event_validator from "../../middleware/validators/event_validator.js";
+import { pagination_validator } from "../../middleware/validators/pagination_validator.js";
+
 import { create_upload_pipeline } from "../../middleware/file_middleware.js";
 
 const router = express.Router();
@@ -25,7 +27,7 @@ const update_event_pipeline = create_upload_pipeline({
 })
 
 // Define routes
-router.get("/", controller.get_all_events);
+router.get("/", pagination_validator, controller.get_all_events);
 router.post("/", add_event_pipeline, controller.create_event);
 router.put("/:id", update_event_pipeline, controller.update_event);
 router.delete("/:id", delete_event_validator, controller.delete_event);

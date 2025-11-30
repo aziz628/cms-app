@@ -5,6 +5,7 @@ import {createTransformationSchema,updateTransformationSchema} from "../validati
 import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools.js';
 import { useNotification } from '../context/NotificationContext.jsx';
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
 
 function Transformations() {
   const [Transformations, setTransformations] = useState([]);
@@ -13,13 +14,18 @@ function Transformations() {
   const [editingTransformation, setEditingTransformation] = useState(null);
   const [deletingTransformationId, setDeletingTransformationId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const { success, error } = useNotification();
-  // Fetch transformations from the server
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const { success, error } = useNotification();  // Fetch transformations from the server
   async function fetchTransformations() {
     try {
       setLoading(true);
-      const data = await transformationService.getAllTransformations();
-      setTransformations(data);
+      const data = await transformationService.getAllTransformations(page);
+     
+      setTotalPages(data.total_pages || 1);
+      setPageSize(data.PAGE_SIZE || 10);
+      setTransformations(data.data || []);
     } catch (err) {
       error('Failed to fetch transformations');
       console.error("Error fetching transformations:", err);
@@ -30,7 +36,8 @@ function Transformations() {
   }
   useEffect(() => {
     fetchTransformations();
-  }, []);
+  }, [page]);
+
   // Prevent background scrolling when delete modal is open
   useBodyOverflow(showDeleteModal);
   // Scroll to form when modal opens
@@ -170,13 +177,13 @@ function Transformations() {
                           </button>
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
+                    ))}                  </tbody>
                 </table>
               </div>
           )} 
         </>
       )}
+      <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
       </div>
        {/* Form Modal for adding/editing transformation */}
       {isModalOpen && (

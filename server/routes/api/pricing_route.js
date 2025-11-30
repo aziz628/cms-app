@@ -2,6 +2,7 @@ import express from "express";
 import { wrap_all_async_functions } from "../../utils/async_controller.js";
 import  pricing_controller from "../../controllers/pricing_controller.js";
 import pricing_validator from "../../middleware/validators/pricing_validator.js";
+import { pagination_validator } from "../../middleware/validators/pagination_validator.js";
 
 const {
   add_pricing_validator,
@@ -17,7 +18,7 @@ const controller = wrap_all_async_functions(pricing_controller);
 
 const router = express.Router();
 
-router.get("/", controller.get_pricing_plans);
+router.get("/", pagination_validator, controller.get_pricing_plans);
 router.post("/", add_pricing_validator, controller.add_pricing_plan);
 
 router.post("/:id/features", add_feature_validator, controller.add_feature);

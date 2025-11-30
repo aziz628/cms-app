@@ -1,13 +1,14 @@
 import db from "../DB/db_connection.js"
 
 import {getAll,addWithImage,updateWithImage,deleteWithImage} from "./helper/crud_helper.js"
-
+import {TRAINERS} from '../DB/db_constants.js';
+const tableName = TRAINERS.TABLE_NAME;
 /**
  * Get all trainers
  * @returns {Promise<Object>} All trainers
  */
-async function get_trainers() {
-    return await getAll(db,"trainers");
+async function get_trainers(page) {
+    return await getAll(db, tableName, page);
 }
 
 /**
@@ -18,7 +19,7 @@ async function get_trainers() {
 async function add_trainer(new_trainer) {
     return await addWithImage(db,
         {
-        tableName:"trainers",    
+        tableName,
         data:new_trainer,
         display_name: "Trainer"
         });
@@ -33,7 +34,7 @@ async function add_trainer(new_trainer) {
 async function update_trainer(trainer_id, updated_trainer={},image=null) {
     return await updateWithImage(db,
         {
-        tableName:"trainers",
+        tableName,
         id:trainer_id,
         data:updated_trainer,
         image,
@@ -50,7 +51,7 @@ async function update_trainer(trainer_id, updated_trainer={},image=null) {
 async function delete_trainer(trainer_id) {
     return await deleteWithImage(db,
         {
-        tableName:"trainers",    
+        tableName,
         id:trainer_id,
         subfolder:"trainers"
         ,display_name: "Trainer"

@@ -22,7 +22,7 @@ const createErrorEvent = (error) => {
   document.dispatchEvent(errorEvent);
 };
 
-// Add request interceptor (optional)
+// request interceptor 
 api.interceptors.request.use(
   (config) => {
     console.log(`[API] ${config.method.toUpperCase()} ${API_URL}${config.url} - Payload:`, config.data || config.params || {});

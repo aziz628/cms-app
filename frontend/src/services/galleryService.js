@@ -1,7 +1,7 @@
 import api from './api';
 
 const galleryService = {
-  getGalleryItems : async () => (await api.get("/admin/gallery")).data
+  getGalleryItems : async (page) => (await api.get(`/admin/gallery?page=${page}`)).data
   ,createCategory : async (data) => (await api.post("/admin/gallery/category", data)).data
   ,updateCategory : async (categoryId, data) => (await api.put(`/admin/gallery/category/${categoryId}`, data)).data
   ,deleteCategory : async (categoryId) => (await api.delete(`/admin/gallery/category/${categoryId}`)).data

@@ -2,6 +2,8 @@ import express from "express";
 import { wrap_all_async_functions } from "../../utils/async_controller.js";
 import trainers_controller from "../../controllers/trainers_controller.js";
 import trainers_validator from "../../middleware/validators/trainers_validator.js";
+import { pagination_validator } from "../../middleware/validators/pagination_validator.js";
+
 import { create_upload_pipeline } from "../../middleware/file_middleware.js";
 
 const controller = wrap_all_async_functions(trainers_controller);
@@ -26,7 +28,7 @@ const update_trainer_pipeline = create_upload_pipeline({
 });
 
 // Define routes
-router.get("/", controller.get_trainers);
+router.get("/", pagination_validator, controller.get_trainers);
 router.post("/", add_trainer_pipeline, controller.add_trainer);
 router.put("/:id", update_trainer_pipeline, controller.update_trainer);
 router.delete("/:id", delete_trainer_validator, controller.delete_trainer);

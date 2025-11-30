@@ -1,4 +1,4 @@
-// src/validation/schemas/scheduleSchema.js
+
 import * as yup from 'yup';
 import { createChangeDetection } from '../validationRules';
 

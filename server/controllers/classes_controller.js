@@ -4,7 +4,8 @@ import classes_service from "../services/classes_service.js";
  * Fetch all classes from the service
  */
 async function get_all_classes(req, res) {
-    const classes = await classes_service.get_all();
+    const page = req.query.page || 1;
+    const classes = await classes_service.get_all(page);
 
     res.status(200).json(classes);
 }

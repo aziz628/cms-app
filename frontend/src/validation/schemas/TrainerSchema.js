@@ -2,8 +2,6 @@ import * as yup from 'yup';
 import { imageFileValidation, createChangeDetection } from '../validationRules.js';
 // Base field definitions for trainers
 
-// trainers schema values : name, speciality, certificate, years_of_experience
-
 const baseTrainerFields = {
     name: yup.string()
     .min(3, 'Name must be at least 3 characters')

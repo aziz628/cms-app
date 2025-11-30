@@ -58,6 +58,7 @@ export const createChangeDetection = (fields) => {
       } else {
         // For other fields - direct comparison
         let initialValue = initialData[name];
+        
         // Normalize undefined values to empty string for comparison (edge case)
         if (initialValue === undefined) initialValue = '';
 

@@ -67,11 +67,11 @@ export const logError = (message, statusCode, endpoint, method, stack) => {
     logger.error(message, { statusCode, endpoint, method, stack });
 };
 
-export const logWarning = (message, statusCode, endpoint, method, stack) => {
+export const logWarning = (message, statusCode, endpoint, method, stack='') => {
     logger.warn(message, { statusCode, endpoint, method, stack });
 };
 
-export const logInfo = (message, statusCode, endpoint, method, stack) => {
+export const logInfo = (message, statusCode, endpoint, method, stack='') => {
     logger.info(message, { statusCode, endpoint, method, stack });
 };
 

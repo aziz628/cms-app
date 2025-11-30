@@ -1,8 +1,8 @@
 import api from "./api";
 
 const reviewService = {
-    getReviews: async () => {
-        const response = await api.get("/admin/review");
+    getReviews: async (page) => {
+        const response = await api.get(`/admin/review?page=${page}`);
         return response.data;
     },
     createReview: async (newReview) => {

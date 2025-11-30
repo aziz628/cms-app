@@ -1,9 +1,9 @@
 import { BrowserRouter as Router ,Routes,Route,Navigate} from "react-router-dom";
 import { useEffect } from "react";
 import { getCurrentPage } from "./utils/tools";
+import AdminLayout from "./components/layout/Layout.jsx";
 import Dashboard from "./pages/Dashboard";
 import Classes from "./pages/Classes";
-import Sidebar from "./components/layout/Sidebar";
 import Schedule from "./pages/Schedule";
 import Pricing from "./pages/Pricing";
 import Trainers from "./pages/Trainers";
@@ -15,7 +15,6 @@ import Setting from "./pages/Setting.jsx";
 import Login from "./pages/Login";
 import Contact from "./pages/Contact.jsx";
 import GeneralInfo from "./pages/Generalinfo.jsx";
-import Header from "./components/common/Header";
 import NotFound from "./pages/NotFound"
 import { AuthProvider } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
@@ -56,19 +55,7 @@ function ProtectedRoute({children}) {
   return children;
 }
 
-function AdminLayout({children}) {
-  return (
-    <div className="min-h-screen w-full bg-bg text-text font-sans flex flex-col">
-      <Header />
-      <div className="mt-16 flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-4 ml-[44px] md:ml-[176px] overflow-x-auto">
-          {children}
-        </main>
-      </div>
-    </div>
-  )
-}
+
 const routes = [
   { path: "/dashboard", element: <Dashboard /> },
   { path: "/classes", element: <Classes /> },
@@ -90,7 +77,7 @@ function App() {
   <ThemeProvider>
     <AuthProvider>
       <NotificationProvider>
-        <Router>
+        <Router basename="/cms">
           <Routes>
             <Route path="/login" element={<Login />} />
             {/* Protected routes */}
@@ -108,6 +95,8 @@ function App() {
                 } 
               />
             ))}
+              {/*  root redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             {/* Catch-all route for 404 errors */}
             <Route path="*" element={<NotFound />} />
             

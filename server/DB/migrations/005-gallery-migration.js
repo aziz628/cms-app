@@ -1,22 +1,23 @@
 import create_migration from "../helper/migration_template.js";
+import {GALLERY_CATEGORY,GALLERY_IMAGE} from '../db_constants.js';
 
 export default create_migration({
     upQueries: [
-        `CREATE TABLE IF NOT EXISTS gallery_category (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE
+        `CREATE TABLE IF NOT EXISTS ${GALLERY_CATEGORY.TABLE_NAME} (
+            ${GALLERY_CATEGORY.ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${GALLERY_CATEGORY.NAME} TEXT NOT NULL UNIQUE
         );`,
-        `CREATE TABLE IF NOT EXISTS gallery_image (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            description TEXT,
-            filename TEXT NOT NULL UNIQUE,
-            category_id INTEGER,
-            FOREIGN KEY (category_id) REFERENCES gallery_category(id) ON DELETE SET NULL
+        `CREATE TABLE IF NOT EXISTS ${GALLERY_IMAGE.TABLE_NAME} (
+            ${GALLERY_IMAGE.ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${GALLERY_IMAGE.NAME} TEXT,
+            ${GALLERY_IMAGE.DESCRIPTION} TEXT,
+            ${GALLERY_IMAGE.FILENAME} TEXT NOT NULL UNIQUE,
+            ${GALLERY_IMAGE.CATEGORY_ID} INTEGER,
+            FOREIGN KEY (${GALLERY_IMAGE.CATEGORY_ID}) REFERENCES ${GALLERY_CATEGORY.TABLE_NAME}(${GALLERY_CATEGORY.ID}) ON DELETE SET NULL
         );`
     ],
     downQueries: [
-        `DROP TABLE IF EXISTS gallery_image;`,
-        `DROP TABLE IF EXISTS gallery_category;`
+        `DROP TABLE IF EXISTS ${GALLERY_IMAGE.TABLE_NAME};`,
+        `DROP TABLE IF EXISTS ${GALLERY_CATEGORY.TABLE_NAME};`
     ]
 });

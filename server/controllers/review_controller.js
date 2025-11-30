@@ -4,8 +4,9 @@ import review_service  from "../services/review_service.js"
  * Get all reviews
  */
 async function get_reviews(req, res) {
-    const reviews = await review_service.get_reviews()
-    res.status(200).json(reviews)
+    const page = req.query.page || 1;
+    const reviews = await review_service.get_reviews(page);
+    res.status(200).json(reviews);
 }
 
 /** Add a new review

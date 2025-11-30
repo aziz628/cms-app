@@ -1,21 +1,27 @@
 import {useEffect, useState} from 'react';
 import dashboardService from '../services/dashboardService.js'
 import { useNotification } from '../context/NotificationContext';
+import PaginationButtons from '../components/content/PaginationButtons.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
+
 function Dashboard() {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
-    
     const { error } = useNotification();
 
-    useEffect(() => {
-        // Fetch dashboard data from the server
-        async function fetchDashboardData() {
+
+    // Fetch dashboard data from the server
+    async function fetchDashboardData() {
             try {
                 const response = await dashboardService.getDashboardData(page);
-                setData(response.logs || []);
-                setTotalPages(response.totalPages || 1);
+                
+                // set data and pagination info
+                setData(response.data || []);
+                setTotalPages(response.total_pages || 1);
+                setPageSize(response.PAGE_SIZE || 10);
             } catch (err) {
                 error('Failed to load dashboard data');
                 console.error(err);
@@ -23,8 +29,13 @@ function Dashboard() {
                 setLoading(false);
             }
         }
+
+    useEffect(() => {
         fetchDashboardData();
     }, [page]);
+    
+    
+
     return (
         <div className="space-y-4">
             <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
@@ -32,10 +43,7 @@ function Dashboard() {
                 {/* place holder for storage usage element */}
                 <h2 className="text-xl font-semibold mb-2">Recent Activities</h2>
                 {loading 
-                ? (
-                    <div className="flex bg-red justify-center items-center h-64">
-                  <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                    </div>
+                ? (<LoadingSpinner />
                   )
                 : data.length === 0 
                     ? (
@@ -54,76 +62,37 @@ function Dashboard() {
                                     {data?.map((item,i) => (
                                         <tr key={i}>
                                             <td className='px-4 py-2 space-x-2'>
-                                                <i className={`fa-solid ${
-                                                item.icon === 'create' ? 'fa-plus ' :
-                                                item.icon === 'update' ? 'fa-pencil-alt ' :
-                                                item.icon === 'delete' ? 'fa-trash ' : 'fa-question'
-                                                }`} style={{ 
-                                                color: item.icon === 'create' ? 'blue' :
-                                                item.icon === 'update' ? 'green' :
-                                                item.icon === 'delete' ? 'red' : 'gray'
-                                                }}></i>
+                                                <i 
+                                                    className={`fa-solid ${
+                                                        item.icon === 'create' ? 'fa-plus ' :
+                                                        item.icon === 'update' ? 'fa-pencil-alt ' :
+                                                        item.icon === 'delete' ? 'fa-trash ' : 'fa-question'
+                                                    }`} 
+                                                    style={{ 
+                                                        color: item.icon === 'create' ? 'blue' :
+                                                        item.icon === 'update' ? 'green' :
+                                                        item.icon === 'delete' ? 'red' : 'gray'
+                                                    }}>
+                                                </i>
                                                 <span>
                                                 {item.action}</span></td>
                                             <td className='px-4 py-2'>
-                                            {new Date(parseInt(item.timestamp)*1000).toLocaleString([], 
-                                                {
-                                                year: 'numeric',
-                                                month: '2-digit',
-                                                day: '2-digit',
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                                second: '2-digit' 
-                                                })
-                                            }
+                                                {new Date(parseInt(item.timestamp)*1000).toLocaleString([], 
+                                                    {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    second: '2-digit' 
+                                                    })
+                                                }
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                            <div className="flex gap-4 flex-wrap  ">
-                                {/* if totalPages is less than 10, show all page numbers */}
-                                {totalPages < 10 ? (
-                                    Array.from({ length: totalPages }, (_, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => setPage(i + 1)}
-                                            className={`px-4 py-2 border rounded-md ${page === i + 1 ? 'bg-primary text-white' : 'bg-white text-primary border-primary hover:bg-secondary hover:text-white'}`}
-                                        >
-                                            {i + 1}
-                                        </button>
-                                    ))
-                                ) : (
-                                    <>
-                                    {/*else show a range of page numbers */}
-                                        <button onClick={() => setPage(1)} className={`px-4 py-2 border rounded-md ${page === 1 ? 'bg-primary text-white' : 'bg-white text-primary border-primary hover:bg-secondary hover:text-white'}`}>
-                                            1
-                                        </button>
-                                        {/* Show ellipsis if there are more than 5 pages */}
-                                       {page > 5 && <span className="px-4 py-2">...</span>}
-                                        {
-                                        Array.from({ length: 8 }, (_, i) => {
-                                            const pageNum = Math.max(2, page - 4) + i;
-                                            return pageNum <= totalPages - 1 ? (
-                                                <button
-                                                    key={pageNum}
-                                                    onClick={() => setPage(pageNum)}
-                                                    className={`px-4 py-2 border rounded-md ${page === pageNum ? 'bg-primary text-white' : 'bg-white text-primary border-primary hover:bg-secondary hover:text-white'}`}
-                                                >
-                                                    {pageNum}
-                                                </button>
-                                            ) : null;
-                                        })
-                                        }
-                                        {/* Show ellipsis if there are more than 5 pages */}
-                                        {page < totalPages - 5 && <span className="px-4 py-2">...</span>}
-                                        <button onClick={() => setPage(totalPages)} className={`px-4 py-2 border rounded-md ${page === totalPages ? 'bg-primary text-white' : 'bg-white text-primary border-primary hover:bg-secondary hover:text-white'}`}>
-                                            {totalPages}
-                                        </button>
-                                    </>
-                                    )
-                            }
-                            </div>
+                            <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
                         </div>
                     )
                 } 

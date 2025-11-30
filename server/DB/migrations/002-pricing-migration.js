@@ -1,25 +1,27 @@
 import create_migration from "../helper/migration_template.js";
+import {PRICING_PLANS,PRICING_FEATURES} from '../db_constants.js';
+
 
 export default create_migration({
     upQueries: [
-        ` CREATE TABLE IF NOT EXISTS pricing_plans (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            price REAL NOT NULL,
-            period TEXT NOT NULL,
-            description TEXT,
-            popular BOOLEAN DEFAULT false
+        ` CREATE TABLE IF NOT EXISTS ${PRICING_PLANS.TABLE_NAME} (
+            ${PRICING_PLANS.ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${PRICING_PLANS.NAME} TEXT NOT NULL,
+            ${PRICING_PLANS.PRICE} REAL NOT NULL,
+            ${PRICING_PLANS.PERIOD} TEXT NOT NULL,
+            ${PRICING_PLANS.DESCRIPTION} TEXT,
+            ${PRICING_PLANS.POPULAR} BOOLEAN DEFAULT false
         );`,
-        `CREATE TABLE IF NOT EXISTS pricing_features (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            plan_id INTEGER,
-            feature TEXT NOT NULL,
-            FOREIGN KEY  (plan_id) REFERENCES pricing_plans(id) ON DELETE CASCADE
+        `CREATE TABLE IF NOT EXISTS ${PRICING_FEATURES.TABLE_NAME} (
+            ${PRICING_FEATURES.ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${PRICING_FEATURES.PLAN_ID} INTEGER,
+            ${PRICING_FEATURES.FEATURE} TEXT NOT NULL,
+            FOREIGN KEY  (${PRICING_FEATURES.PLAN_ID}) REFERENCES ${PRICING_PLANS.TABLE_NAME}(${PRICING_PLANS.ID}) ON DELETE CASCADE
         );`
     ],
     downQueries: [
-        'DROP TABLE IF EXISTS pricing_features;',
-        'DROP TABLE IF EXISTS pricing_plans;'
+        `DROP TABLE IF EXISTS ${PRICING_FEATURES.TABLE_NAME};`,
+        `DROP TABLE IF EXISTS ${PRICING_PLANS.TABLE_NAME};`
     ]
 });
 

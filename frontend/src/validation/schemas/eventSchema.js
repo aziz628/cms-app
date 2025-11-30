@@ -21,6 +21,7 @@ const baseEventSchema = {
       .min(3, 'Location must be at least 3 characters')
       .max(100, 'Location must be less than 100 characters'),
 };
+
 export const createEventSchema = yup.object({
   title: baseEventSchema.title.required('Title is required'),
   description: baseEventSchema.description,
@@ -28,6 +29,7 @@ export const createEventSchema = yup.object({
   location: baseEventSchema.location.required('Location is required'),
   image : imageFileValidation.required()
 });
+
 export const updateEventSchema = yup.object({
   ...baseEventSchema,
   image:imageFileValidation.optional()

@@ -137,9 +137,9 @@ describe('Review API Integration Tests', () => {
                 .set('Cookie', authCookies);
 
             expect(response.statusCode).toBe(200);
-            expect(Array.isArray(response.body)).toBe(true);
+            expect(Array.isArray(response.body.data)).toBe(true);
             // Check if each review has the expected properties
-            for (const review of response.body) {
+            for (const review of response.body.data) {
                 expect(review).toHaveProperty('id');
                 expect(review).toHaveProperty('author');
                 expect(review).toHaveProperty('content');

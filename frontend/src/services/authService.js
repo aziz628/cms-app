@@ -7,7 +7,7 @@ const authService = {
   },
 
   logout: async () => {
-    console.log("Logout ...");
+
     const response = await api.post("/auth/logout");
     if (response.status === 200) {
       // Dispatch unauthorized event to handle global logout
