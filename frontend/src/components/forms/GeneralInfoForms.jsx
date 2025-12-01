@@ -1,5 +1,5 @@
 import  { useState, useEffect } from 'react';
-import { aboutSchema, hero_title_Schema, hero_subtitle_Schema } from '../../validation/schemas/GeneralinfoSchema.js';
+import { aboutSchema, hero_title_Schema, hero_subtitle_Schema } from '../../validation/schemas/generalinfoSchema.js';
 
 function AboutSummaryForm({ AboutSummary, onSubmit }) {
     const [summary, setAboutSummary] = useState(AboutSummary || '');

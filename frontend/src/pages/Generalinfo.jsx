@@ -5,7 +5,7 @@ import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools.js';
 import { useScrollToForm } from '../utils/tools.js';
 import { useNotification } from '../context/NotificationContext.jsx';
-import {createBusinessHourSchema, updateBusinessHourSchema } from '../validation/schemas/GeneralinfoSchema.js';
+import {createBusinessHourSchema, updateBusinessHourSchema } from '../validation/schemas/generalinfoSchema.js';
 import { getCurrentPage } from '../utils/tools.js';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import { AboutSummaryForm, HeroTitleForm, HeroSubtitleForm } from '../components/forms/GeneralInfoForms.jsx';
