@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// find current os , windows or linux
+const isWindows = process.platform === 'win32';
 
 console.log('Starting project setup...');
 
@@ -18,64 +20,71 @@ const UPLOAD_BASE = path.join(SERVER_DIR, 'uploads');
 async function setupProject() {
   try {
     // 1. Install dependencies for server and frontend
-    console.log('\n Installing dependencies...');
-    
-    console.log('   Installing server dependencies...');
-    execSync('npm install', { cwd: SERVER_DIR, stdio: 'inherit' });
-    
-    console.log('   Installing frontend dependencies...');
-    execSync('npm install', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+      console.log('\n Installing dependencies...');
+      
+      console.log('   Installing server dependencies...');
+      execSync('npm install', { cwd: SERVER_DIR, stdio: 'inherit' });
+      
+      console.log('   Installing frontend dependencies...');
+      execSync('npm install', { cwd: FRONTEND_DIR, stdio: 'inherit' });
 
     
     // 2. Setup upload directories
-    console.log('\n Creating upload directories...');
-    
-    if (!fs.existsSync(UPLOAD_BASE)) {
-        fs.mkdirSync(UPLOAD_BASE, { recursive: true });
-        console.log(`Created base upload directory: ${UPLOAD_BASE}`);
-    }
-
-    for (const dir of UPLOAD_DIRS) {
-      const dirPath = path.join(UPLOAD_BASE, dir);
+      console.log('\n Creating upload directories...');
       
-      // Create directory if it doesn't exist
-      if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
-        console.log(`Created ${dirPath}`);
+      if (!fs.existsSync(UPLOAD_BASE)) {
+          fs.mkdirSync(UPLOAD_BASE, { recursive: true });
+          console.log(`Created base upload directory: ${UPLOAD_BASE}`);
       }
-    }
+
+      for (const dir of UPLOAD_DIRS) {
+        const dirPath = path.join(UPLOAD_BASE, dir);
+        
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(dirPath)) {
+          fs.mkdirSync(dirPath, { recursive: true });
+          console.log(`Created ${dirPath}`);
+        }
+      }
     
     // 3. compile tailwind and move to src/assets/css
-    console.log('   Compiling Tailwind CSS...');
-    execSync('npm run compile_tailwind.bat', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+      console.log('   Compiling Tailwind CSS...');
+      if (isWindows) {
+        execSync('compile_tailwind.bat', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+      } else {
+        execSync('sh compile_tailwind.sh', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+      }
 
-    // compile server template tailwind
-    execSync('npm run template_tailwind_compile.bat', { cwd: SERVER_DIR, stdio: 'inherit' });
+      // compile server template tailwind
+        if (isWindows) {
+        execSync('template_tailwind_compile.bat', { cwd: SERVER_DIR, stdio: 'inherit' });
+      } else {
+        execSync('sh template_tailwind_compile.sh', { cwd: SERVER_DIR, stdio: 'inherit' });
+      }
 
-    
     // 4. Build frontend and copy to server
-    console.log('\n Building frontend...');
-    execSync('npm run build', { cwd: FRONTEND_DIR, stdio: 'inherit' });
-    
-    console.log('Copying frontend build to server/dist...');
-    const distPath = path.join(SERVER_DIR, 'dist');
+      console.log('\n Building frontend...');
+      execSync('npm run build', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+      
+      console.log('Copying frontend build to server/dist...');
+      const distPath = path.join(SERVER_DIR, 'dist');
 
-    // Remove existing dist if it exists
-    if (fs.existsSync(distPath)) {
-      fs.rmSync(distPath, { recursive: true, force: true });
-    }
-    fs.mkdirSync(distPath, { recursive: true });
-    
-    // Copy frontend build to server/dist
-    const frontendDistPath = path.join(FRONTEND_DIR, 'dist');
-    fs.cpSync(frontendDistPath, distPath, { recursive: true });
-    console.log('Frontend build copied to server/dist');
+      // Remove existing dist if it exists
+      if (fs.existsSync(distPath)) {
+        fs.rmSync(distPath, { recursive: true, force: true });
+      }
+      fs.mkdirSync(distPath, { recursive: true });
+      
+      // Copy frontend build to server/dist
+      const frontendDistPath = path.join(FRONTEND_DIR, 'dist');
+      fs.cpSync(frontendDistPath, distPath, { recursive: true });
+      console.log('Frontend build copied to server/dist');
 
     // 5. Run migrations (sqlite will create the DB file if it doesn't exist)
-    console.log('\n Setting up database...');
-    console.log('   Running migrations...');
-    execSync('npm run migrate', { cwd: SERVER_DIR, stdio: 'inherit' });
-    console.log('   Database setup complete');
+      console.log('\n Setting up database...');
+      console.log('   Running migrations...');
+      execSync('npm run migrate', { cwd: SERVER_DIR, stdio: 'inherit' });
+      console.log('   Database setup complete');
 
     console.log('\n Setup completed successfully!');
     console.log('\n IMPORTANT: Create a .env.production file from .env.example before starting the server');
@@ -84,14 +93,14 @@ async function setupProject() {
     console.log('   npm run prod:start');
     
     // 6. copy env.example to .env.production
-    const envExamplePath = path.join(SERVER_DIR, '.env.example');
-    const envProductionPath = path.join(SERVER_DIR, '.env.production');
-    if (!fs.existsSync(envProductionPath)) {
-      fs.copyFileSync(envExamplePath, envProductionPath);
-      console.log('\n Created .env.production from .env.example');
-    } else {
-      console.log('\n .env.production already exists, skipping creation');
-    }
+      const envExamplePath = path.join(SERVER_DIR, '.env.example');
+      const envProductionPath = path.join(SERVER_DIR, '.env.production');
+      if (!fs.existsSync(envProductionPath)) {
+        fs.copyFileSync(envExamplePath, envProductionPath);
+        console.log('\n Created .env.production from .env.example');
+      } else {
+        console.log('\n .env.production already exists, skipping creation');
+      }
     
   } catch (error) {
     console.error('\n Setup failed:', error);

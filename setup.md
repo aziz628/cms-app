@@ -14,7 +14,6 @@ Production Server Initial Setup:
 
 ```javascript
 # Install Node.js (Ubuntu/Debian example)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs git
 
 # Install PM2 globally
@@ -29,7 +28,7 @@ Production Deployment Steps:
 
 ```javascript
 # Clone repository
-git clone https://github.com/yourusername/your-repo.git .
+git clone https://github.com/name/repo.git .
 
 # Run setup script (installs deps, builds frontend, sets up DB)
 node setup.js
