@@ -1,0 +1,9 @@
+{
+  "name": "gym-cms",
+  "version": "1.0.0",
+  "description": "Gym CMS - Full-stack application with Express server and frontend",
+  "type": "module",
+  "scripts": {
+    "setup": "node setup.js"
+  }
+}

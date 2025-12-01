@@ -80,28 +80,45 @@ async function setupProject() {
       fs.cpSync(frontendDistPath, distPath, { recursive: true });
       console.log('Frontend build copied to server/dist');
 
-    // 5. Run migrations (sqlite will create the DB file if it doesn't exist)
-      console.log('\n Setting up database...');
-      console.log('   Running migrations...');
-      execSync('npm run migrate', { cwd: SERVER_DIR, stdio: 'inherit' });
-      console.log('   Database setup complete');
-
-    console.log('\n Setup completed successfully!');
-    console.log('\n IMPORTANT: Create a .env.production file from .env.example before starting the server');
-    console.log('\n To start the server:');
-    console.log('   cd server');
-    console.log('   npm run prod:start');
-    
-    // 6. copy env.example to .env.production
+    // 5. copy env.example to .env.production and .env.development and .env.test
       const envExamplePath = path.join(SERVER_DIR, '.env.example');
       const envProductionPath = path.join(SERVER_DIR, '.env.production');
+      const envDevelopmentPath = path.join(SERVER_DIR, '.env.development');
+      const envTestPath = path.join(SERVER_DIR, '.env.test');
+
       if (!fs.existsSync(envProductionPath)) {
         fs.copyFileSync(envExamplePath, envProductionPath);
         console.log('\n Created .env.production from .env.example');
       } else {
         console.log('\n .env.production already exists, skipping creation');
       }
-    
+
+      if (!fs.existsSync(envDevelopmentPath)) {
+        fs.copyFileSync(envExamplePath, envDevelopmentPath);
+        console.log('\n Created .env.development from .env.example');
+      } else {
+        console.log('\n .env.development already exists, skipping creation');
+      }
+      if (!fs.existsSync(envTestPath)) {
+        fs.copyFileSync(envExamplePath, envTestPath);
+        console.log('\n Created .env.test from .env.example');
+      } else {
+        console.log('\n .env.test already exists, skipping creation');
+      }
+
+    // 6. Run migrations (sqlite will create the DB file if it doesn't exist)
+      console.log('\n Setting up database...');
+      console.log('   Running migrations...');
+      execSync('npm run migrate', { cwd: SERVER_DIR, stdio: 'inherit' });
+      console.log('   Database setup complete');
+
+
+    console.log('\n Setup completed successfully!');
+    console.log('\n IMPORTANT: Edit your .env.production file  \n ');
+
+    console.log('\n To start the server:');
+    console.log('   cd server');
+    console.log('   npm run prod:start');
   } catch (error) {
     console.error('\n Setup failed:', error);
     process.exit(1);
