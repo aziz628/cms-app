@@ -28,14 +28,13 @@ trap cleanup SIGINT SIGTERM
 
 # Start the server
 echo "Starting server..."
-cd ./server
+cd ../server
 node server.js &
 pids+=($!)
-cd ..
+
 
 # Start server template tailwind compiler
 echo "Compiling server template Tailwind..."
-cd ./server
 bash template_tailwind_compile.sh --watch &
 pids+=($!)
 cd ..
@@ -45,19 +44,17 @@ echo "Starting React app..."
 cd ./frontend
 npm run dev &
 pids+=($!)
-cd ..
 
 # Start the node watcher
 echo "Starting node watcher..."
-cd ./frontend/script
+cd ./script
 node watch-and-move-tailwind.js &
 pids+=($!)
-cd ../..
+cd ../
 
 # Start the Tailwind CSS compiler
 echo "Starting Tailwind CSS compiler..."
-cd ./frontend
-bash ./script/compile_tailwind.sh --watch &
+bash ./compile_tailwind.sh --watch &
 pids+=($!)
 cd ..
 
