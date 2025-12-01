@@ -29,11 +29,7 @@ fi
 
 echo ""
 echo "All dependencies OK!"
-echo ""
-echo "Running setup..."
-echo ""
 
-node setup.js
 
 if [ $? -ne 0 ]; then
     echo "Setup failed!"
