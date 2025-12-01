@@ -4,7 +4,7 @@ import migrate from '../DB/migrate.js';
 
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+import {reset} from "../services/upload_storage_state_service.js"
 const UPLOAD_BASE = process.env.UPLOAD_BASE || 'uploads';
 const UPLOADS_DIR = path.join(__dirname, '..',  UPLOAD_BASE);
 const subfolders = ['gallery', 'trainers', 'events', 'classes', 'reviews', 'transformations', 'general_info'];
@@ -36,7 +36,9 @@ async function main() {
                 fs.mkdirSync(folderPath);
             });
         }
-
+        // reset the storage state 
+        await reset();
+        
         console.log('Development environment reset complete');
     } catch (error) {
         console.error('Error resetting development environment:', error);

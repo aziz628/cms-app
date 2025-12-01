@@ -29,7 +29,6 @@ import { jest } from '@jest/globals';
 const fs = await import('fs/promises');
 const fsSync = await import('fs');
 const  { incrementStorage,getState,reset} = await  import('../../services/upload_storage_state_service.js');
-const  {AppError}  = await import('../../errors/AppError.js');
 const { post_upload_size_check} = await import ('../../middleware/file_middleware.js');
 
 // Mock fs/promises BEFORE importing the service

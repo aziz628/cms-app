@@ -74,7 +74,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(express.json());
 
 
-// Parse URL-encoded bodies (as sent by HTML forms , commented until we add template emails)
+// Parse URL-encoded bodies (as sent by HTML forms , email service coming soon)
 // app.use(express.urlencoded({ extended: true }));
 
 // Views routes (EJS templates)
@@ -101,8 +101,7 @@ app.use('/api/admin', (req,res,next)=>{adminLimiter
 }, authenticate_session, admin_route);
 
 
-/* public health check route - basic status for future reverse proxy to check 
-*/
+/* public health check route - basic status for future reverse proxy to check  */
 app.get('/api/health', publicLimiter, async (req, res) => {
     try {
         // Simple DB query to check connectivity
@@ -154,7 +153,7 @@ app.use('/uploads/general_info/:imageName', async (req, res, next) => {
 // Handle 404 errors for unmatched routes
 // This will handle both API and non-API routes
 app.use((req, res) => {
-    // Check if request expects JSON (XHR or Accept header includes application/json)
+    // Check if request expects JSON 
       const expectsJson = 
         req.xhr ||  // XMLHttpRequest (older AJAX)
         req.method === 'GET' && req.path.startsWith('/api/') ||  // API routes
@@ -165,12 +164,11 @@ app.use((req, res) => {
         return res.status(404).json({ message: 'Page not found' });
     } else {
         // For all other requests, render HTML error page
-        // render function 
         return res.status(404).sendFile(path.join(__dirname, 'public', "static", "error.html"));
     }
 });
 
-// Error handling middleware
+// Global error handling middleware
 app.use(errorHandler);
 
 export default app;

@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../app'; // Adjust the path to your Express app
-import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image,check_no_file_in_uploads} from '../helper/tools.js';
+import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
 
 // global variables
 const upload_subfolder = 'transformations';

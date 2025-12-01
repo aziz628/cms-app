@@ -74,15 +74,17 @@ async function initialize_storage_state() {
 
     // if parsed data is missing fields then it's invalid
     if (typeof parsed.totalSize !== 'number' || typeof parsed.lastUpdated !== 'string') {
-      // ENOENT error will trigger creation of new file
-      throw { code: 'ENOENT' };
+      // INVALID_STATE error will trigger creation of new file
+      throw { code: 'INVALID_STATE' };
     } 
     // Set in-memory state
     storageState = parsed;
     console.log(' Storage state loaded:', parsed);
+    
   } catch (error) {
-    // If file doesn't exist, create it
-    if (error.code === 'ENOENT') {
+    // create new state file if missing or invalid
+    if (error.code === 'ENOENT' || error.code === 'INVALID_STATE') {
+      console.log(' Storage state file missing or invalid, creating new one.');
       await createNewStateFile();
     } 
     else {
@@ -261,10 +263,11 @@ async function reset() {
     writeQueue.push({
       storage_writing_operation: async () => {
         // Reset in-memory state
-        storageState = { totalSize: 0, lastUpdated: null };
+        storageState = { totalSize: 0, lastUpdated: new Date().toISOString() };
 
         // save the reset state to storage-state.json file
         await saveToFile();
+        console.log(' Storage state has been reset');
       },
       resolve,
       reject

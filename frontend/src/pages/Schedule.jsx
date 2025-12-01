@@ -137,44 +137,46 @@ function Schedule() {
         // class table container
         <div id='class-table'  className='bg-surface  p-4 shadow-md rounded-lg'>
           <h2 className="text-xl font-semibold mb-4">Class Schedule</h2>
-          <div className=' overflow-x-auto'>
-            <div id='week_schedule' className='text-center w-fit flex overflow-x-auto border rounded-lg '>
-             
-              {/* Hours column */}
-              <div className="flex flex-col border-r">
+          {Object.keys(sessionsByDay).length > 0 
+          ?(
+            <div className=' overflow-x-auto'>
+              <div id='week_schedule' className='text-center w-fit flex overflow-x-auto border rounded-lg '>
               
-                { // have first cell  empty in the header to not overlap with days in the headers
-                  hoursSlots[0] && ( // have a bottom margin to seperate from  body cells
-                    <div className="px-2 py-4 h-[60px]  text-sm font-medium text-muted border-b" style={{ height: '60px' }}></div>
-                  )
-                }
-                {hoursSlots.map((hour) => (
-                  <div
-                    key={hour.hourStart}
-                    className="px-2 py-4 text-sm font-medium  border-b"
-                    style={{ height: '60px' }}
-                  >
-                    <span className='whitespace-nowrap'>{hour.hourStart} - {hour.hourEnd === '24:00' ? '00:00' : hour.hourEnd}</span>
+                {/* Hours column */}
+                <div className="flex flex-col border-r">
+                
+                  { // have first cell  empty in the header to not overlap with days in the headers
+                    hoursSlots[0] && ( // have a bottom margin to seperate from  body cells
+                      <div className="px-2 py-4 h-[60px]  text-sm font-medium text-muted border-b" style={{ height: '60px' }}></div>
+                    )
+                  }
+                  {hoursSlots.map((hour) => (
+                    <div
+                      key={hour.hourStart}
+                      className="px-2 py-4 text-sm font-medium  border-b"
+                      style={{ height: '60px' }}
+                    >
+                      <span className='whitespace-nowrap'>{hour.hourStart} - {hour.hourEnd === '24:00' ? '00:00' : hour.hourEnd}</span>
 
-                  </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Days columns */}
+                {Object.entries(sessionsByDay).map(([day, sessions]) => (
+                  <DayColumn 
+                    key={day} 
+                    day={day} 
+                    sessions={sessions} 
+                    getClassName={getClassName}
+                    hours={hoursSlots}
+                    onEditSession={(session) => openModal(session)}
+                    onDeleteSession={(sessionId) => openDeleteModal(sessionId)}
+                  />
                 ))}
               </div>
-              {/* Days columns */}
-              {Object.entries(sessionsByDay).map(([day, sessions]) => (
-                <DayColumn 
-                  key={day} 
-                  day={day} 
-                  sessions={sessions} 
-                  getClassName={getClassName}
-                  hours={hoursSlots}
-                  onEditSession={(session) => openModal(session)}
-                  onDeleteSession={(sessionId) => openDeleteModal(sessionId)}
-                />
-              ))}
-            </div>
-          
-          </div>
-          {Object.keys(sessionsByDay).length === 0 && (
+            
+            </div>)
+          :(
             <p className='text-muted pl-2 mt-4'>No sessions found.</p>
           )}
         </div>

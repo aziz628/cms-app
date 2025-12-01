@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs'
 import review_service from '../../services/review_service.js'; // Adjust the path to your gallery service
 */
-import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image,check_no_file_in_uploads} from '../helper/tools.js';
+import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
 // global variables
 const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
 const identityTypes = ['member', 'guest',""];

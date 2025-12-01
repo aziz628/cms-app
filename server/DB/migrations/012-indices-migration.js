@@ -1,5 +1,4 @@
 import create_migration from "../helper/migration_template.js";
-import {DASHBOARD} from '../db_constants.js';
 
 import { GALLERY_IMAGE, SCHEDULE, EVENTS, REVIEWS, PRICING_FEATURES, ADMIN } from "../db_constants.js";
 

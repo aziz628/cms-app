@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import AppError from '../errors/AppError.js';
-import { canAddFile ,getState} from '../services/upload_storage_state_service.js';
+import { canAddFile ,getState,getAvailableStorage} from '../services/upload_storage_state_service.js';
 import { save_file_to_disk } from '../services/content_service.js';
 import { logWarning } from '../services/logging_service.js';
 
@@ -11,6 +11,7 @@ import { logWarning } from '../services/logging_service.js';
 const MAX_UPLOAD_FILES_PER_REQUEST = parseInt(process.env.MAX_UPLOAD_FILES_PER_REQUEST) || 2;
 const DEFAULT_MAX_UPLOAD_SIZE = parseInt(process.env.DEFAULT_MAX_UPLOAD_SIZE) || 2 * 1024 * 1024; // 2MB
 const MAX_TOTAL_STORAGE = parseInt(process.env.MAX_TOTAL_STORAGE) || 1000 * 1024 * 1024; // 1000MB
+
 // --- Setup ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +27,7 @@ const UPLOAD_DIR_PATH = path.join(__dirname, '../', UPLOAD_BASE_DIR);
      /**
       * Creates a standard file upload pipeline.
       * @param {object} options - The options for the pipeline.
-      * @param {function} options.validator - The specific validation middleware for the route.
+      * @param {function} options.validator - The specific input validation middleware for the route.
       * @param {string} options.section - The folder name in 'uploads' to save files to.
       * @param {string} [options.uploadMode='single'] - The multer upload mode ('single' or 'fields').
       * @param {string} [options.field_name='image'] - The name of the file field for 'single' mode.
@@ -42,7 +43,7 @@ function create_upload_pipeline(options={}) {
         field_name = 'image'
       } = options;
 
-      // section and validator are required
+      // section and input validator are required
       if(!section ){
         throw new Error('The "section" option is required.');
       }
@@ -64,8 +65,7 @@ function create_upload_pipeline(options={}) {
       return [
         memory_upload(memory_upload_options),
         post_upload_size_check,
-        validator,
-        
+        validator,  
         file_validator(file_validator_options),
         file_saver({ section })
       ];

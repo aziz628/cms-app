@@ -19,16 +19,9 @@ import {
   BUSINESS_HOURS, 
 } from '../db_constants.js';
 
-// Mapping for fake_data keys to table names
-
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const source_image_dir = path.join(__dirname, '../../__tests__/fixtures');
 const upload_dir = path.join(__dirname, '../../uploads');
-
-
-
-
 
 async function copyTestImages(section, number) {
   try {
@@ -38,7 +31,7 @@ async function copyTestImages(section, number) {
     const source_path = path.join(source_image_dir, original_image_name);
     const dest_dir = path.join(upload_dir, section);
 
-    // store all file copy promises so we can await them all and handle errors
+    // store all file copy promises to await them all and handle errors
     let file_Promise = [];
     // keep track of all copied file names
     let file_names = [];

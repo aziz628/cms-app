@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 // Destructuring specific utilities from winston.format for easier access
-const { combine, timestamp, printf, colorize } = winston.format;
+const { combine, timestamp, printf } = winston.format;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logDirectory = process.env.LOG_DIR || './logs';

@@ -151,7 +151,7 @@ export async function getAuthCookies(credentials = { username: 'admin', password
 
 /**
  * Remove all files under uploads/<subfolder>.
- * Useed in afterAll to cleanup files created by tests.
+ * Used in afterAll to cleanup files created by tests.
  */
 
 export function cleanup_all_upload() {
