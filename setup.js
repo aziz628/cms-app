@@ -95,32 +95,32 @@ async function setupProject() {
 
       if (!fs.existsSync(envDevelopmentPath)) {
         fs.copyFileSync(envExamplePath, envDevelopmentPath);
-        console.log('\n Created .env.development from .env.example');
+        console.log('\nCreated .env.development from .env.example');
       } else {
-        console.log('\n .env.development already exists, skipping creation');
+        console.log('\n.env.development already exists, skipping creation');
       }
       if (!fs.existsSync(envTestPath)) {
         fs.copyFileSync(envExamplePath, envTestPath);
-        console.log('\n Created .env.test from .env.example');
+        console.log('\nCreated .env.test from .env.example');
       } else {
-        console.log('\n .env.test already exists, skipping creation');
+        console.log('\n.env.test already exists, skipping creation');
       }
 
     // 6. Run migrations (sqlite will create the DB file if it doesn't exist)
-      console.log('\n Setting up database...');
-      console.log('   Running migrations...');
+      console.log('\nSetting up database...');
+      console.log('Running migrations...');
       execSync('npm run migrate', { cwd: SERVER_DIR, stdio: 'inherit' });
-      console.log('   Database setup complete');
+      console.log('Database setup complete');
 
 
-    console.log('\n Setup completed successfully!');
-    console.log('\n IMPORTANT: Edit your .env.production file  \n ');
+    console.log('\nSetup completed successfully!');
+    console.log('\nIMPORTANT: Edit your .env.production file  \n ');
 
-    console.log('\n To start the server:');
-    console.log('   cd server');
-    console.log('   npm run prod:start');
+    console.log('\nTo start the server:');
+    console.log('cd server');
+    console.log('npm run prod:start');
   } catch (error) {
-    console.error('\n Setup failed:', error);
+    console.error('\nSetup failed:', error);
     process.exit(1);
   }
 }
