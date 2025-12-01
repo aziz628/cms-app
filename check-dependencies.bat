@@ -32,9 +32,7 @@ if exist ".\tailwindcss.exe" (
 
 echo.
 echo  All dependencies OK!
-echo.
-echo Running setup...
-echo.
+echo
 
 
 if %errorlevel% neq 0 (
