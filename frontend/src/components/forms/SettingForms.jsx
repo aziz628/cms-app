@@ -29,7 +29,7 @@ function UserForm({ Username, onSubmit }) {
         <label className="block text-sm font-medium mb-1" htmlFor="username">Username</label>
         {isLoading ? (
           <div className="flex justify-center items-center p-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : (
           <div className="flex space-x-2">
@@ -70,8 +70,8 @@ function PasswordForm({onSubmit }) {
     <form onSubmit={submit}>
         <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
         {isLoading ? (
-          <div className="flex bg-red justify-center items-center p-4">
-              <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="flex justify-center items-center p-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
           ) : (
               <div className="flex space-x-2">

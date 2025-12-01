@@ -42,13 +42,13 @@ function Login() {
     }
 
     return (
-        <div className='min-h-screen flex items-center justify-center bg-gray-100'>
+        <div className='min-h-screen flex items-center justify-center bg-containerBg'>
             {user 
-            ?<div className="flex bg-red justify-center items-center h-64">
-                <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            ?<div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
             :
-            <div className='text-black bg-white p-8 rounded shadow-md w-full max-w-md'>
+            <div className='text-text bg-surface p-8 rounded shadow-md w-full max-w-md'>
                 <h1 className='text-2xl font-bold mb-6 text-center'>Gym cms Login</h1>
                 {loading
                     ?  <LoadingSpinner />
@@ -62,7 +62,7 @@ function Login() {
                                 <input 
                                     type='text' 
                                     id='username' 
-                                    className='w-full p-2 border text-black rounded' 
+                                    className='w-full p-2 border text-text rounded' 
                                     value={username} 
                                     onChange={(e) => setUsername(e.target.value)} 
                                     required 
@@ -84,13 +84,13 @@ function Login() {
                                 onClick={() => setShowPassword(!showPassword)}></i>
                                 </div>
                             </div>
-                            <button type='submit' className='w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition' disabled={loading}>
+                            <button type='submit' className='w-full bg-primary text-btnText p-2 rounded hover:bg-hoverPrimary transition' disabled={loading}>
                                 {loading ? 'Logging in...' : 'Login'}
                             </button>
                             
                         </form>
                         <div className='mt-4 text-center'>
-                            <a href='#' className='text-blue-600 hover:underline'>Forgot Password?</a>
+                            <a href='#' className='text-primary hover:underline'>Forgot Password?</a>
                         </div>
                     </>
                 }

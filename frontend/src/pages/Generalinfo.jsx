@@ -323,8 +323,8 @@ export default function Info() {
                                 {businessHours?.length > 0 
                                 ? (
                                         <div className='overflow-x-auto'>
-                                            <table className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-gray-200'>
-                                                <thead className='bg-[#ebeef2]'>
+                                            <table className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-borderColor'>
+                                                <thead className='bg-tableHeaderBg '>
                                                     <tr>
                                                         {
                                                             ['Day', 'Open Time', 'Close Time', 'Actions'].map((header, index) => (
@@ -333,7 +333,7 @@ export default function Info() {
                                                     }
                                                 </tr>
                                             </thead>
-                                            <tbody className='divide-y divide-gray-200'>
+                                            <tbody className='divide-y divide-borderColor'>
                                                 {
                                                     businessHours.map((hour) => (
                                                         <tr key={hour.id}>

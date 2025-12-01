@@ -1,9 +1,9 @@
 
 const toastClasses = {
-  success: 'bg-green-50 border-green-500 text-success',
-  error: 'bg-red-50 border-red-500 text-danger',
-  warning: 'bg-yellow-50 border-yellow-500 text-warning',
-  info: 'bg-blue-50 border-blue-500 text-primary',
+  success: 'bg-successLight border-success text-success',
+  error: 'bg-dangerLight border-danger text-danger',
+  warning: 'bg-warningLight border-warning text-warning',
+  info: 'bg-primaryLight border-primary text-primary',
 };
 
 const toastIcons = {
@@ -27,8 +27,8 @@ export function Toast({ type = 'info', message, onClose }) {
       <button 
         onClick={onClose}
         type='button'
-        style={{ backgroundColor: 'gainsboro', padding: '4px' }}
-        className="ml-4 rounded text-black hover:text-gray-500"
+        style={{ backgroundColor: 'var(--color-containerBg)', padding: '4px' }}
+        className="ml-4 rounded text-text hover:text-muted"
       >
         <span className="sr-only">Close</span> 
         <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">

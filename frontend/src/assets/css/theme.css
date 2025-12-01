@@ -11,26 +11,45 @@ button:focus-visible{
 
 /* default theme is light */
 :root{
-  /* Colors */
+  /* bg Colors */
   --color-bg: #f7fafc;
   --color-container-bg: #ffffff;
-  --color-surface: #ffffff;
+  --color-input-bg: #d1d5db;     /* Light gray for input backgrounds */
+  --color-surface: #ffffff;     /* Surface color for cards/modals */
+  
+  /* text color */
   --color-text: #111827;
   --color-btn-text: #ffffff;
+  --color-muted: #606673;          /* Gray (for less prominent text) */
+  --color-hover-muted: #4b5563;    /* Darker gray for hover state */
+
+/* Primary Colors */
   --color-primary: #2563eb;         /* Main blue (used for primary actions) */
   --color-secondary: #007bffcc;       /* Slightly lighter blue (secondary actions) */
   --color-tertiary: #dbeafe;       /* light blue equal to blue-100 in tailwind */
   --hover-primary: #1a49ca;         /* Darker blue (hover state for primary actions) */
+  
+  /* Action Colors */
   --color-warning: #f59e42;         /* Orange (for warning actions like logout) */
+  --color-hover-warning: #d97706;    /* Darker orange for hover state */
   --color-danger: #dc2626;          /* Red (for destructive actions like delete) */
   --color-hover-danger: #bb2124;    /* Darker red for hover state */
   --color-success: #22c55e;         /* Green (for success messages) */
   --color-hover-success: #16a34a; /* Darker green for hover state */
-  --color-muted: #606673;          /* Gray (for less prominent text) */
+
   --color-shadow: rgba(0, 0, 0, 0.1);
-  --color-table-header-bg: #f3f4f6; /* Light gray for table headers */
-  --color-input-bg: #d1d5db;       /* Light gray for input backgrounds */
+  --color-table-header-bg: #ebeef2; /* Light gray for table headers */
+
+  /* Light backgrounds for alerts/toasts */
+  --color-success-light: #f0fdf4;
+  --color-danger-light: #fef2f2; 
+  --color-warning-light: #fefce8;
+  --color-primary-light: #eff6ff;
   
+  /* Border colors */
+  --color-border: #d1d5db;
+  --color-border-muted: #9ca3af;
+
   /* Spacing Reference Table:
     | Variable    | rem   | px   | Use Case                    |
     |-------------|-------|------|-----------------------------|
@@ -62,7 +81,6 @@ button:focus-visible{
     | font-semibold   | 600   |
     | font-bold       | 700   |
     */
-  
 
   /* Standard: Use --text-base for most body text at weight 400. Increase size for headings and important info, optionally increasing weight for emphasis. Keep weight consistent for body, vary size and weight for hierarchy. */
 
@@ -87,36 +105,57 @@ button:focus-visible{
  button:hover{
   cursor: pointer;
  }
-/* global base */
-/*
-:root {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  
-}*/
 
 /* dark theme */
 [data-theme="dark"]{
-  --color-bg: #0b1220; /* Dark theme background */
-  --color-container-bg: #1e293b; /* Dark theme container background */
+
+    --color-bg: #111827;             /* Darkest - page background */
+  --color-container-bg: #1f2937;   /* Slightly lighter - containers */
+ 
   --color-btn-bg: #2563eb; /* Dark theme button background */
-  --color-surface: #1e293b;        /* Darker surface for cards/modals */
-  --color-text: #e6eef7;            /* Light text color */
+ 
+  --color-table-header-bg: #374151; /* Lighter - table headers stand out */
+  --color-input-bg: #111827;        /* Darker than container - inputs are recessed */
+  --color-surface: #1f2937;        /* Darker surface for cards/modals */
+  
+  --color-text: #f9fafb;            /* Light text color */
   --color-btn-text: #ffffff;       /* White text color for buttons */
+  --color-muted: #9ca3af;         /* Lighter gray for better contrast */
+  --color-hover-muted: #6b7280;   /* Slightly darker muted for hover */
+
   --color-primary: #3b82f6;
-  --color-secondary: #60a5fa;      /* Lighter blue for secondary actions */
+  --color-secondary: #6366f1;      /* Lighter blue for secondary actions */
   --color-tertiary: #93c5fd;       /* lighter blue equal to blue-300 in tailwind */
   --hover-primary: #2563eb;        /* Slightly darker blue for hover */
-  --color-warning: #f59e42;        /* Keep same orange */
+  
+  --color-warning: #f59e0b;        /* Keep same orange */
   --color-danger: #ef4444;         /* Slightly lighter red */
-  --color-success: #22c55e;        /* Keep same green */
-  --color-muted: #9ca3af;         /* Lighter gray for better contrast */
+  --color-success: #10b981;        /* Keep same green */
+  
+  
+  /* Hover states for status colors */
+  --hover-success: #059669;
+  --hover-warning: #d97706;
+  --hover-danger: #dc2626;
+  
   --color-shadow: White; /* better visibility shadow for dark mode */
-  --color-table-header-bg: #374151; /* Darker gray for table headers */
-  --color-input-bg: #374151;       /* Darker gray for input backgrounds */
+  
+  --color-success-light: #064e3b;
+  --color-danger-light: #7f1d1d;
+  --color-warning-light: #78350f;
+  --color-primary-light: #1e3a8a;
+  
+  --color-border: #4b5563;
+  --color-border-muted: #6b7280; 
+  
+  --color-input-bg: #374151;
+ 
+  
 }
 
+
+  /* Input Styles */
+  /* set bg to the input */ 
 input:-webkit-autofill {  
-  background-color: #d1d5db !important;
+  background-color: var(--color-input-bg) !important;
 }

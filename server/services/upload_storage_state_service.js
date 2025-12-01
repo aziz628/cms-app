@@ -83,18 +83,7 @@ async function initialize_storage_state() {
   } catch (error) {
     // If file doesn't exist, create it
     if (error.code === 'ENOENT') {
-      console.log(' Creating new storage state file');
-
-      // Calculate current uploads directory size 
-      const uploads_size = await getDirectorySize();
-
-      // Initialize state
-      storageState = {
-        totalSize: uploads_size,
-        lastUpdated: new Date().toISOString()
-      };
-      // Save to file
-      await saveToFile();
+      await createNewStateFile();
     } 
     else {
       console.error(' Error loading storage state:', error);
@@ -103,6 +92,23 @@ async function initialize_storage_state() {
   }
 }
 
+/**
+ * Creates a new storage state file with initial values
+ */
+async function createNewStateFile() {
+  console.log(' Creating new storage state file');
+
+  // Calculate current uploads directory size 
+  const uploads_size = await getDirectorySize();
+
+  // Initialize state
+  storageState = {
+    totalSize: uploads_size,
+    lastUpdated: new Date().toISOString()
+  };
+  // Save to file
+  await saveToFile();
+}
 
 /**
      * Recursively calculates the total size of all files within the uploads directory.
@@ -227,9 +233,15 @@ async function decrementStorage(fileSizeBytes) {
  * Internal: Persist state to disk
  */
 async function saveToFile() {
+  // ensure data directory exists
   const dataDir = path.dirname(STORAGE_STATE_FILE);
   if (!fsSync.existsSync(dataDir)) {
     fsSync.mkdirSync(dataDir, { recursive: true });
+  }
+  
+  // if old file exists delete it
+  if (fsSync.existsSync(STORAGE_STATE_FILE)) {
+    fsSync.unlinkSync(STORAGE_STATE_FILE);
   }
 
   await fs.writeFile(
@@ -271,5 +283,6 @@ export  {
   canAddFile,
   getAvailableStorage,
   reset,
-  initialize_storage_state
+  initialize_storage_state,
+  createNewStateFile
 };

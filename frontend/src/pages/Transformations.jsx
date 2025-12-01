@@ -109,38 +109,38 @@ function Transformations() {
             <h2 className="text-2xl font-bold">Transformations Management</h2>
             <button 
               onClick={() => openModal(null)} // Open modal for adding new transformation
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
             >
               <i className="fa-solid fa-plus mr-2"></i>
               Add New Transformation
             </button>
         </div>
       
-      <div id='transformation-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
+      <div id='transformation-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg'>
       <h2 className='text-xl font-semibold  mb-4'>Transformations List</h2>
       {loading 
       ? (
-         <div className="flex bg-red justify-center items-center h-64">
-            <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+         <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
       )
       : (
         <>
           {Transformations.length === 0 
           ?(  
-            <p className='text-gray-500'>No Transformations found.</p>
+            <p className='text-muted'>No Transformations found.</p>
           )
           :(
               <div className=' overflow-x-auto'>
-                <table  className=' w-full max-w-[800px] border text-center rounded-lg divide-y divide-gray-200 '>
-                  <thead className='bg-[#ebeef2]'>
+                <table  className=' w-full max-w-[800px] border text-center rounded-lg divide-y divide-borderColor '>
+                  <thead className='bg-tableHeaderBg '>
                     <tr>
                       {[{header:'Name', width:'15%'},
                        {header:'Before image', width:'20%', minWidth: '112px'},
                        {header:'After image', width:'20%', minWidth: '112px'},
                        {header:'Description', width:'30%', minWidth: '150px'},
                        {header:'Actions', width:'15%', minWidth: '100px'}].map(({header,width,minWidth}) => (
-                        <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                        <th key={header} className='px-2 py-3  text-md font-semibold text-text  tracking-wider'
                         style={{width:width, minWidth:minWidth}}
                         >
                           {header}
@@ -148,10 +148,10 @@ function Transformations() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className='bg-white divide-y divide-gray-200'>
+                  <tbody className='bg-surface divide-y divide-borderColor'>
                     {Transformations.map(transformation => (
                       <tr key={transformation.id}>
-                        <td className='px-2 py-3 text-md font-semibold text-gray-900'>
+                        <td className='px-2 py-3 text-md font-semibold text-text'>
                           <span className='block whitespace-nowrap font-semibold'>{transformation.name}</span>
                         </td>
                         <td className='py-2'><img 
@@ -162,16 +162,16 @@ function Transformations() {
                         src={ `/uploads/transformations/${transformation.after_image}`} 
                           className='inline size-24 rounded' />
                         </td>
-                        <td className='px-2 py-3 text-sm text-gray-900'>{transformation.description}</td>
-                        <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
+                        <td className='px-2 py-3 text-sm text-text'>{transformation.description}</td>
+                        <td className='px-2 py-3 space-y-1 text-sm text-text'>
                           <button 
                             onClick={() => openModal(transformation)} // Open modal for editing this transformation
-                            className='bg-success block hover:bg-green-600 m-[auto] text-white px-3 py-1 rounded w-[fit-content]'
+                            className='bg-success block hover:bg-hoverSuccess m-[auto] text-btnText px-3 py-1 rounded w-[fit-content]'
                           >
                             Edit
                             <i className="fa-solid fa-pencil-alt ml-1"></i>
                           </button>
-                          <button  onClick={() => openDeleteModal(transformation.id)} className='bg-red-600 m-[auto] flex items-center hover:bg-red-700 text-white px-3 py-1 rounded w-[fit-content]'>
+                          <button  onClick={() => openDeleteModal(transformation.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded w-[fit-content]'>
                             <span >Delete</span>
                             <i className="fa-solid fa-trash ml-1"></i>
                           </button>

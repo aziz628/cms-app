@@ -28,10 +28,10 @@ function Sidebar() {
             <li  key={item.path}>
               <Link
                 to={item.path}
-                className={`block relative px-3 py-2  md:py-[6px] rounded transition ${
+                className={`block relative px-3 py-3  md:py-[6px] rounded transition ${
                   location.pathname === item.path
-                    ? "bg-tertiary text-blue-800 font-medium"
-                    : "hover:bg-gray-100 text-muted hover:text-primary"
+                    ? "bg-tertiary text-primary font-medium"
+                    : "hover:bg-containerBg text-muted hover:text-primary"
                 }`}
               >
                 <i className={`${item.icon} left-1 top-[calc(50%_-_0.5rem)]  absolute`}></i>

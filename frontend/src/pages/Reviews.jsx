@@ -19,6 +19,7 @@ function Reviews() {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const { success ,error} = useNotification();
+  
   // Fetch reviews from the server
   async function fetchReviews(){
     try{
@@ -118,7 +119,7 @@ function Reviews() {
             <h2 className="text-2xl font-bold">Reviews Management</h2>
             <button 
               onClick={() => openModal(null)} // Open modal for adding new review
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
             >
               <i className="fa-solid fa-plus mr-2"></i>
               Add New Review
@@ -129,17 +130,17 @@ function Reviews() {
         ? (
             <LoadingSpinner />
         ) : (
-            <div id='review-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
+            <div id='review-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg'>
               {reviews.length === 0 
                 ? (
-                  <p className='text-gray-500'>No reviews found.</p>
+                  <p className='text-muted'>No reviews found.</p>
                   ) 
                 : (
                   <>
                     <h2 className='text-xl font-semibold mb-4'>Reviews List</h2>
                     <div className=' overflow-x-auto'>
-                      <table  className='table-auto text-center w-full max-w-[800px] border  rounded-lg divide-y divide-gray-200 '>
-                        <thead className='bg-[#ebeef2]'>
+                      <table  className='table-auto text-center w-full max-w-[800px] border  rounded-lg divide-y divide-borderColor '>
+                        <thead className='bg-tableHeaderBg '>
                            <tr>
                               {[{ header: 'Author', width: '15%' },
                                 { header: 'Image', width: '25%', minWidth: '112px' },
@@ -147,7 +148,7 @@ function Reviews() {
                                 { header: 'Identity', width: '15%' },
                                 { header: 'Actions', width: '15%' }
                               ].map(({ header, width, minWidth }) => (
-                                    <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                                    <th key={header} className='px-2 py-3  text-md font-semibold text-text  tracking-wider'
                                     style={{width:width,minWidth:minWidth}}
                                     >
                                       {header}
@@ -155,26 +156,26 @@ function Reviews() {
                                   ))}
                           </tr>
                         </thead>
-                        <tbody className='bg-white divide-y divide-gray-200'>
+                        <tbody className='bg-surface divide-y divide-borderColor'>
                           {reviews?.map(reviewItem => (
                             <tr key={reviewItem.id}>
-                              <td className='px-2 py-3 text-md font-semibold text-gray-900'> {reviewItem.author}</td>
-                              <td className='px-2 py-3 text-md font-semibold text-gray-900'>
+                              <td className='px-2 py-3 text-md font-semibold text-text'> {reviewItem.author}</td>
+                              <td className='px-2 py-3 text-md font-semibold text-text'>
                                 <img 
                                 src={ `/uploads/reviews/${reviewItem.image}`} 
                                  className='inline size-24 rounded' />
                               </td>
-                              <td className='px-2 py-3 text-sm text-gray-900'>{reviewItem.content}</td>
-                              <td className='px-2 py-3 text-sm text-gray-900'>{reviewItem.identity || 'none'}</td>
-                              <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
+                              <td className='px-2 py-3 text-sm text-text'>{reviewItem.content}</td>
+                              <td className='px-2 py-3 text-sm text-text'>{reviewItem.identity || 'none'}</td>
+                              <td className='px-2 py-3 space-y-1 text-sm text-text'>
                                 <button 
                                   onClick={() => openModal(reviewItem)} // Open modal for editing this review
-                                  className='bg-success block m-[auto] hover:bg-green-600 text-white px-3 py-1 rounded '
+                                  className='bg-success block m-[auto] hover:bg-hoverSuccess text-btnText px-3 py-1 rounded '
                                 >
                                   Edit
                                   <i className="fa-solid fa-pencil-alt ml-1"></i>
                                 </button>
-                                <button  onClick={() => openDeleteModal(reviewItem.id)} className='bg-red-600 m-[auto] flex items-center hover:bg-red-700 text-white px-3 py-1 rounded'>
+                                <button  onClick={() => openDeleteModal(reviewItem.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded'>
                                   <span >Delete</span>
                                   <i className="fa-solid fa-trash ml-1"></i>
                                 </button>

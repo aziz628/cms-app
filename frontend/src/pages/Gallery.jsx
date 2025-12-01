@@ -173,18 +173,18 @@ function Gallery() {
           <h2 className="text-2xl font-bold mb-4">Gallery</h2>
           <div className='flex flex-col md:flex-row gap-2'>
             <button type='button'
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
               onClick={()=>setIsCategoryModalOpen(true)}
             ><i className="fa-solid fa-plus mr-2"></i>
             Add category</button>
             <button type='button'
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
               onClick={()=>{categories.length > 0 ?setIsImageModalOpen(true): error('Please add a category first')}} // only open if there is at least one category
             ><i className="fa-solid fa-plus mr-2"></i>
             Add image</button> 
           </div>
       </div>
-      <div id='categories-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
+      <div id='categories-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
         <h2 className='text-xl font-semibold'>category list</h2>
         <div>
           {loading 
@@ -195,14 +195,14 @@ function Gallery() {
               <>
               {categories.length == 0 
               ? (
-                <p className='text-gray-500'>No Categories found</p>
+                <p className='text-muted'>No Categories found</p>
               ):
               <div className=' overflow-x-auto'>
-                <table  className='  border text-center rounded-lg divide-y divide-gray-200 '>
-                  <thead className='bg-[#ebeef2]'>
+                <table  className='  border text-center rounded-lg divide-y divide-borderColor '>
+                  <thead className='bg-tableHeaderBg '>
                     <tr>
                       {['Name','Actions'].map(header => (
-                        <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                        <th key={header} className='px-2 py-3  text-md font-semibold text-text  tracking-wider'
                         style={{width:header==='Name'?'80%':'20%'}}
                         >
                           {header}
@@ -210,19 +210,19 @@ function Gallery() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className='bg-white divide-y divide-gray-200'>
+                  <tbody className='bg-surface divide-y divide-borderColor'>
                     {categories?.map(category => (
                       <tr key={category.id}>
-                        <td className='px-2 py-3 text-sm text-gray-900'>{category.name}</td>
-                        <td className='px-2 py-3 flex flex-col items-center space-y-1 text-sm text-gray-900'>
+                        <td className='px-2 py-3 text-sm text-text'>{category.name}</td>
+                        <td className='px-2 py-3 flex flex-col items-center space-y-1 text-sm text-text'>
                           <button 
                             onClick={() => openCategoryModal(category)} // Open modal for editing this category
-                            className='bg-success hover:bg-green-600 text-white px-3 py-1 rounded w-[fit-content]'
+                            className='bg-success hover:bg-hoverSuccess text-btnText px-3 py-1 rounded w-[fit-content]'
                           >
                             Edit
                             <i className="fa-solid fa-pencil-alt ml-1"></i>
                           </button>
-                          <button  onClick={() => openCategoryDeleteModal(category.id)} className='bg-red-600 flex items-center hover:bg-red-700 text-white px-3 py-1 rounded w-[fit-content]'>
+                          <button  onClick={() => openCategoryDeleteModal(category.id)} className='bg-danger flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded w-[fit-content]'>
                             <span >Delete</span>
                             <i className="fa-solid fa-trash ml-1"></i>
                           </button>
@@ -238,7 +238,7 @@ function Gallery() {
           } 
         </div>
       </div>
-       <div id='images-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
+       <div id='images-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
         <h2 className='text-xl font-semibold'>Images List</h2>
         <div>
           {loading 
@@ -249,18 +249,18 @@ function Gallery() {
               <>
               {images.length == 0 
               ? (
-                <p className='text-gray-500'>No Images found</p>
+                <p className='text-muted'>No Images found</p>
               ):
               <div className=' overflow-x-auto'>
-                <table  className='  border text-center rounded-lg divide-y divide-gray-200 '>
-                  <thead className='bg-[#ebeef2]'>
+                <table  className='  border text-center rounded-lg divide-y divide-borderColor '>
+                  <thead className='bg-tableHeaderBg'>
                     <tr>
                       {[{header:'Name', width:'15%'},
                        {header:'image', width:'25%', minWidth:'112px'},
                         {header:'Category', width:'15%'},
                         {header:'Description', width:'30%'}, 
                         {header:'Actions', width:'15%'}].map(({header,width,minWidth}) => (
-                        <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                        <th key={header} className='px-2 py-3  text-md font-semibold text-text  tracking-wider'
                         style={{width:width, minWidth:minWidth}}
                         >
                           {header}
@@ -268,26 +268,26 @@ function Gallery() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className='bg-white divide-y divide-gray-200'>
+                  <tbody className='bg-surface divide-y divide-borderColor'>
                     {images?.map(image => (
                       <tr key={image.id}>
-                        <td className='px-2 py-3 text-md font-semibold text-gray-900'>{image.name}</td>
+                        <td className='px-2 py-3 text-md font-semibold text-text'>{image.name}</td>
                         <td className='py-2 px-2'>
                           <img 
                           src={ `/uploads/gallery/${image.filename}`} 
                             className='inline size-24 rounded ' />
                         </td>                 
-                        <td className='px-2 py-3 text-sm text-gray-900'>{image.category_name || 'Uncategorized'}</td>
-                        <td className='px-2 py-3 text-sm text-gray-900'>{image.description}</td>
-                        <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
+                        <td className='px-2 py-3 text-sm text-text'>{image.category_name || 'Uncategorized'}</td>
+                        <td className='px-2 py-3 text-sm text-text'>{image.description}</td>
+                        <td className='px-2 py-3 space-y-1 text-sm text-text'>
                           <button 
                             onClick={() => openImageModal(image)} // Open modal for editing this category
-                            className='bg-success block m-[auto] hover:bg-green-600 text-white px-3 py-1 rounded w-[fit-content]'
+                            className='bg-success block m-[auto] hover:bg-hoverSuccess text-btnText px-3 py-1 rounded w-[fit-content]'
                           >
                             Edit
                             <i className="fa-solid fa-pencil-alt ml-1"></i>
                           </button>
-                          <button  onClick={() => openDeleteImageModal(image.id)} className='bg-red-600 m-[auto] flex items-center hover:bg-red-700 text-white px-3 py-1 rounded w-[fit-content]'>
+                          <button  onClick={() => openDeleteImageModal(image.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded w-[fit-content]'>
                             <span >Delete</span>
                             <i className="fa-solid fa-trash ml-1"></i>
                           </button>

@@ -13,11 +13,11 @@ function HourRow({  sessions, rowMinWidth, onEditSession, onDeleteSession }) {
       {sessions.map((session) => (
         <div
           key={session.id}
-          className="absolute rounded  z-30 flex flex-col justify-between text-white bg-secondary "
+          className="absolute rounded  z-30 flex flex-col justify-between text-btnText bg-secondary "
           style={{
             top: `${Math.max(0, session.top)}px`,
             left: `${session.left}px`,
-            width: `${SESSION_WIDTH - 2}px`, // minus 2px for both sides 1px border
+            width: `${SESSION_WIDTH }px`, // minus 2px for both sides 1px border
             height: `${session.height}px`,
             borderWidth: '1px',
             borderColor: 'black'
@@ -34,12 +34,12 @@ function HourRow({  sessions, rowMinWidth, onEditSession, onDeleteSession }) {
           {/* button actions */}
           <div className='flex justify-center gap-2 h-[20px]  w-full' style={{ marginTop: '-2px' }}>
             <button 
-              className="text-xs px-[4px] flex items-center h-[15px] bg-green-600 hover:bg-green-700 rounded" 
+              className="text-xs px-[4px] flex items-center h-[15px] bg-success hover:bg-hoverSuccess rounded" 
               onClick={() => onEditSession(cleanUpSession(session))}>
               <i className="fas fa-edit text-[10px]"></i>
             </button>
             <button 
-              className="text-xs px-[4px] flex items-center h-[15px] bg-red-600 hover:bg-red-700 rounded" 
+              className="text-xs px-[4px] flex items-center h-[15px] bg-danger hover:bg-hoverDanger rounded" 
               onClick={() => onDeleteSession(session.id)}>
               <i className="fas fa-trash text-[10px]"></i>
             </button>

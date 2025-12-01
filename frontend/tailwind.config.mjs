@@ -14,21 +14,37 @@ export default {
         bg: 'var(--color-bg)',
         containerBg: 'var(--color-container-bg)',
         surface: 'var(--color-surface)',
+
         text: 'var(--color-text)',
         btnText: 'var(--color-btn-text)',
-        primary: 'var(--color-primary)',
         muted: 'var(--color-muted)',
-        shadowColor: 'var(--color-shadow)',
+        hoverMuted: 'var(--color-hover-muted)',
+
+        primary: 'var(--color-primary)',
+        hoverPrimary: 'var(--hover-primary)',
         secondary: 'var(--color-secondary)',
         tertiary: 'var(--color-tertiary)',
-        hoverPrimary: 'var(--hover-primary)',
-        warning: 'var(--color-warning)',
-        danger: 'var(--color-danger)',
-        hoverDanger: 'var(--color-hover-danger)',
+        
         success: 'var(--color-success)',
         hoverSuccess: 'var(--color-hover-success)',
+        warning: 'var(--color-warning)',
+        hoverWarning: 'var(--color-hover-warning)',
+        danger: 'var(--color-danger)',
+        hoverDanger: 'var(--color-hover-danger)',
+        
         tableHeaderBg: 'var(--color-table-header-bg)',
-        inputBg: 'var(--color-input-bg)'
+        shadowColor: 'var(--color-shadow)',
+
+        inputBg: 'var(--color-input-bg)',
+        successLight: 'var(--color-success-light)',
+        dangerLight: 'var(--color-danger-light)',
+        warningLight: 'var(--color-warning-light)',
+        primaryLight: 'var(--color-primary-light)',
+
+        borderColor: 'var(--color-border)',
+        borderMuted: 'var(--color-border-muted)'
+
+        
       },
       spacing: {
         '1': 'var(--space-1)',

@@ -119,7 +119,7 @@ function Events() {
             <h2 className="text-2xl font-bold">Events Management</h2>
             <button 
               onClick={() => openModal(null)} // Open modal for adding new Event
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
             >
               <i className="fa-solid fa-plus mr-2"></i>
               Add New Event
@@ -130,15 +130,15 @@ function Events() {
       ? (
         <LoadingSpinner />
       )
-      :<div id='events-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
+      :<div id='events-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg'>
         {Events.length === 0 ? (
-           <p className='text-gray-500'>No events found.</p>
+           <p className='text-muted'>No events found.</p>
         ) : (
           <>
           <h2 className='text-xl font-semibold mb-4'>Event List</h2>
           <div className=' overflow-x-auto'>
-            <table  className='table-auto w-full text-center max-w-[800px] border  rounded-lg divide-y divide-gray-200 '>
-              <thead className='bg-[#ebeef2]'>
+            <table  className='table-auto w-full text-center max-w-[800px] border  rounded-lg divide-y divide-borderColor '>
+              <thead className='bg-tableHeaderBg'>
                 <tr>
                   {[{ header: 'Event', width: '15%' },
                     { header: 'Image', width: '25%', minWidth: '112px' },
@@ -147,7 +147,7 @@ function Events() {
                     { header: 'Location', width: '10%' },
                     { header: 'Actions', width: '10%' }
                   ].map(({ header, width, minWidth }) => (
-                        <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                        <th key={header} className='px-2 py-3  text-md font-semibold text-text  tracking-wider'
                         style={{width:width, minWidth:minWidth}}
                         >
                           {header}
@@ -157,17 +157,17 @@ function Events() {
                 </tr>
                 
               </thead>
-              <tbody className='bg-white divide-y divide-gray-200'>
+              <tbody className='bg-surface divide-y divide-borderColor'>
                 {Events?.map(EventItem => (
                   <tr key={EventItem.id}>
-                    <td className='px-2 py-3 text-md font-semibold text-gray-900'> {EventItem.title}</td>
-                    <td className='  px-2 py-3 text-md font-semibold text-gray-900'>
+                    <td className='px-2 py-3 text-md font-semibold text-text'> {EventItem.title}</td>
+                    <td className='  px-2 py-3 text-md font-semibold text-text'>
                       <img 
                       src={ `/uploads/events/${EventItem.image}` } 
                       alt={EventItem.title} className='inline size-24 rounded ' />
                     </td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>{EventItem.description}</td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>
+                    <td className='px-2 py-3 text-sm text-text'>{EventItem.description}</td>
+                    <td className='px-2 py-3 text-sm text-text'>
                       {new Date(EventItem.date).toLocaleString(undefined, 
                       {
                       year: 'numeric',
@@ -177,16 +177,16 @@ function Events() {
                       minute: '2-digit'
                     })}
                     </td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>{EventItem.location}</td>
-                    <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
+                    <td className='px-2 py-3 text-sm text-text'>{EventItem.location}</td>
+                    <td className='px-2 py-3 space-y-1 text-sm text-text'>
                       <button 
                         onClick={() => openModal(EventItem)} // Open modal for editing this Event
-                        className='bg-success hover:bg-green-600 block m-[auto] text-white px-3 py-1 rounded '
+                        className='bg-success hover:bg-hoverSuccess block m-[auto] text-btnText px-3 py-1 rounded '
                       >
                         Edit
                         <i className="fa-solid fa-pencil-alt ml-1"></i>
                       </button>
-                      <button  onClick={() => openDeleteModal(EventItem.id)} className='bg-red-600 m-[auto] flex items-center hover:bg-red-700 text-white px-3 py-1 rounded'>
+                      <button  onClick={() => openDeleteModal(EventItem.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded'>
                         <span >Delete</span>
                         <i className="fa-solid fa-trash ml-1"></i>
                       </button>

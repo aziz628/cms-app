@@ -115,7 +115,7 @@ function Trainers() {
             <h2 className="text-2xl font-bold">Trainers Management</h2>
             <button 
               onClick={() => openModal(null)} // Open modal for adding new trainer
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
             >
               <i className="fa-solid fa-plus mr-2"></i>
               Add New Trainer
@@ -124,19 +124,19 @@ function Trainers() {
         {/* loading spinner */}
         {loading ? (
           <div className="flex  justify-center items-center h-64">
-            <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) :(
         // class table container
-        <div id='class-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
+        <div id='class-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg'>
         {Trainers.length === 0 ? (
-           <p className='text-gray-500'>No trainers found.</p>
+           <p className='text-muted'>No trainers found.</p>
         ) : (
           <>
           <h2 className='text-xl font-semibold mb-4'>Trainer List</h2>
           <div className=' overflow-x-auto'>
-          <table  className='table-auto w-full text-center max-w-[800px] border  rounded-lg divide-y divide-gray-200 '>
-              <thead className='bg-[#ebeef2]'>
+          <table  className='table-auto w-full text-center max-w-[800px] border  rounded-lg divide-y divide-borderColor '>
+              <thead className='bg-tableHeaderBg '>
                 <tr>
                     {[{ header: 'Trainer', width: '15%' },
                       { header: 'Image', width: '25%' , minWidth: '112px'},
@@ -145,7 +145,7 @@ function Trainers() {
                       { header: 'Years of Experience', width: '15%' },
                       { header: 'Actions', width: '15%' }
                     ].map(({ header, width, minWidth }) => (
-                          <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                          <th key={header} className='px-2 py-3  text-md font-semibold text-text  tracking-wider'
                           style={{width:width, minWidth:minWidth}}
                           >
                             {header}
@@ -153,27 +153,27 @@ function Trainers() {
                         ))}
                 </tr>
               </thead>
-              <tbody className='bg-white divide-y divide-gray-200'>
+              <tbody className='bg-surface divide-y divide-borderColor'>
                 {Trainers.map(trainer => (
                   <tr key={trainer.id}>
-                    <td className='px-2 py-3 text-md font-semibold text-gray-900'>{trainer.name}</td>
-                    <td className='px-2 py-3 text-md font-semibold text-gray-900'>
+                    <td className='px-2 py-3 text-md font-semibold text-text'>{trainer.name}</td>
+                    <td className='px-2 py-3 text-md font-semibold text-text'>
                       <img 
                       src={ `/uploads/trainers/${trainer.image}` } 
                       alt={trainer.name} className='inline size-24 rounded ' />
                     </td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>{trainer.speciality}</td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>{trainer.certificate}</td>
-                    <td className='px-2 py-3 text-sm text-gray-900'>{trainer.years_of_experience}</td>
-                    <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
+                    <td className='px-2 py-3 text-sm text-text'>{trainer.speciality}</td>
+                    <td className='px-2 py-3 text-sm text-text'>{trainer.certificate}</td>
+                    <td className='px-2 py-3 text-sm text-text'>{trainer.years_of_experience}</td>
+                    <td className='px-2 py-3 space-y-1 text-sm text-text'>
                       <button 
                         onClick={() => openModal(trainer)} // Open modal for editing this trainer
-                        className='bg-success m-[auto] block hover:bg-green-600 text-white px-3 py-1 rounded '
+                        className='bg-success m-[auto] block hover:bg-hoverSuccess text-btnText px-3 py-1 rounded '
                       >
                         Edit
                         <i className="fa-solid fa-pencil-alt ml-1"></i>
                       </button>
-                      <button  onClick={() => openDeleteModal(trainer.id)} className='bg-red-600 m-[auto] flex items-center hover:bg-red-700 text-white px-3 py-1 rounded'>
+                      <button  onClick={() => openDeleteModal(trainer.id)} className='bg-danger m-[auto] flex items-center hover:bg-hoverDanger text-btnText px-3 py-1 rounded'>
                         <span >Delete</span>
                         <i className="fa-solid fa-trash ml-1"></i>
                       </button>

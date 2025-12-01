@@ -124,7 +124,7 @@ function Schedule() {
         <h2 className="text-2xl font-bold">Schedule Management</h2>
         <button 
               onClick={() => {openModal(null)} } // Open modal for adding new session
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
             >
               <i className="fa-solid fa-plus mr-2"></i>
               Add New Session
@@ -135,7 +135,7 @@ function Schedule() {
         <LoadingSpinner />
       ) : (
         // class table container
-        <div id='class-table'  className='bg-white  p-4 shadow-md rounded-lg'>
+        <div id='class-table'  className='bg-surface  p-4 shadow-md rounded-lg'>
           <h2 className="text-xl font-semibold mb-4">Class Schedule</h2>
           <div className=' overflow-x-auto'>
             <div id='week_schedule' className='text-center w-fit flex overflow-x-auto border rounded-lg '>
@@ -145,13 +145,13 @@ function Schedule() {
               
                 { // have first cell  empty in the header to not overlap with days in the headers
                   hoursSlots[0] && ( // have a bottom margin to seperate from  body cells
-                    <div className="px-2 py-4 h-[60px] mb-2 text-sm font-medium text-gray-600 border-b" style={{ height: '60px' }}></div>
+                    <div className="px-2 py-4 h-[60px]  text-sm font-medium text-muted border-b" style={{ height: '60px' }}></div>
                   )
                 }
                 {hoursSlots.map((hour) => (
                   <div
                     key={hour.hourStart}
-                    className="px-2 py-4 text-sm font-medium text-gray-600 border-b"
+                    className="px-2 py-4 text-sm font-medium  border-b"
                     style={{ height: '60px' }}
                   >
                     <span className='whitespace-nowrap'>{hour.hourStart} - {hour.hourEnd === '24:00' ? '00:00' : hour.hourEnd}</span>
@@ -175,7 +175,7 @@ function Schedule() {
           
           </div>
           {Object.keys(sessionsByDay).length === 0 && (
-            <p className='text-gray-500 pl-2 mt-4'>No sessions found.</p>
+            <p className='text-muted pl-2 mt-4'>No sessions found.</p>
           )}
         </div>
       )}

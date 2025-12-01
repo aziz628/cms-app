@@ -202,11 +202,11 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
     onSubmit(ProcessedData);
   }
   return (
-    <div className="p-4 shadow-md rounded-lg bg-white space-y-4 max-w-[800px] ">
+    <div className="p-4 shadow-md rounded-lg bg-surface space-y-4 max-w-[800px] ">
       <h2 className="text-xl font-semibold">{title}</h2>
       
       {errors.form && (
-          <div className="bg-red-100 bg-opacity-10 border-l-4 border-danger text-danger p-4">
+          <div className="bg-dangerLight bg-opacity-10 border-l-4 border-danger text-danger p-4">
             <p className="text-danger">{errors.form}</p>
           </div>
         )
@@ -235,17 +235,17 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
               
               {/* Display field-specific error */}
               {errors[field.name] && (
-              <div className="bg-red-100 bg-opacity-10  text-danger  pb-2 ">
-                <p className="text-danger">{errors[field.name]} <i class="fa-solid fa-circle-exclamation"></i></p>
+              <div className="bg-dangerLight bg-opacity-10  text-danger  pb-2 ">
+                <p className="text-danger">{errors[field.name]} <i className="fa-solid fa-circle-exclamation"></i></p>
               </div>
             )}
           </div>
         ))}
         <div style={{marginTop: "20px"}} className="flex space-x-2  ">
-          <button type="submit" className="bg-primary hover:bg-hover-primary text-white px-4 py-2 rounded">
+          <button type="submit" className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded">
             {validationMode === 'create' ? 'Create' : 'Save Changes'}
           </button>
-          <button type="button" onClick={onClose} className="bg-muted hover:bg-gray-400 text-white px-4 py-2 rounded">
+          <button type="button" onClick={onClose} className="bg-muted hover:bg-hoverMuted text-btnText px-4 py-2 rounded">
             Cancel
           </button>
         </div>
@@ -313,9 +313,10 @@ function FormField({field,value,onChange,preview=null}) {
                         }
                         onChange(field.name, null);
                       }}
-                      className="ml-2 mt-2 px-2 h-[30px] flex items-center inline rounded text-white bg-danger  border-danger hover:border-red-700 hover:bg-red-700"
+                      className="ml-2 mt-2 px-2 h-[30px] flex items-center inline rounded text-btnText bg-danger  border-danger hover:border-hoverDanger hover:bg-hoverDanger"
                       title="Remove file"
                     >
+                      {/* Remove file icon */}
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
                       </svg>

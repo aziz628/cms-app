@@ -61,9 +61,15 @@ function Setting() {
        }
        <div className="mt-4 flex space-x-5 bg-bg max-w-[800px] p-4 shadow-md shadow-shadowColor rounded-lg">
               <h2 className="text-xl font-semibold mb-2">Theme</h2>
+              
               <button type="button" onClick={toggleTheme} 
-              className={`flex-start border-gray-300 border-2 duration-300 ${theme === 'dark' ? 'bg-gradient-to-r from-slate-800 to-slate-900 ' : 'bg-gradient-to-r from-blue-100 to-blue-50 '} shadow-md w-20 px-2 py-[5px] rounded-3xl flex  items-center `}>
-                  <div className={`w-7 transition-all duration-200 flex items-center justify-center shadow-md rounded-full min-w-5 h-7 ${theme === 'dark' ? 'bg-slate-100 translate-x-[36px]':'bg-yellow-100'}`}><i className={`fa-solid ${theme === 'dark' ? 'fa-moon text-black' :'fa-sun text-yellow-600'  }`}></i></div>
+              className={`flex-start border-borderColor border-2 duration-300 ${theme === 'dark' ? 'bg-gradient-to-r from-slate-800 to-slate-900 ' : 'bg-gradient-to-r from-blue-100 to-blue-50 '} shadow-md w-20 px-2 py-[5px] rounded-3xl flex  items-center `}>
+                 
+                  {/* toggle button icon */}
+                  <div className={`w-7 transition-all duration-200 flex items-center justify-center shadow-md rounded-full min-w-5 h-7 ${theme === 'dark' ? 'bg-slate-100 translate-x-[36px]':'bg-yellow-100'}`}>
+                    <i className={`fa-solid ${theme === 'dark' ? 'fa-moon text-bg' :'fa-sun text-warning'  }`}></i>
+                  </div>
+
               </button>
         </div>
 

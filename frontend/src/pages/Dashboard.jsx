@@ -39,7 +39,7 @@ function Dashboard() {
     return (
         <div className="space-y-4">
             <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-            <div id='dashboard-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
+            <div id='dashboard-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
                 {/* place holder for storage usage element */}
                 <h2 className="text-xl font-semibold mb-2">Recent Activities</h2>
                 {loading 
@@ -47,18 +47,18 @@ function Dashboard() {
                   )
                 : data.length === 0 
                     ? (
-                        <p className='text-gray-500'>No recent activities found.</p>
+                        <p className='text-muted'>No recent activities found.</p>
                         )
                     : (
                         <div className=' overflow-x-auto space-y-4'>
-                            <table  className='  border  rounded-lg divide-y divide-gray-200 '>
-                                <thead className='bg-[#ebeef2]'>
+                            <table  className='  border  rounded-lg divide-y divide-borderColor '>
+                                <thead className='bg-tableHeaderBg'>
                                     <tr>
                                         <th className='px-4 py-2'>Action</th>
                                         <th className='px-4 py-2'>Time</th>
                                     </tr>
                                 </thead>
-                                <tbody className='divide-y divide-gray-200'>
+                                <tbody className='divide-y divide-borderColor'>
                                     {data?.map((item,i) => (
                                         <tr key={i}>
                                             <td className='px-4 py-2 space-x-2'>
@@ -69,9 +69,9 @@ function Dashboard() {
                                                         item.icon === 'delete' ? 'fa-trash ' : 'fa-question'
                                                     }`} 
                                                     style={{ 
-                                                        color: item.icon === 'create' ? 'blue' :
-                                                        item.icon === 'update' ? 'green' :
-                                                        item.icon === 'delete' ? 'red' : 'gray'
+                                                        color: item.icon === 'create' ? 'var(--color-primary)' :
+                                                        item.icon === 'update' ? 'var(--color-success)' :
+                                                        item.icon === 'delete' ? 'var(--color-danger)' : 'var(--color-muted)'
                                                     }}>
                                                 </i>
                                                 <span>

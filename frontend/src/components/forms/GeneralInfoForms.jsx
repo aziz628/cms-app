@@ -25,7 +25,7 @@ function AboutSummaryForm({ AboutSummary, onSubmit }) {
                 id="about-summary"
                 value={summary}
                 onChange={(e) => setAboutSummary(e.target.value)}
-                className="h-20 min-w-48 p-2 border border-gray-300 rounded"
+                className="h-20 min-w-48 p-2 border border-borderColor rounded"
                 rows="4"
                 placeholder="Enter your gym summary..."
             />
@@ -61,7 +61,7 @@ function HeroTitleForm({ HeroTitle, onSubmit }) {
                     type="text"
                     value={title}
                     onChange={(e) => setHeroTitle(e.target.value)}
-                    className="border border-gray-300 rounded p-2"
+                    className="border border-borderColor rounded p-2"
                     placeholder="Enter hero title..."
                 />
                 <button type="submit" className="btn-primary">
@@ -97,7 +97,7 @@ function HeroSubtitleForm({ HeroSubtitle, onSubmit }) {
                     type="text"
                     value={subtitle}
                     onChange={(e) => setHeroSubtitle(e.target.value)}
-                    className="border border-gray-300 rounded p-2"
+                    className="border border-borderColor rounded p-2"
                     placeholder="Enter hero subtitle..."
                 />
                 <button type="submit" className="btn-primary">

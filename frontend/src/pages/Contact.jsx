@@ -201,11 +201,11 @@ function Contact() {
                         <LoadingSpinner size="small" />
                     ) : (
                         socialMedias.length === 0 ? (
-                            <p className='text-gray-500'>No social media links found.</p>
+                            <p className='text-muted'>No social media links found.</p>
                         ) : (
                             <div className='overflow-x-auto '>
-                                <table className=' text-center w-full border max-w-[800px] rounded-lg divide-y divide-gray-200 '>
-                                    <thead className='bg-[#ebeef2]'>
+                                <table className=' text-center w-full border max-w-[800px] rounded-lg divide-y divide-borderColor '>
+                                    <thead className='bg-tableHeaderBg'>
                                         <tr>
                                             {
                                                 ['Platform','Link','Actions'].map((header,i) => (

@@ -148,25 +148,25 @@ function Pricing() {
        <div className='flex flex-col md:flex-row gap-4 md:justify-between items-center '>
           <h2 className="text-2xl font-bold mb-4">Pricing Plans</h2>
             <button type='button'
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+              className="bg-primary hover:bg-hoverPrimary text-btnText px-4 py-2 rounded flex items-center"
               onClick={()=>openModal(null)}
             ><i className="fa-solid fa-plus mr-2"></i>
             Add pricing Plan
             </button>
       </div>
-      <div id='categories-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
+      <div id='categories-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg space-y-4'>
         <h2 className='text-xl font-semibold'>Pricing Plans list</h2>
         <div>
           {loading 
             ? (
-              <div className="flex bg-red justify-center items-center h-64">
-                  <div className="animate-spin color-blue rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              <div className="flex justify-center items-center h-64">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
                 </div>
             )
             : (
               pricingPlans.length == 0 
               ? (
-                <p className='text-gray-500'>No Pricing Plans found</p>
+                <p className='text-muted'>No Pricing Plans found</p>
               ):
               (
                 <div className="overflow-x-auto">{/* this time it's not a table but list of cards */}
@@ -174,11 +174,11 @@ function Pricing() {
                     {pricingPlans?.map((plan) => (
                       <div key={plan.id} className="text-center w-[260px] flex flex-col rounded-lg border border-primary shadow-lg">
 
-                        <div id='plan-header' className={`border h-[150px] space-y-2 rounded-t-lg flex-col ${plan.popular ? 'bg-yellow-500' : 'bg-secondary'} p-4 text-white justify-between items-center`}>
+                        <div id='plan-header' className={`border h-[150px] space-y-2 rounded-t-lg flex-col ${plan.popular ? 'bg-warning' : 'bg-secondary'} p-4 text-btnText justify-between items-center`}>
                           <h3 className="text-lg font-bold">{plan.name?.toUpperCase()}</h3>
                           <div className='space-x-2'>{/* show price and currency */}
-                            <span className='text-white font-bold text-[30px]'>${plan.price}</span>
-                            <span className='text-white font-semibold text-md'>/ {{'daily':'day', 'weekly':'week', 'monthly':'month', 'annually':'year'}[plan.period]|| 'unknown'}</span>
+                            <span className='text-btnText font-bold text-[30px]'>${plan.price}</span>
+                            <span className='text-btnText font-semibold text-md'>/ {{'daily':'day', 'weekly':'week', 'monthly':'month', 'annually':'year'}[plan.period]|| 'unknown'}</span>
                           </div>
                           <p className='text-sm  '>{plan.description}</p>
                         </div>
@@ -191,26 +191,26 @@ function Pricing() {
                               <div key={i} className='space-y-2'>
                                 <input className='input' type='text' onChange={(e)=>{setEditingFeature({...editingFeature, feature:e.target.value})}} value={editingFeature.feature}></input>
                                 <div className='space-x-2 flex'>
-                                  <button className='bg-white border-2 border-green-600 hover:bg-green-700 hover:text-white text-green-600 px-3 py-1 rounded flex items-center' type='button' onClick={()=>saveFeature()}><i className="fa-solid fa-check"></i></button>
-                                  <button className='bg-white border-2 border-red-600 hover:bg-red-700 hover:text-white text-red-600 px-3 py-1 rounded flex items-center'  type='button' onClick={()=>{setEditingFeature(null)}}>
+                                  <button className='bg-surface border-2 border-success hover:bg-hoverSuccess hover:text-btnText text-success px-3 py-1 rounded flex items-center' type='button' onClick={()=>saveFeature()}><i className="fa-solid fa-check"></i></button>
+                                  <button className='bg-surface border-2 border-danger hover:bg-hoverDanger hover:text-btnText text-danger px-3 py-1 rounded flex items-center'  type='button' onClick={()=>{setEditingFeature(null)}}>
                                     <i className="fa-solid fa-xmark"></i></button>
                                 </div>
                               </div>
                               )
                               /* Otherwise, render as  item list  */
-                              :( <li key={i} style={{borderTop: i === 0 ? 'none' : '1px solid grey'}} className={'text-sm py-1  flex justify-between items-center'}>
+                              :( <li key={i} style={{borderTop: i === 0 ? 'none' : '1px solid var(--color-borderColor)'}} className={'text-sm py-1  flex justify-between items-center'}>
                                 <p className='space-x-1'>
-                                  <i style={{color:'green'}} className="fa-solid fa-check"></i>
+                                  <i style={{color:'var(--color-success)'}} className="fa-solid fa-check"></i>
                                   <span>{feature.feature.charAt(0).toUpperCase() + feature.feature.slice(1)}</span>
                                 </p>
 
                                 <div className='space-x-2 flex'>
                                   <button onClick={()=>{setEditingFeature(feature)}}  
                                     type='button' 
-                                    className=' px-2 py-1 rounded flex items-center justify-center bg-green-600 hover:bg-green-700 text-white p-[2px]'>
+                                    className=' px-2 py-1 rounded flex items-center justify-center bg-success hover:bg-hoverSuccess text-btnText p-[2px]'>
                                      <i className="fa-solid fa-pen-to-square "></i>
                                     </button>
-                                   <button onClick={()=>deleteFeature(feature.id)} type='button' className=' px-2 py-1 rounded flex items-center justify-center  bg-red-600 hover:bg-red-700 text-white p-[2px]'> 
+                                   <button onClick={()=>deleteFeature(feature.id)} type='button' className=' px-2 py-1 rounded flex items-center justify-center  bg-danger hover:bg-hoverDanger text-btnText p-[2px]'> 
                                       <i className="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
@@ -221,9 +221,9 @@ function Pricing() {
                               <div className='space-y-1 ' style={{margin: '20px 0'}}>
                                 <input className='input' type="text" onChange={(e) => setNewFeature({ ...newFeature, feature: e.target.value })} />
                                 <div className='space-x-2 flex'>
-                                  <button className='bg-white border-2 border-green-600 hover:bg-green-700 hover:text-white text-green-600 px-3 py-1 rounded flex items-center' type='button' onClick={saveFeature}>
+                                  <button className='bg-surface border-2 border-success hover:bg-hoverSuccess hover:text-btnText text-success px-3 py-1 rounded flex items-center' type='button' onClick={saveFeature}>
                                     <i className="fa-solid fa-check"></i></button>
-                                  <button className='bg-white border-2 border-red-600 hover:bg-red-700 hover:text-white text-red-600 px-3 py-1 rounded flex items-center' type='button' onClick={()=>{setNewFeature({planId:null, feature:''})}}>
+                                  <button className='bg-surface border-2 border-danger hover:bg-hoverDanger hover:text-btnText text-danger px-3 py-1 rounded flex items-center' type='button' onClick={()=>{setNewFeature({planId:null, feature:''})}}>
                                     <i className="fa-solid fa-xmark"></i></button>
                                 </div>
                               </div>
@@ -231,20 +231,20 @@ function Pricing() {
                           </ul>
                           {/* Add New Feature */}
                           <div className='flex flex-col space-y-2'>
-                            <button onClick={() => setNewFeature({planId: plan.id, feature: '' })} className='text-primary rounded py-1 border border-primary hover:bg-secondary hover:text-white' type='button'>
+                            <button onClick={() => setNewFeature({planId: plan.id, feature: '' })} className='text-primary rounded py-1 border border-primary hover:bg-secondary hover:text-btnText' type='button'>
                             <i className="fa-solid fa-plus mr-2"></i>
                             Add feature</button>
                           
                           <div className='mt-4 flex text-sm justify-between'>
                             <button 
-                              className='bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center'
+                              className='bg-success hover:bg-hoverSuccess text-btnText px-3 py-1 rounded flex items-center'
                               onClick={() => openModal(plan)}
                             >
                               <i className="fa-solid fa-pen-to-square mr-2"></i>
                               Edit Plan
                             </button>
                             <button
-                              className='bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded flex items-center'
+                              className='bg-danger hover:bg-hoverDanger text-btnText px-3 py-1 rounded flex items-center'
                               onClick={() => openDeleteModal(plan.id)}
                             >
                               <i className="fa-solid fa-trash mr-2"></i>

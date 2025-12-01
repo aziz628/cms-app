@@ -2,6 +2,7 @@ import db from '../db_connection.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createNewStateFile } from '../../services/upload_storage_state_service.js';
 import fake_data from '../../__tests__/fixtures/fake_data.js';
 import { 
   CLASSES, 
@@ -259,6 +260,9 @@ async function seedDatabase() {
 
     console.log('\nDatabase seeding completed successfully!\n');
 
+    // update storage state after seeding
+    await createNewStateFile();
+    console.log('Storage state initialized after seeding.');
   } catch (error) {
     console.error('Error seeding database:', error);
     process.exit(1);

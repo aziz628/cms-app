@@ -119,15 +119,15 @@ function Classes() {
         ?   <LoadingSpinner />
         :
         // class table container
-          <div id='class-table'  className='bg-white max-w-[800px] p-4 shadow-md rounded-lg'>
+          <div id='class-table'  className='bg-surface max-w-[800px] p-4 shadow-md rounded-lg'>
           {classes.length === 0 ? (
-            <p className='text-gray-500'>No classes found.</p>
+            <p className='text-muted'>No classes found.</p>
           ) : (
             <>
             <h2 className='text-xl font-semibold mb-4'>Class List</h2>
             <div className=' overflow-x-auto'>
-              <table  className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-gray-200 '>
-                <thead className='bg-[#ebeef2]'>
+              <table  className=' text-center w-full max-w-[800px] border  rounded-lg divide-y  divide-borderColor '>
+                <thead className='bg-tableHeaderBg'>
                   <tr>
                     {[{ header: 'Class', width: '12.5%' },
                       { header: 'Image', width: '22.5%', minWidth: '112px' },
@@ -135,7 +135,7 @@ function Classes() {
                       { header: 'Private Coaching', width: '15%' },
                       { header: 'Actions', width: '12.5%' }
                     ].map(({ header, width, minWidth }) => (
-                          <th key={header} className='px-2 py-3  text-md font-semibold text-gray-800  tracking-wider'
+                          <th key={header} className='px-2 py-3  text-md font-semibold text-text  tracking-wider'
                           style={{width:width,minWidth:minWidth}}
                           >
                             {header}
@@ -144,20 +144,20 @@ function Classes() {
 
                   </tr>
                 </thead>
-                <tbody className='bg-white divide-y divide-gray-200'>
+                <tbody className='bg-surface divide-y divide-borderColor'>
                   {classes?.map(classItem => (
                     <tr key={classItem.id}>
-                      <td className='px-2 py-3 text-md font-semibold text-gray-900'>
+                      <td className='px-2 py-3 text-md font-semibold text-text'>
                         {classItem.name}
                       </td>
-                      <td className='px-2 py-3 text-md font-semibold text-gray-900'>
+                      <td className='px-2 py-3 text-md font-semibold text-text'>
                         <img 
                         src={ `/uploads/classes/${classItem.image}` } 
                         alt={classItem.name} className='inline  size-24 rounded ' />
                       </td>
-                      <td className='px-2 py-3 text-sm text-gray-900'>{classItem.description}</td>
-                      <td className='px-2 py-3 text-sm text-gray-900'>{classItem.private_coaching ? 'Yes' : 'No'}</td>
-                      <td className='px-2 py-3 space-y-1 text-sm text-gray-900'>
+                      <td className='px-2 py-3 text-sm text-text'>{classItem.description}</td>
+                      <td className='px-2 py-3 text-sm text-text'>{classItem.private_coaching ? 'Yes' : 'No'}</td>
+                      <td className='px-2 py-3 space-y-1 text-sm text-text'>
                         <button 
                           onClick={() => openModal(classItem)} // Open modal for editing this class
                           className='bg-success m-[auto] block hover:bg-hoverSuccess text-btnText px-3 py-1 rounded '
@@ -189,7 +189,7 @@ function Classes() {
           fields={[
             { name: 'name', label: 'Class Name', type: 'text', required: true },
             { name: 'description', label: 'Description', type: 'textarea', required: true },
-            { name: 'private_coaching', label: 'Private Coaching', type: 'checkbox' },
+            { name: 'private_coaching', label: 'Private Coaching', type: 'checkbox', required: false },
             { name: 'image', label: 'Class Image', type: 'file', required: true }
           ]}
           initialData={editingClass ? (() => {
