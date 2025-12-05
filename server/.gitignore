@@ -52,4 +52,5 @@ server.key
 server.cert
 
 # md file
-**/file-db-operations
+**/DB/*.md
+!./DB/sqlite_migration_tools.md
