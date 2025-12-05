@@ -54,6 +54,10 @@ async function setupProject() {
       } else {
         execSync('sh compile_tailwind.sh', { cwd: FRONTEND_DIR, stdio: 'inherit' });
       }
+      // run node watch watcher once to move the compiled tailwind to server template folder
+      console.log('   Compiling Server Template Tailwind CSS...');
+      // path is frontend/script/watch-and-move-tailwind.js
+      execSync('node watch-and-move-tailwind.js init', { cwd: path.join(FRONTEND_DIR, 'script'), stdio: 'inherit' });
 
       // compile server template tailwind
         if (isWindows) {

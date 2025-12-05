@@ -1,3 +1,6 @@
+.vscode/
+.vscode/launch.json
+
 abstraction-principles.md
 run.bat
 Standard practice in software testing.txt
