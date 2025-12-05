@@ -1,10 +1,10 @@
 .vscode/
 .vscode/launch.json
 
-abstraction-principles.md
-run.bat
-Standard practice in software testing.txt
-structure of server
+!README.md
+*.md
+*.txt
+
 /**/tempCodeRunnerFile.bat
 /**/tailwindcss-windows.exe
 /**/tailwindcss.exe

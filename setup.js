@@ -56,7 +56,8 @@ async function setupProject() {
       }
       // run node watch watcher once to move the compiled tailwind to server template folder
       console.log('   Compiling Server Template Tailwind CSS...');
-      // path is frontend/script/watch-and-move-tailwind.js
+      
+      // move compiled tailwind to server template folder
       execSync('node watch-and-move-tailwind.js init', { cwd: path.join(FRONTEND_DIR, 'script'), stdio: 'inherit' });
 
       // compile server template tailwind
