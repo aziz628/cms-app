@@ -14,7 +14,7 @@ import PaginationButtons from '../components/content/PaginationButtons.jsx';
 
 function Pricing() {
   const [pricingPlans, setPricingPlans] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [editingPlan, setEditingPlan] = useState(null);
   const [editingFeature,setEditingFeature] = useState(null)
   const [newFeature, setNewFeature] = useState({planId:null, feature:''})

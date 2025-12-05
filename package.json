@@ -4,6 +4,7 @@
   "description": "Gym CMS - Full-stack application with Express server and frontend",
   "type": "module",
   "scripts": {
-    "setup": "node setup.js"
+    "setup": "node setup.js",
+    "start": ".\\script\\run_dev.bat"
   }
 }

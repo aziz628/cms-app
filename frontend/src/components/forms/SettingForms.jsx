@@ -32,7 +32,7 @@ function UserForm({ Username, onSubmit }) {
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
             <input type="text"
               id="username"
               value={username}
@@ -74,7 +74,7 @@ function PasswordForm({onSubmit }) {
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
           ) : (
-              <div className="flex space-x-2">
+              <div className="flex flex-wrap gap-2">
                 <input type="password"
                   id="password" 
                   value={password}

@@ -9,7 +9,7 @@ import PaginationButtons from '../components/content/PaginationButtons.jsx';
 
 function Transformations() {
   const [Transformations, setTransformations] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTransformation, setEditingTransformation] = useState(null);
   const [deletingTransformationId, setDeletingTransformationId] = useState(null);

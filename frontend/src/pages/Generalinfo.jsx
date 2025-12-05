@@ -20,13 +20,13 @@ export default function Info() {
     const [heroImage, setHeroImage] = useState(null);
 
     // loading states
-    const [AboutSummaryLoading, setLoadingAboutSummary] = useState(false);
-    const [AboutImageLoading, setLoadingAboutImage] = useState(false);
-    const [HeroTitleLoading, setLoadingHeroTitle] = useState(false);
-    const [HeroSubtitleLoading, setLoadingHeroSubtitle] = useState(false);
-    const [HeroImageLoading, setLoadingHeroImage] = useState(false);
-    const [HoursLoading, setLoadingHours] = useState(false);
-    
+    const [AboutSummaryLoading, setLoadingAboutSummary] = useState(true);
+    const [AboutImageLoading, setLoadingAboutImage] = useState(true);
+    const [HeroTitleLoading, setLoadingHeroTitle] = useState(true);
+    const [HeroSubtitleLoading, setLoadingHeroSubtitle] = useState(true);
+    const [HeroImageLoading, setLoadingHeroImage] = useState(true);
+    const [HoursLoading, setLoadingHours] = useState(true);
+
     // modal appearance states
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

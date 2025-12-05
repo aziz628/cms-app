@@ -10,7 +10,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 function Events() {
   const [Events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
   const [isModalOpen , setIsModalOpen] = useState(false); // Controls modal visibility (true/false)
   const [editingEvent, setEditingEvent] = useState(null); // Stores Trainer being edited (null for new Trainer, object for editing)
