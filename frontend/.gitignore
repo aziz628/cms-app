@@ -37,4 +37,4 @@ package-lock.json
 *.exe
 
 #env
-.env
+**/.env
