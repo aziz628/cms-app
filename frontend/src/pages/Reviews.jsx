@@ -10,7 +10,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 function Reviews() {
   const [reviews, setReviews] =useState([])
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen,setIsModalOpen]=useState(false)
   const [editingReview,setEditingReview]=useState(null)
   const [deletingReviewId,setDeletingReviewId]=useState(null)

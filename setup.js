@@ -82,9 +82,13 @@ async function setupProject() {
 
     // 5. copy env.example to .env.production and .env.development and .env.test
       const envExamplePath = path.join(SERVER_DIR, '.env.example');
+      // env example path frontend 
+      const envFrontendExamplePath = path.join(FRONTEND_DIR, '.env.example');
+
       const envProductionPath = path.join(SERVER_DIR, '.env.production');
       const envDevelopmentPath = path.join(SERVER_DIR, '.env.development');
       const envTestPath = path.join(SERVER_DIR, '.env.test');
+      const envFrontendPath=path.join(FRONTEND_DIR, '.env');
 
       if (!fs.existsSync(envProductionPath)) {
         fs.copyFileSync(envExamplePath, envProductionPath);
@@ -105,6 +109,13 @@ async function setupProject() {
       } else {
         console.log('\n.env.test already exists, skipping creation');
       }
+      if (!fs.existsSync(envFrontendPath)) {
+        fs.copyFileSync(envFrontendExamplePath, envFrontendPath);
+        console.log('\nCreated .env from .env.example');
+      } else {
+        console.log('\n.env already exists, skipping creation');
+      }
+      
 
     // 6. Run migrations (sqlite will create the DB file if it doesn't exist)
       console.log('\nSetting up database...');

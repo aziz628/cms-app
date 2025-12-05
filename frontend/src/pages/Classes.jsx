@@ -11,7 +11,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 function Classes() {
   const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen , setIsModalOpen] = useState(false); // Controls modal visibility (true/false)
   const [editingClass, setEditingClass] = useState(null); // Stores class being edited (null for new class, object for editing)
   const [deletingClassId, setDeletingClassId] = useState(null); // ID of class being deleted

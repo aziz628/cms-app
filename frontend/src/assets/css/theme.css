@@ -109,7 +109,7 @@ button:focus-visible{
 /* dark theme */
 [data-theme="dark"]{
 
-    --color-bg: #111827;             /* Darkest - page background */
+  --color-bg: #111827;             /* Darkest - page background */
   --color-container-bg: #1f2937;   /* Slightly lighter - containers */
  
   --color-btn-bg: #2563eb; /* Dark theme button background */

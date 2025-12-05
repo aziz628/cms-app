@@ -1,6 +1,7 @@
 // src/services/api.js
 import axios from 'axios';
 
+// The default port is set to frontend app host's port
 const API_URL =  "/api";
 
 // for axios instance to handle any request header automatically u need to leave header value empty so like json or multipart/form-data will be set automatically based on the request type
@@ -42,7 +43,8 @@ api.interceptors.response.use(
           if (status === 401) {
             window.dispatchEvent(new Event('unauthorized'));
           }
-           else if (status === 404) {
+          // if rate limiter exceeded while logging out
+          if(status === 429 && error.response.data.message === 'Rate limit exceeded') {
             createErrorEvent({ 
               ...error, 
               response: { 

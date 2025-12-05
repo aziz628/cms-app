@@ -7,7 +7,6 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {
-  authLimiter,
   adminLimiter,
   publicLimiter,
   globalLimiter
@@ -18,10 +17,12 @@ import public_routes from './routes/public.js';
 import errorHandler from './middleware/errorHandler.js';
 import { authenticate_session } from './middleware/auth_middleware.js';
 import db from './DB/db_connection.js';
+import cors_config from './config/cors.config.js';
 
 const DEFAULT_HERO_IMAGE=process.env.DEFAULT_HERO_IMAGE;
 const DEFAULT_ABOUT_IMAGE=process.env.DEFAULT_ABOUT_IMAGE;
 const TEMPLATE_IMAGES_DIR=process.env.TEMPLATE_DIR ||'public/img';
+
 
 // Create Express app
 const app = express();
@@ -36,17 +37,8 @@ app.use(helmet());
 app.use(cookieParser());
 
 
-// Enable CORS with specific origins and methods
-app.use(cors({
-        origin: [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            "http://192.168.1.12:3001",
-        ],        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true,}));
+// Enable CORS with configured origins
+app.use(cors(cors_config));
 
 
 // Serve public static files (CSS, JS, images):
@@ -81,19 +73,14 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Mount public routes BEFORE API routes
+// Mount public site endpoint BEFORE admin cms endpoints
 app.use('/', public_routes);
 
 // API Routes
-app.use('/api/auth', (req, res, next) => {
-    if(process.env.NODE_ENV !== 'test') {
-        return authLimiter(req, res, next)
-     }
-    next();
-}, auth_route);
+app.use('/api/auth', auth_route);
 
 // Base route
-app.use('/api/admin', (req,res,next)=>{adminLimiter
+app.use('/api/admin', (req,res,next)=>{
     if(process.env.NODE_ENV !== 'test') {
         adminLimiter(req, res, next)
      }
@@ -117,8 +104,6 @@ app.get('/api/health', publicLimiter, async (req, res) => {
         res.status(500).json({ status: 'Error', timestamp: Date.now() });
     }
 })
-
-
 
 
 // serve the admin cms react app static files

@@ -9,7 +9,7 @@ import PaginationButtons from '../components/content/PaginationButtons.jsx';
 
 function Trainers() {
     const [Trainers, setTrainers] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [isModalOpen , setIsModalOpen] = useState(false); // Controls modal visibility (true/false)
     const [editingTrainer, setEditingTrainer] = useState(null); // Stores Trainer being edited (null for new Trainer, object for editing)
     const [deletingTrainerId, setDeletingTrainerId] = useState(null); // ID of Trainer being deleted

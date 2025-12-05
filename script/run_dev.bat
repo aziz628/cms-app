@@ -1,4 +1,5 @@
 @echo off
+cd /d "%~dp0"
 echo Starting all processes...
 
 REM Start the server in a new tab

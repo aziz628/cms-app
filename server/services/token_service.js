@@ -41,9 +41,9 @@ function set_tokens(res, access_token, refresh_token) {
     sameSite: 'strict' 
   });
   res.cookie('refresh_token', refresh_token, { 
-    httpOnly: true, 
+    httpOnly: true, // not accessible via client-side JS
     secure: isProduction,
-    sameSite: 'strict' 
+    sameSite: 'strict' // prevent CSRF
   });
 }
 

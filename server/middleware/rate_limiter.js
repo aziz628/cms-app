@@ -1,6 +1,38 @@
 import rateLimit from 'express-rate-limit';
 import  AppError  from '../errors/AppError.js';
 
+// Global request counter across all IPs
+let globalRequestCount = 0;
+let globalWindowStart = Date.now();
+const GLOBAL_LIMIT = 50000;  // Total requests per minute globally
+const GLOBAL_WINDOW = 60 * 1000;
+
+// Global middleware - tracks TOTAL requests across all IPs
+export function globalLimiter(req, res, next) {
+  const now = Date.now();
+  
+  // Reset counter if window expired
+  if (now - globalWindowStart > GLOBAL_WINDOW) {
+    globalRequestCount = 0;
+    globalWindowStart = now;
+  }
+  
+  globalRequestCount++;
+  
+  // If exceeded global limit, reject
+  if (globalRequestCount > GLOBAL_LIMIT) {
+    return next(new AppError(
+      'Service temporarily unavailable due to high traffic.',
+      503,
+      'RATE_LIMITED_GLOBAL'
+    ));
+  }
+  
+  next();
+}
+
+
+
 // Create limiter factory with consistent error handling
 function createLimiter(windowMs, max, errorCode, message) {
   return rateLimit({
@@ -22,25 +54,19 @@ export const authLimiter = createLimiter(
   'Too many authentication attempts , please try again later.'
 );
 
+// Admin limiter for admin routes
 export const adminLimiter = createLimiter(
   60 * 1000,      // 1 minute
-  30,             // 30 requests
+  3000,           // 3000 requests
   'RATE_LIMITED_ADMIN',
   'Too many admin requests , please try again later.'
 );
 
+// Public limiter for public API/resources
 export const publicLimiter = createLimiter(
   60 * 1000,      // 1 minute
-  1000,            // 1000 requests
+  2000,           // 2000 requests
   'RATE_LIMITED_PUBLIC',
-  'Too many requests'
-);
-
-// Global limiter
-export const globalLimiter = createLimiter(
-  5 * 60 * 1000,  // 5 minutes
-  5000,            // 5000 requests
-  'RATE_LIMITED',
   'Too many requests'
 );
 

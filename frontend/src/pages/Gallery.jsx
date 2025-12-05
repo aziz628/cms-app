@@ -17,7 +17,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 function Gallery() {
   const [categories, setCategories] = useState([]);
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);

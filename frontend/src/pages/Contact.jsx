@@ -16,10 +16,10 @@ function Contact() {
     const [emailAddresse, setEmailAddresse] = useState('');
     const [locationAddress, setLocationAddress] = useState(''); 
     // loading states
-    const [loadingSocialMedia, setLoadingSocialMedia] = useState(false);
-    const [loadingPhone, setLoadingPhone] = useState(false);
-    const [loadingEmail, setLoadingEmail] = useState(false);
-    const [loadingLocationAddress, setLoadingLocationAddress] = useState(false);
+    const [loadingSocialMedia, setLoadingSocialMedia] = useState(true);
+    const [loadingPhone, setLoadingPhone] = useState(true);
+    const [loadingEmail, setLoadingEmail] = useState(true);
+    const [loadingLocationAddress, setLoadingLocationAddress] = useState(true);
     // modal appearance states
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

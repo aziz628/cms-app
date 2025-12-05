@@ -14,7 +14,7 @@ function Schedule() {
   const [sessionsByDay, setSessionsByDay] = useState({});
   const [hoursSlots , setHoursSlots] = useState([]); // Array of time slots for the schedule
   const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSession, setEditingSession] = useState(null);
   const [deletingSessionId, setDeletingSessionId] = useState(null);

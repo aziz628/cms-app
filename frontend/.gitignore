@@ -35,3 +35,6 @@ package-lock.json
 
 # executables
 *.exe
+
+#env
+.env
