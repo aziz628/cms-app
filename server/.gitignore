@@ -2,7 +2,7 @@
 node_modules/
 **/node_modules/
 
-# Build outputs (don't commit built files)
+# Build outputs  
 dist/
 data/storage-state.json
 __tests__/data/storage-state.json
@@ -13,6 +13,8 @@ DB/*.sqlite
 DB/migration-status*.json
 __tests__/test_db.sqlite
 package-lock.json
+
+# Ignore all package-lock.json files
 **/package-lock.json
 
 # test files
@@ -35,6 +37,7 @@ public/css/output.css
 
 # User uploads
 /uploads
+
 # Logs and editor files
 logs/
 logs/*.log
@@ -48,4 +51,5 @@ tailwindcss-windows.exe
 server.key
 server.cert
 
+# md file
 **/file-db-operations

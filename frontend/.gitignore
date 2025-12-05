@@ -11,9 +11,7 @@ node_modules/
 **/node_modules/
 
 dist
-dist-ssr
 tailwind-output/output.css
-./src/assets/css/output.css
 **/src/assets/css/output.css
 
 *.local

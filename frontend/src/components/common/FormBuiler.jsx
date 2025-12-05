@@ -235,7 +235,7 @@ function FormBuilder({title,fields,initialData,validationMode,onSubmit,onClose,s
               
               {/* Display field-specific error */}
               {errors[field.name] && (
-              <div className="bg-dangerLight bg-opacity-10  text-danger  pb-2 ">
+              <div className="bg-opacity-10  text-danger  pb-2 ">
                 <p className="text-danger">{errors[field.name]} <i className="fa-solid fa-circle-exclamation"></i></p>
               </div>
             )}
