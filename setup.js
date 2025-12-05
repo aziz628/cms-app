@@ -61,34 +61,18 @@ async function setupProject() {
       } else {
         execSync('sh template_tailwind_compile.sh', { cwd: SERVER_DIR, stdio: 'inherit' });
       }
-
-    // 4. Build frontend and copy to server
-      console.log('\n Building frontend...');
-      execSync('npm run build', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+    
+    // 4. make envs out of  env.example 
+      console.log('\n Setting up environment files...');
       
-      console.log('Copying frontend build to server/dist...');
-      const distPath = path.join(SERVER_DIR, 'dist');
-
-      // Remove existing dist if it exists
-      if (fs.existsSync(distPath)) {
-        fs.rmSync(distPath, { recursive: true, force: true });
-      }
-      fs.mkdirSync(distPath, { recursive: true });
-      
-      // Copy frontend build to server/dist
-      const frontendDistPath = path.join(FRONTEND_DIR, 'dist');
-      fs.cpSync(frontendDistPath, distPath, { recursive: true });
-      console.log('Frontend build copied to server/dist');
-
-    // 5. copy env.example to .env.production and .env.development and .env.test
+      // env example path backend
       const envExamplePath = path.join(SERVER_DIR, '.env.example');
-      // env example path frontend 
+      // env example path frontend
       const envFrontendExamplePath = path.join(FRONTEND_DIR, '.env.example');
 
       const envProductionPath = path.join(SERVER_DIR, '.env.production');
       const envDevelopmentPath = path.join(SERVER_DIR, '.env.development');
       const envTestPath = path.join(SERVER_DIR, '.env.test');
-      const envFrontendPath=path.join(FRONTEND_DIR, '.env');
 
       if (!fs.existsSync(envProductionPath)) {
         fs.copyFileSync(envExamplePath, envProductionPath);
@@ -109,13 +93,33 @@ async function setupProject() {
       } else {
         console.log('\n.env.test already exists, skipping creation');
       }
+      // frontend env
+      const envFrontendPath = path.join(FRONTEND_DIR, '.env');
       if (!fs.existsSync(envFrontendPath)) {
         fs.copyFileSync(envFrontendExamplePath, envFrontendPath);
-        console.log('\nCreated .env from .env.example');
+        console.log('\n Created frontend .env from .env.example');
       } else {
-        console.log('\n.env already exists, skipping creation');
+        console.log('\n Frontend .env already exists, skipping creation');
       }
       
+
+    // 5. Build frontend and copy to server
+      console.log('\n Building frontend...');
+      execSync('npm run build', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+      
+      console.log('Copying frontend build to server/dist...');
+      const distPath = path.join(SERVER_DIR, 'dist');
+
+      // Remove existing dist if it exists
+      if (fs.existsSync(distPath)) {
+        fs.rmSync(distPath, { recursive: true, force: true });
+      }
+      fs.mkdirSync(distPath, { recursive: true });
+      
+      // Copy frontend build to server/dist
+      const frontendDistPath = path.join(FRONTEND_DIR, 'dist');
+      fs.cpSync(frontendDistPath, distPath, { recursive: true });
+      console.log('Frontend build copied to server/dist');
 
     // 6. Run migrations (sqlite will create the DB file if it doesn't exist)
       console.log('\nSetting up database...');

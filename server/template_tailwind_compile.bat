@@ -1,8 +1,6 @@
 @echo off
 echo Building Tailwind CSS...
 echo.
-REM print current directory
-echo Current Directory: %cd%
 
 REM Check if tailwindcss.exe exists in the current directory
 
