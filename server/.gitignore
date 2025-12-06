@@ -12,10 +12,7 @@ __tests__/data/storage-state.json
 DB/*.sqlite
 DB/migration-status*.json
 __tests__/test_db.sqlite
-package-lock.json
 
-# Ignore all package-lock.json files
-**/package-lock.json
 
 # test files
 __tests__/fixtures/large_file.png

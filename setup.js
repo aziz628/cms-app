@@ -23,10 +23,10 @@ async function setupProject() {
       console.log('\n Installing dependencies...');
       
       console.log('   Installing server dependencies...');
-      execSync('npm install', { cwd: SERVER_DIR, stdio: 'inherit' });
+      execSync('npm ci', { cwd: SERVER_DIR, stdio: 'inherit' });
       
       console.log('   Installing frontend dependencies...');
-      execSync('npm install', { cwd: FRONTEND_DIR, stdio: 'inherit' });
+      execSync('npm ci', { cwd: FRONTEND_DIR, stdio: 'inherit' });
 
     
     // 2. Setup upload directories

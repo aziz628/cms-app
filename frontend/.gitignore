@@ -15,7 +15,7 @@ tailwind-output/output.css
 **/src/assets/css/output.css
 
 *.local
-package-lock.json
+
 
 **/src/index.css
 # Editor directories and files
