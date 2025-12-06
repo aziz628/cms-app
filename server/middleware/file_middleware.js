@@ -1,5 +1,4 @@
 import multer from 'multer';
-//import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import AppError from '../errors/AppError.js';
@@ -11,6 +10,8 @@ import { logWarning } from '../services/logging_service.js';
 const MAX_UPLOAD_FILES_PER_REQUEST = parseInt(process.env.MAX_UPLOAD_FILES_PER_REQUEST) || 2;
 const DEFAULT_MAX_UPLOAD_SIZE = parseInt(process.env.DEFAULT_MAX_UPLOAD_SIZE) || 2 * 1024 * 1024; // 2MB
 const MAX_TOTAL_STORAGE = parseInt(process.env.MAX_TOTAL_STORAGE) || 1000 * 1024 * 1024; // 1000MB
+
+const ALLOWED_MIME_TYPES = ['image/jpeg',"image/jpg", 'image/png', 'image/gif', 'image/webp', 'image/avif'];
 
 // --- Setup ---
 const __filename = fileURLToPath(import.meta.url);
@@ -91,7 +92,7 @@ function create_upload_pipeline(options={}) {
     field_name = 'image',
     fields = [],
     maxSize = DEFAULT_MAX_UPLOAD_SIZE,
-    allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
+    allowedMimeTypes = ALLOWED_MIME_TYPES
   } = options;
 
   const storage = multer.memoryStorage();
@@ -306,4 +307,4 @@ const save_file = async (file, section) => {
     };
 
     
-export { memory_upload, file_saver, file_validator ,post_upload_size_check,create_upload_pipeline}
+export { memory_upload, file_saver, file_validator ,post_upload_size_check,create_upload_pipeline, ALLOWED_MIME_TYPES}

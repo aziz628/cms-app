@@ -22,7 +22,12 @@ const router = express.Router();
 router.post('/logout', authLimiter, authenticate_session, logout);// protected route
 
 // Apply rate limiting
-router.use(authLimiter);
+router.use((req,res,next)=>{
+    if(process.env.NODE_ENV !== 'test') {
+        authLimiter(req, res, next)
+     }
+    else next();
+});
 
 // login
 router.post('/login', login_validator, login); // public route

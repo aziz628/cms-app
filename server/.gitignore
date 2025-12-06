@@ -32,21 +32,27 @@ public/css/output.css
 !.env.example
 !.env.test
 
-# User uploads
-/uploads
+# Ignore only image files in /uploads/ using ( allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
+  )
+/uploads/**/*.jpg
+/uploads/**/*.jpeg
+/uploads/**/*.png
+/uploads/**/*.avif
+/uploads/**/*.webp
+/uploads/**/*.gif
+
 
 # Logs and editor files
-logs/
+
 logs/*.log
 .vscode/
 
 #scripts
 generate_cert.bat
-
 tailwindcss.exe
 tailwindcss-windows.exe
-server.key
-server.cert
+*.key
+*.cert
 
 # md file
 **/DB/*.md

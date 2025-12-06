@@ -14,7 +14,6 @@ console.log('Starting project setup...');
 const SERVER_DIR = path.join(__dirname, 'server');
 const FRONTEND_DIR = path.join(__dirname, 'frontend');
 
-const UPLOAD_DIRS = ['gallery', 'trainers', 'events', 'reviews', 'classes', 'transformations','general_info'];
 const UPLOAD_BASE = path.join(SERVER_DIR, 'uploads');
 
 async function setupProject() {
@@ -35,16 +34,6 @@ async function setupProject() {
       if (!fs.existsSync(UPLOAD_BASE)) {
           fs.mkdirSync(UPLOAD_BASE, { recursive: true });
           console.log(`Created base upload directory: ${UPLOAD_BASE}`);
-      }
-
-      for (const dir of UPLOAD_DIRS) {
-        const dirPath = path.join(UPLOAD_BASE, dir);
-        
-        // Create directory if it doesn't exist
-        if (!fs.existsSync(dirPath)) {
-          fs.mkdirSync(dirPath, { recursive: true });
-          console.log(`Created ${dirPath}`);
-        }
       }
     
     // 3. compile tailwind and move to src/assets/css
@@ -74,7 +63,6 @@ async function setupProject() {
 
       const envProductionPath = path.join(SERVER_DIR, '.env.production');
       const envDevelopmentPath = path.join(SERVER_DIR, '.env.development');
-      const envTestPath = path.join(SERVER_DIR, '.env.test');
 
       if (!fs.existsSync(envProductionPath)) {
         fs.copyFileSync(envExamplePath, envProductionPath);
@@ -89,12 +77,7 @@ async function setupProject() {
       } else {
         console.log('\n.env.development already exists, skipping creation');
       }
-      if (!fs.existsSync(envTestPath)) {
-        fs.copyFileSync(envExamplePath, envTestPath);
-        console.log('\nCreated .env.test from .env.example');
-      } else {
-        console.log('\n.env.test already exists, skipping creation');
-      }
+     
       // frontend env
       const envFrontendPath = path.join(FRONTEND_DIR, '.env');
       if (!fs.existsSync(envFrontendPath)) {

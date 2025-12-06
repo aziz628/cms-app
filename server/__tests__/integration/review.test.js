@@ -1,13 +1,8 @@
 import request from 'supertest';
 import app from '../../app'; // Adjust the path to your Express app
-/*
-import path from 'path';
-import fs from 'fs'
-import review_service from '../../services/review_service.js'; // Adjust the path to your gallery service
-*/
+import {ALLOWED_MIME_TYPES} from "../../middleware/file_middleware.js";
 import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
 // global variables
-const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
 const identityTypes = ['member', 'guest',""];
 
 upload_subfolder="reviews"
@@ -124,7 +119,7 @@ describe('Review API Integration Tests', () => {
                 .attach('image', invalid_fixture_image());
 
             expect(response.statusCode).toBe(400);
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedMimeTypes.join(', ')}`);
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe('INVALID_FILE_TYPE');
         })
     });

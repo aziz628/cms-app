@@ -1,10 +1,9 @@
 import request from "supertest";
 import app from "../../app.js";
-
+import {ALLOWED_MIME_TYPES} from "../../middleware/file_middleware.js";
 import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
 // get current directory name
 const upload_subfolder = 'classes'
-const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']; // Allowed file types
 
 describe("General Info API", () => {
     
@@ -122,7 +121,7 @@ describe("General Info API", () => {
 
             // Assert: Check if the application correctly handled the invalid image type
             expect(response.statusCode).toBe(400);
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedFileTypes.join(', ')}`);
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe("INVALID_FILE_TYPE");
             // check image non-existence
             const image_exist= ensure_uploaded_file_exist(upload_subfolder,'invalid_file.txt');
@@ -231,7 +230,7 @@ describe("General Info API", () => {
 
             // Assert: Check if the application correctly handled the invalid image type
             expect(response.statusCode).toBe(400);
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedFileTypes.join(', ')}`);
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe("INVALID_FILE_TYPE");
         });
         // sad path - using invalid class id

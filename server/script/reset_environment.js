@@ -34,6 +34,9 @@ async function main() {
             subfolders.forEach(folder => {
                 const folderPath = path.join(UPLOADS_DIR, folder);
                 fs.mkdirSync(folderPath);
+                
+                // add gitkeep file to each folder
+                fs.writeFileSync(path.join(folderPath, '.gitkeep'), '');
             });
         }
         // reset the storage state 

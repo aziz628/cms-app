@@ -267,7 +267,7 @@ async function reset() {
 
         // save the reset state to storage-state.json file
         await saveToFile();
-        console.log(' Storage state has been reset');
+        if(process.env.NODE_ENV !== 'test') console.log(' Storage state has been reset');
       },
       resolve,
       reject

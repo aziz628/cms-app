@@ -4,8 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image,get_uploaded_files_in_subfolder} from '../helper/tools.js';
 
-const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/avif"];
-
+import {ALLOWED_MIME_TYPES} from "../../middleware/file_middleware.js";
 const upload_subfolder = "gallery";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -202,7 +201,7 @@ describe("Gallery API", () => {
                 // Assert: Check if the application correctly handled the error
                 expect(response.statusCode).toBe(400);
                 // Invalid file type. Allowed: image/jpeg, image/png, image/gif, image/webp, image/avif
-                expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedTypes.join(", ")}`);
+                expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(", ")}`);
                 expect(response.body.code).toBe('INVALID_FILE_TYPE');
             })
     });

@@ -20,7 +20,7 @@ export function globalLimiter(req, res, next) {
   globalRequestCount++;
   
   // If exceeded global limit, reject
-  if (globalRequestCount > GLOBAL_LIMIT) {
+  if (globalRequestCount > GLOBAL_LIMIT && process.env.NODE_ENV !== 'test') {
     return next(new AppError(
       'Service temporarily unavailable due to high traffic.',
       503,

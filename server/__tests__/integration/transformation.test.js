@@ -1,10 +1,9 @@
 import request from 'supertest';
 import app from '../../app'; // Adjust the path to your Express app
 import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
-
+import {ALLOWED_MIME_TYPES } from "../../middleware/file_middleware.js";
 // global variables
 const upload_subfolder = 'transformations';
-const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
 
 // main describe block for the transformation API tests
 describe('Transformation API', () => {
@@ -117,7 +116,7 @@ describe('Transformation API', () => {
                  // Assert
             expect(response.statusCode).toBe(400);
             // 
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedMimeTypes.join(', ')}`);
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe('INVALID_FILE_TYPE');
         })
 
@@ -267,7 +266,7 @@ describe('Transformation API', () => {
             // Assert
             expect(response.statusCode).toBe(400);
             //    Received: "Invalid file type. Allowed: image/jpeg, image/png, image/gif, image/webp, image/avif"
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedMimeTypes.join(', ')}`);
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe('INVALID_FILE_TYPE');
          
         })

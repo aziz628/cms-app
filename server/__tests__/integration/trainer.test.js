@@ -1,10 +1,9 @@
 import request from "supertest";
 import app from "../../app.js";
-
+import {ALLOWED_MIME_TYPES} from "../../middleware/file_middleware.js";
 import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
 
 const upload_subfolder = 'trainers';
-const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']; // Allowed file types
 
 
 describe("Trainer API", () => {
@@ -259,8 +258,9 @@ describe("Trainer API", () => {
 
             // Assert: Check if the application correctly handled the error
             expect(response.statusCode).toBe(400);
-            // use the allowedFileTypes array to check for valid file types
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedFileTypes.join(', ')}`);
+            
+            // use the ALLOWED_MIME_TYPES array to check for valid file types
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe('INVALID_FILE_TYPE');
         })
         // sad path - update with invalid trainer ID format

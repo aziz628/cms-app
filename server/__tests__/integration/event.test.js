@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from "../../app.js"; 
 import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
-
+import {ALLOWED_MIME_TYPES} from "../../middleware/file_middleware.js";
 const upload_subfolder = 'events'; // upload_subfolder in uploads directory for event images
 
 describe("Event api",() => {
@@ -165,8 +165,7 @@ describe("Event api",() => {
                 date: Date.now(),
                 location: 'Invalid File Location'
             };
-            const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']; // Allowed file types
-
+           
             // act
             const response = await request(app)
                 .post('/api/admin/events')
@@ -180,7 +179,7 @@ describe("Event api",() => {
             // assert
             expect(response.statusCode).toBe(400);
             expect(response.body).toBeDefined();
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedFileTypes.join(', ')}`);
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe("INVALID_FILE_TYPE");
 
         })
@@ -287,8 +286,7 @@ describe("Event api",() => {
         it('should return 400 for invalid file type during event update', async () => {
             // arrange
             expect(testEventId).toBeDefined(); // Ensure testEventId is set from previous tests
-            const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']; // Allowed file types
-
+            
             // act
             const response = await request(app)
                 .put(`/api/admin/events/${testEventId}`)
@@ -298,7 +296,7 @@ describe("Event api",() => {
             // assert
             expect(response.statusCode).toBe(400);
             expect(response.body).toBeDefined();
-            expect(response.body.message).toBe(`Invalid file type. Allowed: ${allowedFileTypes.join(', ')}`);
+            expect(response.body.message).toBe(`Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
             expect(response.body.code).toBe("INVALID_FILE_TYPE");
         });
 

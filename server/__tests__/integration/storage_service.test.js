@@ -22,7 +22,7 @@ describe('Storage Service Integration Tests', () => {
 
     beforeAll(async () => {
       await reset(); // reset state before tests
-        auth_cookies = await getAuthCookies();
+      auth_cookies = await getAuthCookies();
     });
     
   afterAll(async () => {
