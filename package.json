@@ -5,6 +5,5 @@
   "type": "module",
   "scripts": {
     "setup": "node setup.js"
-
   }
 }
