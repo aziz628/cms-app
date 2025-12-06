@@ -15,7 +15,7 @@ if [ ! -f "../tailwindcss" ]; then
 fi
 
 # Compile Tailwind CSS with any passed arguments
-../tailwindcss -c ./tailwind.config.mjs -i ./src/index.css -o ./tailwind-output/output.css --minify "$@"
+../tailwindcss -c ./tailwind.config.mjs -i ./src/index.css -o ./src/assets/css/output.css --minify "$@"
 
 # Check if compilation was successful
 if [ $? -eq 0 ]; then

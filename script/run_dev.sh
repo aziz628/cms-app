@@ -4,7 +4,7 @@ echo "Starting all processes..."
 echo ""
 
 
-# Check dependencies first
+# Check tailwindcss
 if [ ! -f "../tailwindcss" ]; then
     echo "Error: Dependencies not installed. Run ./check-dependencies.sh first"
     exit 1
@@ -39,24 +39,20 @@ bash template_tailwind_compile.sh --watch &
 pids+=($!)
 cd ..
 
-# Start the React app
-echo "Starting React app..."
-cd ./frontend
-npm run dev &
-pids+=($!)
-
-# Start the node watcher
-echo "Starting node watcher..."
-cd ./script
-node watch-and-move-tailwind.js &
-pids+=($!)
-cd ../
-
 # Start the Tailwind CSS compiler
 echo "Starting Tailwind CSS compiler..."
+cd frontend
 bash ./compile_tailwind.sh --watch &
 pids+=($!)
+
+
+# Start the React app
+echo "Starting React app..."
+npm run dev &
+pids+=($!)
 cd ..
+
+
 
 echo ""
 echo " All processes have been started!"

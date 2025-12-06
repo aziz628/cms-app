@@ -13,10 +13,6 @@ REM Start the React app in a new tab
 wt -w 0 nt -d "..\frontend" cmd /k "npm run dev"
 echo React app started.
 
-REM Start the node watcher in a new tab
-wt -w 0 nt -d "..\frontend\script" cmd /k "node watch-and-move-tailwind.js"
-echo Node watcher started.
-
 REM Start the Tailwind CSS compiler in a new tab
 wt -w 0 nt -d "..\frontend" cmd /k "compile_tailwind.bat --watch"
 echo Tailwind CSS compiler started.
