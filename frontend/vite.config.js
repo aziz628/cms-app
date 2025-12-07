@@ -14,7 +14,7 @@ const CLIENT_PORT = process.env.CLIENT_PORT || '5173';
 const API_PORT = process.env.API_PORT || '3000';
 
 // localhost or docker container name
-const API_HOST = process.env.API_HOST || 'localhost';
+const API_HOST = process.env.API_HOST || '127.0.0.1';
 
 // https://vite.dev/config/
 export default defineConfig({
