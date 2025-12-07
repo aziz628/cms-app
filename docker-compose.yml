@@ -6,11 +6,16 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./server:/app
+      - ./server:/app 
       - /app/node_modules
     env_file:
-      - ./server/.env.development
-    command:  sh -c "tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch & npm run dev"
+      - ./server/.env.development 
+    command: >
+      sh -c "
+      npm run migrate && 
+      tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch & 
+      npm run dev
+      "
   
   frontend:
     build:
@@ -23,4 +28,8 @@ services:
       - /app/node_modules
     env_file:
       - ./frontend/.env
-    command: sh -c "tailwindcss -i ./src/index.css -o ./src/assets/css/output.css --watch & npm run dev -- --host"
+    command: > #force vite server to listen on all interfaces using --host flag
+      sh -c "
+      tailwindcss -i ./src/index.css -o ./src/assets/css/output.css --watch & 
+      npm run dev -- --host 
+      "

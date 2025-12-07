@@ -13,41 +13,35 @@ async function setupProject() {
   try {
       console.log('\n Setting up environment files...');
 
-      // env example path backend
-      const envExamplePath = path.join(SERVER_DIR, '.env.example');
-      // env example path frontend
-      const envFrontendExamplePath = path.join(FRONTEND_DIR, '.env.example');
+      // env example paths
+      const env_example_path = path.join(SERVER_DIR, '.env.example');
+      const env_frontend_example_path = path.join(FRONTEND_DIR, '.env.example');
 
-      const envProductionPath = path.join(SERVER_DIR, '.env.production');
-      const envDevelopmentPath = path.join(SERVER_DIR, '.env.development');
-
-      if (!fs.existsSync(envProductionPath)) {
-        fs.copyFileSync(envExamplePath, envProductionPath);
-        console.log('\n Created .env.production from .env.example');
-      } else {
-        console.log('\n .env.production already exists, skipping creation');
-      }
-
-      if (!fs.existsSync(envDevelopmentPath)) {
-        fs.copyFileSync(envExamplePath, envDevelopmentPath);
-        console.log('\nCreated .env.development from .env.example');
-      } else {
-        console.log('\n.env.development already exists, skipping creation');
-      }
-     
-      // frontend env
-      const envFrontendPath = path.join(FRONTEND_DIR, '.env');
+      // generated env paths
+      const env_production_path = path.join(SERVER_DIR, '.env.production');
+      const env_development_path = path.join(SERVER_DIR, '.env.development');
+      const env_frontend_path = path.join(FRONTEND_DIR, '.env');
       
-      if (!fs.existsSync(envFrontendPath)) {
-        fs.copyFileSync(envFrontendExamplePath, envFrontendPath);
-        console.log('\n Created frontend .env from .env.example');
-      } else {
-        console.log('\n Frontend .env already exists, skipping creation');
-      }
+      // generate env files
+      generate_env_file(env_production_path, env_example_path);
+      generate_env_file(env_development_path, env_example_path);
+      generate_env_file(env_frontend_path, env_frontend_example_path);
       
   } catch (error) {
     console.error('\n env Setup failed:', error);
     process.exit(1);
+  }
+}
+
+// generate env file from example
+function generate_env_file(env_path, env_example_path) {
+  // if env file does not exist, create it
+  if (!fs.existsSync(env_path)) {
+    fs.copyFileSync(env_example_path, env_path);
+    console.log('\n Created .env from .env.example');
+    
+  } else {
+    console.log('\n .env already exists, skipping creation');
   }
 }
 
