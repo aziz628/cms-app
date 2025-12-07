@@ -14,7 +14,7 @@ export default function create_migration(options) {
     up: async (db) => {
       await run_in_transaction(db, async () => {
         for (const query of upQueries) {
-          await db.run(query);
+          await db.exec(query);
         }
       });
     },
@@ -22,7 +22,7 @@ export default function create_migration(options) {
     down: async (db) => {
       await run_in_transaction(db, async () => {
         for (const query of downQueries) {
-          await db.run(query);
+          await db.exec(query);
         }
       });
     }

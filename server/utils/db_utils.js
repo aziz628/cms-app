@@ -6,16 +6,16 @@
  * @returns {Promise<*>} The result of the function `fn`.
  */
 export async function run_in_transaction(db, fn) {
-  await db.run("BEGIN TRANSACTION;");
+  await db.exec("BEGIN TRANSACTION;");
   try {
     // execute the provided function
     const result = await fn();
     // if successful, commit the transaction
-    await db.run("COMMIT;");
+    await db.exec("COMMIT;");
     return result;
   } catch (err) {
     // if any error occurs, rollback the transaction
-    await db.run("ROLLBACK;");
+    await db.exec("ROLLBACK;");
     throw err;
   }
 }

@@ -1,6 +1,5 @@
-// import the callback based sqlite3 library for database driver
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import sqlite3 from 'sqlite3';//sqlite3 library for database driver 
+import { open } from 'sqlite'; // wrapper library to use sqlite3 with promises
 import path from 'path';
 import {fileURLToPath} from 'url';
 import fs from 'fs';
@@ -19,12 +18,10 @@ if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
 
-// Use a file-based DB for development or testing
-
 // open the database connection
 const db= await open({
   filename: db_path,
-  // driver means we are using sqlite3 methods in the promise-based sqlite library
+  // driver for the callback-based db operations
   driver: sqlite3.Database
 });
 await db.run('PRAGMA foreign_keys = ON');

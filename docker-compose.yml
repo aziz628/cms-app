@@ -5,16 +5,15 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
+      - "9229:9229"
     volumes:
       - ./server:/app 
       - /app/node_modules
-    env_file:
-      - ./server/.env.development 
     command: >
       sh -c "
       npm run migrate && 
       tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch & 
-      npm run dev
+      node --inspect=0.0.0.0:9229 server.js
       "
   
   frontend:
@@ -26,8 +25,6 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    env_file:
-      - ./frontend/.env
     command: > #force vite server to listen on all interfaces using --host flag
       sh -c "
       tailwindcss -i ./src/index.css -o ./src/assets/css/output.css &&

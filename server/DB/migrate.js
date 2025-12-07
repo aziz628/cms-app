@@ -1,10 +1,18 @@
 import  fs from 'fs';
 import  path from 'path';
-import db from './db_connection.js'; 
+import  Database from 'better-sqlite3';
 import  {fileURLToPath, pathToFileURL} from "url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// Resolve database path
+const db_relative_path = process.env.DB_PATH || './DB/db.sqlite';
+const db_path = path.resolve(__dirname, '../', db_relative_path);
+
+// Initialize database connection
+const db = new Database(db_path); 
+db.pragma('foreign_keys = ON');
 
 // Paths for migrations folder and status file
 const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
@@ -77,10 +85,12 @@ function saveStatus(status) {
  * @param {string} direction "up" or "down"
  */
 async function runMigration(file, direction) {
+  try {
     const filePath = path.join(MIGRATIONS_DIR, file);
-
+    
     // Convert file path to a valid file URL for import
-    const {default:migration} = await import(pathToFileURL(filePath).toString());
+    const {default: migration} = await import(pathToFileURL(filePath).toString());
+
     if(NODE_ENV !== "test") console.log("Migration loaded");
 
     // Check if the migration has the required function
@@ -88,8 +98,15 @@ async function runMigration(file, direction) {
         throw new Error(`Migration ${file} has no ${direction} function`);
     }
     if(NODE_ENV !== "test") console.log(` Running ${direction} on ${file}`);
+
+    // run the migration
     await migration[direction](db);
+
     if(NODE_ENV !== "test") console.log(` Migration ${file} ${direction} completed`);
+  } catch (err) {
+    console.error(`Error running migration ${file} ${direction}:`, err);
+    throw err;
+  }
 }
 
 /**
@@ -123,6 +140,7 @@ async function runAll() {
   }
   console.log(`Running all the migrations`);
   for (const file of pending) {
+
     await runMigration(file, 'up');
     status.applied.push(file);
     saveStatus(status);
