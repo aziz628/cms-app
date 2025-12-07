@@ -99,9 +99,12 @@ function Login() {
                             </button>
                             
                         </form>
+                        
+                        {/*
                         <div className='mt-4 text-center'>
                             <a href='#' className='text-primary hover:underline'>Forgot Password?</a>
                         </div>
+                        */}
                     </>
                 }
             </div>
