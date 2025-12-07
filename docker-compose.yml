@@ -30,6 +30,7 @@ services:
       - ./frontend/.env
     command: > #force vite server to listen on all interfaces using --host flag
       sh -c "
+      tailwindcss -i ./src/index.css -o ./src/assets/css/output.css &&
       tailwindcss -i ./src/index.css -o ./src/assets/css/output.css --watch & 
       npm run dev -- --host 
       "

@@ -6,10 +6,17 @@ const get_cors_origins = () => {
         const CLIENT_PORT=process.env.CLIENT_PORT || 5173;
         const API_PORT=process.env.API_PORT || 3000;
         return [
+            // send requests to frontend dev proxy server
             `http://localhost:${CLIENT_PORT}`,
             `http://127.0.0.1:${CLIENT_PORT}`,
+
+            // directly to api server
             `http://localhost:${API_PORT}`,
             `http://127.0.0.1:${API_PORT}`,
+
+            // docker
+            `http://frontend:${API_PORT}`, // vite proxy send requests to api server container
+            // local network testing
             `http://192.168.1.12:${API_PORT}`, // local network IP for testing
         ];
     }

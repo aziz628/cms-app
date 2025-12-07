@@ -3,6 +3,7 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import path from 'path';
 import {fileURLToPath} from 'url';
+import fs from 'fs';
 
 // set the path to the database file
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,6 +12,12 @@ const db_relative_path = process.env.DB_PATH || './DB/db.sqlite';
 // console.log(' DB_PATH:', db_relative_path,' and running in environment:', process.env.NODE_ENV);
 
 const db_path = path.resolve(rootDir, db_relative_path);
+const dbDir = path.dirname(db_path);
+
+// Ensure directory exists
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
 
 // Use a file-based DB for development or testing
 
