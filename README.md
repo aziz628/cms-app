@@ -10,7 +10,7 @@ cms-app/
 ├── server/            # Express.js backend with EJS templates
 ├── script/            # Cross-platform development scripts
 ├── package.json       # Root package.json
-└── setup.js           # Initial project setup
+└── setup.js           # Initial environment setup
 ```
 
 ## Features
@@ -36,70 +36,61 @@ cms-app/
 
 ## Quick Start
 
-### Prerequisites
+##### Option A: Docker (Recommended)
 
-- Node.js v22.12.0 or higher
-- npm
+*Prerequisites: Docker Desktop or Docker Engine.*
 
-### Installation
-
-1. **Clone the repository**
+1. **Clone & Setup Env**
 
    ```bash
-   git clone https://github.com/aziz628/cms-app
+   git clone <repo>
    cd cms-app
+   node setup.js
    ```
-2. **Run the setup script**
+2. **Run**
 
    ```bash
-   npm run setup
+   docker compose up --build
    ```
 
-   This installs dependencies for both frontend and server.
-3. **Start development servers**
+---
 
-   **Linux:**
+##### Option B: Manual Host Setup
+
+*Prerequisites: Node.js 22 , Tailwind CLI 3.4.1 installed globally.*
+
+1. **Run the Host Setup Script**
+   This installs dependencies and runs migrations.
 
    ```bash
-   ./script/run_dev.sh
+   node script/dev_setup.js
    ```
+2. **Start Development Servers**
 
-   **Windows:**
+   * **Windows:** Run [script/run_dev.bat](cci:7://file:///c:/Users/wesla/Documents/personal%20projects/code%20projects/Web_front_end_pages/template%20system/cms-app/script/run_dev.bat:0:0-0:0)
+   * **Linux/Mac:** Run [script/run_dev.sh](cci:7://file:///c:/Users/wesla/Documents/personal%20projects/code%20projects/Web_front_end_pages/template%20system/cms-app/script/run_dev.sh:0:0-0:0)
 
-   ```bash
-   script\run_dev.bat
-   ```
+### Development Workflow
 
-   Or start each server manually:
-
-   ```bash
-   # Terminal 1 - Backend
-   cd server
-   npm run dev
-
-   # Terminal 2 - Frontend
-   cd frontend
-   npm run dev
-   ```
-4. **Access the application**
+1. **Access the application**
 
    - Admin Panel: http://localhost:5173
    - Backend API: http://localhost:3000
+2. **Running Commands:**
+   To run scripts like tests inside the container:
+
+   ```bash
+      docker compose exec server npm run test
+   ```
+3. **Editing Code:**
+
+   Simply edit files in your `server/` or `frontend/` directories. The changes will be reflected instantly in the running containers.
 
 ## Documentation
 
 - [Frontend Documentation](./frontend/README.md) - React app architecture and components
 - [Backend Documentation](./server/README.md) - API endpoints and server configuration
 - [Frontend Architecture](./frontend/doc.md) - Detailed frontend design patterns
-
-## Development Scripts
-
-| Script                     | Platform | Description                                 |
-| -------------------------- | -------- | ------------------------------------------- |
-| `script/run_dev.sh`      | Linux    | Starts both servers with process management |
-| `script/run_dev.bat`     | Windows  | Starts both servers                         |
-| `check-dependencies.sh`  | Linux    | Verifies required dependencies              |
-| `check-dependencies.bat` | Windows  | Verifies required dependencies              |
 
 ## Tech Stack
 
@@ -134,5 +125,5 @@ cms-app/
 | Gallery         | Categories with multiple images                  |
 | Schedule        | Weekly class schedule with collision detection   |
 | Pricing         | Plans with features list                         |
-| General Info    | Business hours, about section summary and image  |
+| General Info    | Business hours, about section summary and image |
 | Contact         | Contact fields, social media links               |

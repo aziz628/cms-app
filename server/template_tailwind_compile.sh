@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 echo "Compiling Tailwind CSS for server templates..."

@@ -2,23 +2,17 @@
 
 A Node.js Express backend for a gym website CMS featuring a RESTful API for admin operations and EJS templates for the public-facing site.
 
-## Quick Start
+## Development scripts
 
 ```bash
-# Install dependencies
-npm install
-
-# Configure environment
-cp .env.example .env.development
-
-# Run database migrations
-npm run migrate
-
 # Seed initial data (optional)
 npm run seed
 
 # Start development server
 npm run dev
+
+# Reset the migrations and uploads 
+npm run reset
 ```
 
 The server runs at http://localhost:3000
@@ -26,6 +20,7 @@ The server runs at http://localhost:3000
 ## Project Structure
 
 ```
+
 server/
 ├── app.js                  # Express application setup
 ├── server.js               # Server entry point

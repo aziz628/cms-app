@@ -110,7 +110,7 @@ app.get('/api/health', publicLimiter, async (req, res) => {
 app.use('/cms', express.static(path.join(__dirname, './dist')));
 
 // Admin app routing - only for authenticated users
-app.get('/cms/*', authenticate_session, (req, res) => {
+app.get('/cms/*', (req, res) => {
     res.sendFile(path.join(__dirname, './dist', 'index.html'));
 });
 

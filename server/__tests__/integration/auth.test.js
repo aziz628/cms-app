@@ -2,17 +2,12 @@ import request from 'supertest';
 import app from '../../app.js';
 import {generateTokens} from '../../services/token_service.js';
 
-
-// 'describe' is a Jest function that groups related tests together.
-// Everything for our Authentication API will go inside this block.
-// It helps keep tests organized.
   describe('Auth Api', ()=>{  
   let auth_cookies;
   let updated_username;
   let updated_password;
 
   afterAll(async ()=>{
-    //set username and password back to original values
     // arrange
     const username= process.env.ADMIN_USERNAME || "admin"
     const password= process.env.ADMIN_PASSWORD || "admin_password"
@@ -39,35 +34,22 @@ import {generateTokens} from '../../services/token_service.js';
 // -- login tests --
     //  happy path - a successful login.
   it('should return 200 on successful login with correct credentials', async () => {
-        // 1. ARRANGE
-        // We set up the data we need for the test. In this case, it's the
+        //  ARRANGE
         // login credentials. We will use the default admin credentials
-        // from your .env file for this test.
         const credentials = {
           username: 'admin',
           password: 'admin_password'
         };
 
-        // 2. ACT
-        // We perform the action we want to test: making a POST request to the /login endpoint.
-          // Action: Gets our app ready for testing.
-          // Returns: A special supertest object that has methods for making requests.
-      
-      const response = await  request(app)
-      
-          // Action: Takes the object from the previous step and tells it, "I want to prepare a POST request to the /api/auth/login endpoint.
-          // Returns: The same object, but now it's configured to make a POST request. This is what allows us to chain the next method.
+        // ACT
+
+      const response = await  request(app)    
       .post('/api/auth/login')
-          // Action: Takes the configured POST request object and tells it, "Attach this credentials object as the JSON body of the request." This is the equivalent of putting your data in the "Body" tab in Postman.
-          // Returns: A "promise" that will resolve with the server's response once the request is complete. We use await to wait for this promise to finish.
       .send(credentials);
 
-          // 3. ASSERT
-      // We check if the result of our action is what we expected.
-      // We expect the HTTP status code to be 200 (OK).
+      // ASSERT
       expect(response.statusCode).toBe(200);
-      
-      // We also expect the response body to contain a success message.
+      expect(response.body.message).toBe('Login successful');
       expect(response.body.message).toBe('Login successful');
 
       // access and refresh tokens should be set in the response cookies 
@@ -274,7 +256,7 @@ import {generateTokens} from '../../services/token_service.js';
     });
 
     // try session expired by making using one second lifespan tokens  
-    // then run delay then try secure endpoint
+    // run delay then try secure endpoint
     it("should return 401 for expired refresh token", async () => {
       // arrange
       const {access_token, refresh_token} = generateTokens({access_token_lifespan: 1, refresh_token_lifespan: 1}) // tokens expire in 1 second
