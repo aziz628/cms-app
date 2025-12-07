@@ -3,7 +3,7 @@ cd /d "%~dp0"
 echo Starting all processes...
 
 REM Start the server in a new tab
-wt -w 0 nt -d "..\server" cmd /k "node server.js"
+wt -w 0 nt -d "..\server" cmd /k "npm run dev"
 echo Server started.
 
 REM compile the server template tailwind
