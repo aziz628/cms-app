@@ -1,6 +1,6 @@
 import { useState , useEffect} from 'react';
 import EventService from '../services/EventService.js'
-import FormBuilder from '../components/common/FormBuiler';
+import FormBuilder from '../components/common/FormBuilder';
 import DeleteModal from '../components/common/DeleteModal';
 import { createEventSchema, updateEventSchema } from '../validation/schemas/eventSchema.js';
 import { useNotification } from '../context/NotificationContext';

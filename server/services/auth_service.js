@@ -39,8 +39,11 @@ export async function verify_credentials(username, password) {
  * @throws {AppError} If the password update fails.
  * */
 async function update_password(new_password){
+    // Hash the new password 
     const hashedPassword = await bcrypt.hash(new_password, 10);
-    const result= await db.run('UPDATE admin SET password = ? ', [hashedPassword]);
+
+    // Update the password in the database
+    const result= await db.run(`UPDATE ${ADMIN.TABLE_NAME} SET password = ? `, [hashedPassword]);
     if (result.changes === 0) {
         throw new App_error('Failed to update password', 500, 'PASSWORD_UPDATE_FAILED');
     }
@@ -52,7 +55,7 @@ async function update_password(new_password){
  * @throws {AppError} If the username update fails.
  * */
 async function update_username(new_username){
-    const result = await db.run('UPDATE admin SET username = ? ', [new_username]);
+    const result = await db.run(`UPDATE ${ADMIN.TABLE_NAME} SET username = ? `, [new_username]);
     if (result.changes === 0) {
         throw new App_error('Failed to update username', 500, 'USERNAME_UPDATE_FAILED');
     }

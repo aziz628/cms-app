@@ -1,6 +1,6 @@
 import { useState , useEffect} from 'react';
 import transformationService from "../services/transformationService.js"
-import FormBuilder from '../components/common/FormBuiler.jsx';
+import FormBuilder from '../components/common/FormBuilder.jsx';
 import {createTransformationSchema,updateTransformationSchema} from "../validation/schemas/transformationSchema.js"
 import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools.js';

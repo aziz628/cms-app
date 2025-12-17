@@ -1,6 +1,6 @@
 import { useState , useEffect} from 'react';
 import TrainerService from '../services/trainerService.js'
-import FormBuilder from '../components/common/FormBuiler';
+import FormBuilder from '../components/common/FormBuilder';
 import DeleteModal from '../components/common/DeleteModal';
 import { createTrainerSchema, updateTrainerSchema } from '../validation/schemas/TrainerSchema';
 import { useNotification } from '../context/NotificationContext';

@@ -55,7 +55,7 @@ function ProtectedRoute({children}) {
   return children;
 }
 
-
+// Authenticated routes
 const routes = [
   { path: "/dashboard", element: <Dashboard /> },
   { path: "/classes", element: <Classes /> },
@@ -95,8 +95,10 @@ function App() {
                 } 
               />
             ))}
-              {/*  root redirect */}
+            
+            {/*  root redirect */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            
             {/* Catch-all route for 404 errors */}
             <Route path="*" element={<NotFound />} />
             

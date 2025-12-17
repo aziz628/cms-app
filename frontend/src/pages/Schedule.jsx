@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNotification } from '../context/NotificationContext';
 import scheduleService from '../services/scheduleService';
-import FormBuilder from '../components/common/FormBuiler';
+import FormBuilder from '../components/common/FormBuilder';
 import DeleteModal from '../components/common/DeleteModal';
 import { createScheduleSchema, updateScheduleSchema,DAYS } from '../validation/schemas/scheduleSchema';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';

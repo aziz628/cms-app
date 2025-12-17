@@ -1,6 +1,6 @@
 import { useState,useEffect } from 'react'; // Add useState to existing useEffect import
 import contactService from '../services/contactService.js'; // Create this service
-import FormBuilder from '../components/common/FormBuiler.jsx';
+import FormBuilder from '../components/common/FormBuilder.jsx';
 import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools.js';
 import { useScrollToForm } from '../utils/tools.js';

@@ -1,6 +1,6 @@
 import { useState , useEffect} from 'react';
 import classService from '../services/classService'
-import FormBuilder from '../components/common/FormBuiler';
+import FormBuilder from '../components/common/FormBuilder';
 import DeleteModal from '../components/common/DeleteModal';
 import { createClassSchema, updateClassSchema } from '../validation/schemas/classSchema';
 import { useNotification } from '../context/NotificationContext';

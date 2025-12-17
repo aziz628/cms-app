@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react';
-import FormBuilder from '../components/common/FormBuiler';
+import FormBuilder from '../components/common/FormBuilder';
 import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools';
 import { useNotification } from '../context/NotificationContext';

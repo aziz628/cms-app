@@ -1,6 +1,6 @@
 import { useState , useEffect} from 'react';
 import reviewService from "../services/reviewService"
-import FormBuilder from '../components/common/FormBuiler.jsx';
+import FormBuilder from '../components/common/FormBuilder.jsx';
 import {createReviewSchema,updateReviewSchema} from "../validation/schemas/reviewSchema.js"
 import DeleteModal from '../components/common/DeleteModal.jsx';
 import { useBodyOverflow } from '../utils/tools.js';
