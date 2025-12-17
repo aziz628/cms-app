@@ -73,9 +73,9 @@ function Classes() {
       closeDeleteModal(); // Close modal after deletion
       success('Class deleted successfully');
       fetchClasses(); // Refresh class list
-    } catch (error) {
+    } catch (err) {
       error('Failed to delete class');
-      console.error(error);
+      console.error(err);
     } finally {
       setDeletingClassId(null);
       setShowDeleteModal(false);

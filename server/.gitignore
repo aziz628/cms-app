@@ -10,6 +10,7 @@ __tests__/data/storage-state.json
 
 # Database files
 DB/*.sqlite
+DB/db.sqlite-journal
 DB/migration-status*.json
 __tests__/test_db.sqlite
 

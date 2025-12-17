@@ -81,7 +81,7 @@ function Reviews() {
       await reviewService.deleteReview(deletingReviewId);
       success('Review deleted successfully');
       fetchReviews(); // Refresh review list
-    } catch (error) {
+    } catch (err) {
       error('Failed to delete review');
       console.error(error);
     } finally {
@@ -181,7 +181,8 @@ function Reviews() {
                                 </button>
                               </td>
                             </tr>
-                          ))}                        </tbody>
+                          ))}
+                          </tbody>
                       </table>
                     </div>
                     <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />

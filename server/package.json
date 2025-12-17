@@ -7,7 +7,7 @@
   "scripts": {
     "prod:start": "cross-env NODE_ENV=production node server.js",
     "start": "cross-env NODE_ENV=development node server.js",
-    "dev": "nodemon server.js",
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
     "lint": "eslint .",
     "test": "cross-env  NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest  --runInBand",
     "prettier": "prettier --check .",
@@ -31,6 +31,17 @@
     ],
     "_comment": "This transform field is needed for jest to handle ES modules",
     "transform": {}
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "uploads/**",
+      "DB/*.json",
+      "dist/**",
+      "data/**",
+      "**/db.sqlite",
+      "logs/*.log",
+      "__tests__/**"
+    ]
   },
   "dependencies": {
     "bcrypt": "^5.1.0",

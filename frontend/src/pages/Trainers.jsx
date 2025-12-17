@@ -80,9 +80,9 @@ function Trainers() {
         await TrainerService.deleteTrainer(deletingTrainerId);
         success('Trainer deleted successfully');
         fetchTrainers(); // Refresh Trainer list
-      } catch (error) {
+      } catch (err) {
         error('Failed to delete Trainer');
-        console.error(error);
+        console.error(err);
       } finally {
         setLoading(false);
         setDeletingTrainerId(null);
@@ -179,7 +179,8 @@ function Trainers() {
                       </button>
                     </td>
                   </tr>
-                ))}              </tbody>
+                ))}
+                </tbody>
           </table>
           <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
           </div>

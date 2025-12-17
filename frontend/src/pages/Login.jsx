@@ -34,9 +34,9 @@ function Login() {
             // Redirect or update UI after successful login
             success('Login successful');
             navigate('/dashboard');
-        } catch (error) {
+        } catch (err) {
             notifyError('An error occurred during login');
-            console.error('Login error:', error);
+            console.error('Login error:', err);
         } finally {
             setLoading(false);
         }

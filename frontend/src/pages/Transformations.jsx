@@ -177,7 +177,8 @@ function Transformations() {
                           </button>
                         </td>
                       </tr>
-                    ))}                  </tbody>
+                    ))}
+                    </tbody>
                 </table>
               </div>
           )} 

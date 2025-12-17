@@ -45,7 +45,7 @@ function PaginationButtons({ page, setPage, pageSize, totalPages }) {
                             onClick={() => setPage(page - 1)}
                             className={`px-4 py-2  rounded-md bg-text text-surface hover:bg-muted`}
                         >
-                            &lt;
+                            <i className="fa-solid fa-angles-left"></i>
                         </button>
                     )}
                     <button onClick={() => setPage(1)} className={`px-4 py-2 border rounded-md ${page === 1 ? 'bg-primary text-btnText' : 'bg-surface text-primary border-primary hover:bg-secondary hover:text-btnText'}`}>
@@ -67,7 +67,7 @@ function PaginationButtons({ page, setPage, pageSize, totalPages }) {
                             onClick={() => setPage(page + 1)}
                             className={`px-4 py-2  rounded-md bg-text text-surface hover:bg-muted`}
                         >
-                            &gt;
+                            <i className="fa-solid fa-angles-right"></i>
                         </button>
                     )}
                 </>

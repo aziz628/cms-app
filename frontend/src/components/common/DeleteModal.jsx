@@ -9,7 +9,7 @@ function DeleteModal({ message, onConfirm, onCancel }) {
           </div>}
           <p className="mb-4">{message}</p>
           <div className="flex justify-end space-x-2">
-            <button onClick={()=>{setLoading(true),onConfirm()}} 
+            <button onClick={()=>{setLoading(true);onConfirm()}} 
             className="bg-danger hover:bg-hoverDanger text-btnText px-4 py-2 rounded">
               Delete
             </button>

@@ -203,8 +203,8 @@ describe("General Info API", () => {
                 
             // Assert: Check if the application correctly handled the missing fields
             expect(response.statusCode).toBe(400);
-            expect(response.body.message).toBe('At least one field must be provided for update');
-            expect(response.body.code).toBe('VALIDATION_ERROR');
+            expect(response.body.message).toBe('At least one field or a file must be provided for an update.');
+            expect(response.body.code).toBe('UPDATE_EMPTY');
            
         })
 

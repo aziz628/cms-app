@@ -46,9 +46,12 @@ async function copyTestImages(section, number) {
     // copy n files
     for (let i = 0; i < number; i++) {
       // create unique image name
+              
       const unique_prefix = Date.now() + '_' + Math.floor(Math.random() * 1000000000);
-      const new_name = section + '_' + i + '_' + unique_prefix + '.jpg';
+      const new_name = `${Date.now()}_${unique_prefix}.jpg`;
+
       const dest_path = path.join(dest_dir, new_name);
+      console.log(`Copying image to ${dest_path} ...`);
 
       // save copy promise
       const copy_promise = fs.copyFile(source_path, dest_path).then(() => {

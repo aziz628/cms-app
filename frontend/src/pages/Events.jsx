@@ -82,9 +82,9 @@ function Events() {
         await EventService.deleteEvent(deletingEventId);
         success('Event deleted successfully');
         fetchEvents(); // Refresh Event list
-      } catch (error) {
+      } catch (err) {
         error('Failed to delete Event');
-        console.error(error);
+        console.error(err);
       } finally {
         setLoading(false);
         setDeletingEventId(null);
@@ -193,7 +193,7 @@ function Events() {
                     </td>
                   </tr>
                 ))}
-              </tbody>
+                </tbody>
             </table>
             <PaginationButtons page={page} setPage={setPage} pageSize={pageSize} totalPages={totalPages} />
 
