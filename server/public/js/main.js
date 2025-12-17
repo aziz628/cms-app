@@ -47,7 +47,6 @@ function setupMobileMenu() {
     const mobileMenu = document.getElementById('mobile-menu');
     const closeMenu = document.getElementById('close-menu');
     const mobileLinks = document.querySelectorAll('#mobile-menu .nav-link');
-    // select the body
     const body = document.body;
     
     if (menuButton && mobileMenu) {

@@ -36,44 +36,47 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   response => response,
   error => { 
+    // log error to console
     console.error(`[API] Error: ${error.message} \n from ${API_URL}${error.config?.url}`);
-        if (error.response) {
-          const status = error.response.status;
+    // map error response to right event
+    if (error.response) {
+      const status = error.response.status;
+      
+      if (status === 401) {
+        // show notification and logout
+        window.dispatchEvent(new Event('unauthorized'));
+      }
+      // if rate limiter exceeded while logging out
+      if(status === 429 && error.response.data.message === 'Rate limit exceeded') {
+        createErrorEvent({ 
+          ...error, 
+          response: { 
+            ...error.response, 
+            data: { message: 'Resource not found' } 
+          }
+        });
+      }
+      else if (status >= 500) {
+        createErrorEvent({ 
+          ...error, 
+          response: { 
+            ...error.response, 
+            data: { message: 'Server error. Please try again later.' } 
+          }
+        });
+      }else {
+        createErrorEvent(error);
+      }
 
-          if (status === 401) {
-            window.dispatchEvent(new Event('unauthorized'));
-          }
-          // if rate limiter exceeded while logging out
-          if(status === 429 && error.response.data.message === 'Rate limit exceeded') {
-            createErrorEvent({ 
-              ...error, 
-              response: { 
-                ...error.response, 
-                data: { message: 'Resource not found' } 
-              }
-            });
-          }
-          else if (status >= 500) {
-            createErrorEvent({ 
-              ...error, 
-              response: { 
-                ...error.response, 
-                data: { message: 'Server error. Please try again later.' } 
-              }
-            });
-          }else {
-            createErrorEvent(error);
-          }
-
-        }else if(error.request){
-          createErrorEvent({ 
-            ...error, 
-            response: {
-              ...error.response,
-              data: { message: 'Network error. Please check your connection.' } 
-            }
-          });
-        }else {
+    }else if(error.request){
+      createErrorEvent({ 
+        ...error, 
+        response: {
+          ...error.response,
+          data: { message: 'Network error. Please check your connection.' } 
+        }
+      });
+    }else {
       // Error setting up the request 
       createErrorEvent({
         ...error,

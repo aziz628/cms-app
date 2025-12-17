@@ -10,7 +10,7 @@ function computeLayout(schedule) {
     let classes = schedule.classes
     let Widths = {};  // to store max width per day
 
-    // enrich sessions with class names
+    // add class names to the sessions via ids
     for (const day in sessions_by_day) {
 
         sessions_by_day[day] = sessions_by_day[day].map(s => ({
@@ -18,10 +18,11 @@ function computeLayout(schedule) {
             class_name: classes.find(c => c.id === s.class_id)?.name
         }));
     }
-
+    // generate time slots from sessions
     const hoursSlots = generateTimeSlotsFromSessions(sessions_by_day);
     const finalLayout = {};
 
+    // compute sessions layout for each day , column by column
     for (const [day, sessions] of Object.entries(sessions_by_day)) {
         let ColWidth = SESSION_WIDTH;
 
@@ -33,8 +34,9 @@ function computeLayout(schedule) {
         }))
         .sort((a,b) => a.startMinutes - b.startMinutes);
 
-        let pointer = 0;
-        let block = {};
+       
+        let pointer = 0; // pointer to iterate over sessions
+        let block = {}; // block to store sessions per row
 
         finalLayout[day] = {};   // will store absolute positioned sessions
 
@@ -50,10 +52,10 @@ function computeLayout(schedule) {
             while (pointer < converted_sessions.length &&
                    converted_sessions[pointer].startMinutes < slotEnd) {
                 
-                // copy this session
+                // copy the session and increment pointer
                 const s = { ...converted_sessions[pointer++] };
                 
-                // assign to a column
+                // find a free sub-column for the session
                 const col = findFreeColumn(block, s);
                 
                 // add to block 

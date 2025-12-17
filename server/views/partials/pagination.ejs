@@ -1,43 +1,65 @@
 <% if (totalPages > 1) { %>
+
+   
+    <%
+    // set the main page to support page object  or page value
+    let page_key="page";
+    let page_value=page; 
+    console.log(page);
+    if(typeof page === 'object') {
+        page_key=page.key;
+        page_value=page.value;
+    }
+    console.log(page_key, page_value);
+
+    // set the extra pages
+    let page_params = '';
+    if(typeof extra_pages !== 'undefined' && extra_pages.length > 0) {
+        page_params = '&'+ (extra_pages.map(({key, value}) => `${key}=${value}`).join('&'));
+        console.log(page_params);
+    } %>
+
     <div class="flex justify-center items-center space-x-2 mt-8">
-        <!-- Previous Button -->
-        <% if (page > 1) { %>
-            <a href="?page=<%= page - 1 %>#<%= section || '' %>" class="px-3 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors">
+        <!-- Previous page Button (show up when page is not 1) -->
+        <% if (page_value > 1) { %>
+            <a href="?<%= page_key %>=<%= page_value - 1 %><%= page_params %>#<%= section || '' %>" class="px-3 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors">
                 <i class="fas fa-chevron-left"></i>
             </a>
         <% }  %>
            
         <!-- Page Numbers -->
         <% 
-            const startPage = Math.max(1, page - 2);
-            const endPage = Math.min(totalPages, page + 2);
+            const startPage = Math.max(1, page_value - 2); // get first page number 
+            const endPage = Math.min(totalPages, page_value + 2); // get last page number
         %>
-        
+        <!--if first page is not 1 then show '1' button and elepsis ...-->
         <% if (startPage > 1) { %>
-            <a href="?page=1#<%= section || '' %>" class="px-3 py-2 bg-white border border-gray-300 text-slate-600 rounded hover:bg-gray-50 transition-colors">1</a>
+            <a href="?<%= page_key %>=1<%= page_params %>#<%= section || '' %>" class="px-3 py-2 bg-white border border-gray-300 text-slate-600 rounded hover:bg-gray-50 transition-colors">1</a>
             <% if (startPage > 2) { %>
                 <span class="px-2 text-slate-400">...</span>
             <% } %>
         <% } %>
-
+        
+        <!-- loop over page numbers and render the buttons in the middle  -->
         <% for (let i = startPage; i <= endPage; i++) { %>
-            <% if (i === page) { %>
+            <% if (i === page_value) { %>
                 <span class="px-3 py-2 bg-primary text-white rounded font-semibold"><%= i %></span>
             <% } else { %>
-                <a href="?page=<%= i %>#<%= section || '' %>" class="px-3 py-2 bg-white border border-gray-300 text-slate-600 rounded hover:bg-gray-50 transition-colors"><%= i %></a>
+                <a href="?<%= page_key %>=<%= i %><%= page_params %>#<%= section || '' %>" class="px-3 py-2 bg-white border border-gray-300 text-slate-600 rounded hover:bg-gray-50 transition-colors"><%= i %></a>
             <% } %>
         <% } %>
-
+        
+        <!--if last page is not total pages then show ... and last page button-->
         <% if (endPage < totalPages) { %>
             <% if (endPage < totalPages - 1) { %>
                 <span class="px-2 text-slate-400">...</span>
             <% } %>
-            <a href="?page=<%= totalPages %>#<%= section || '' %>" class="px-3 py-2 bg-white border border-gray-300 text-slate-600 rounded hover:bg-gray-50 transition-colors"><%= totalPages %></a>
+            <a href="?<%= page_key %>=<%= totalPages %><%= page_params %>#<%= section || '' %>" class="px-3 py-2 bg-white border border-gray-300 text-slate-600 rounded hover:bg-gray-50 transition-colors"><%= totalPages %></a>
         <% } %>
 
-        <!-- Next Button -->
-        <% if (page < totalPages) { %>
-            <a href="?page=<%= page + 1 %>#<%= section || '' %>" class="px-3 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors">
+        <!-- Next page Button (show up when page is not total pages)-->
+        <% if (page_value < totalPages) { %>
+            <a href="?<%= page_key %>=<%= page_value + 1 %><%= page_params %>#<%= section || '' %>" class="px-3 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors">
                 <i class="fas fa-chevron-right"></i>
             </a>
         <% } %>

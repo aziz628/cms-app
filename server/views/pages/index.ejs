@@ -129,17 +129,20 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
                 <p class="col-span-full text-center text-slate-500">No classes available</p>
             <% } %>
         </div>
-        <!-- Pagination -->
-            <!-- Classes Pagination -->
+        <!-- Classes Pagination -->
         <% if (classes_pagination) { %>
             <% 
-                const page = classes_pagination.page;
+            <!--declare classes pagination vars-->
                 const totalPages = classes_pagination.totalPages;
                 const pageSize = classes_pagination.pageSize;
+            
+                const section = 'classes'; 
+                const page={key:"class_page",value:pages.class_page}; // main page
+                const extra_pages = [
+                    {key:"pricing_page",value:pages.pricing_page}
+                ]; // other pages
             %>
-            <!--pass the vars to the pagination partial-->
-            <% const section = 'classes'; %>
-            <%- include('../partials/pagination.ejs', { page, totalPages, pageSize, section }) %>
+            <%- include('../partials/pagination.ejs', { page,extra_pages, totalPages, pageSize, section }) %>
         <% } %>
 
         <!-- CTA -->
@@ -305,12 +308,16 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
 
         <% if (pricing_pagination) { %>
             <% 
-                const page = pricing_pagination.page;
                 const totalPages = pricing_pagination.totalPages;
                 const pageSize = pricing_pagination.pageSize;
+                
+                const section = 'pricing';
+                const page={key:"pricing_page",value:pages.pricing_page}; // main page 
+                const extra_pages = [
+                    {key:"class_page",value:pages.class_page}
+                ];
             %>
-            <% const section = 'pricing'; %>
-            <%- include('../partials/pagination.ejs', { page, totalPages, pageSize, section }) %>
+            <%- include('../partials/pagination.ejs', { page,extra_pages, totalPages, pageSize, section }) %>
         <% } %>
     </div>
 </section>

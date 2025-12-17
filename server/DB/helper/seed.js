@@ -79,24 +79,30 @@ async function copyTestImages(section, number) {
 }
 
 async function seedTableWithImages(tableName, columns, number_of_items, image_included=true,section=null) {
-// saved items id
+  // saved items id
   const itemIds = [];
-  // number of items 
+  
+  // no file upload pages 
   if(!image_included){
+    // insert fake data in db 
+    for(let i=0;i<number_of_items;i++){
+      for(let item of fake_data[tableName]){
+        // prepare right order of columns values
+        const values = columns.map(col => item[col]);
 
-    for(let item of fake_data[tableName]){
-      // prepare right order of columns values
-      const values = columns.map(col => item[col]);
-      // insert item
-      const result = await db.run(
-      `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${columns.map(() => '?').join(', ')})`,
-      values
-      );
-      itemIds.push(result.lastID);
+        const query=`INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${columns.map(() => '?').join(', ')})`;
+        // insert item
+        const result = await db.run(
+        query,
+        values
+        );
+        itemIds.push(result.lastID);
+      }
     }
     
     return itemIds;
   }
+  
   const fake_data_length= fake_data[tableName].length;
   number_of_items = fake_data_length * number_of_items;
   const copiedImages = await copyTestImages(section || tableName, number_of_items);
@@ -141,7 +147,7 @@ async function seedDatabase() {
     // 2. Pricing Plans
     console.log(`\n Inserting ${fake_data[PRICING_PLANS.TABLE_NAME].length*50} pricing plans...`);
 
-    let plan_columns = [PRICING_PLANS.NAME, PRICING_PLANS.PRICE, PRICING_PLANS.PERIOD, PRICING_PLANS.DESCRIPTION];
+    let plan_columns = [PRICING_PLANS.NAME, PRICING_PLANS.PRICE, PRICING_PLANS.PERIOD, PRICING_PLANS.DESCRIPTION,PRICING_PLANS.POPULAR];
     const planIds = await seedTableWithImages(PRICING_PLANS.TABLE_NAME, plan_columns, 50,false);
 
     console.log('Pricing plans inserted');    // 3. Pricing Features (linked to plans)
@@ -224,6 +230,7 @@ async function seedDatabase() {
     console.log('Inserting transformations...');
 
     const fake_data_length = fake_data.transformations.length;
+    
     for (let i = 0; i < fake_data_length*10; i++) {
       const trans = fake_data.transformations[i % fake_data_length];
       const copiedTransformationImages = await copyTestImages('transformations', 2);
@@ -259,6 +266,7 @@ async function seedDatabase() {
     // update storage state after seeding
     await createNewStateFile();
     console.log('Storage state initialized after seeding.');
+
   } catch (error) {
     console.error('Error seeding database:', error);
     process.exit(1);
@@ -266,5 +274,5 @@ async function seedDatabase() {
     await db.close();
   }
 }
-
+// await the seedDatabase function for it to finish before exiting
 await seedDatabase();
