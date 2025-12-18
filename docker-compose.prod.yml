@@ -10,6 +10,15 @@ services:
       - "3000:3000"
     volumes:
       - ./server/uploads:/app/uploads
+      - ./server/logs:/app/logs
+      - ./server/data:/app/data
       - ./server/DB:/app/DB
     environment:
       - NODE_ENV=production
+    env_file:
+      - ./server/.env.production
+    command: >
+      sh -c "
+      npm run migrate &&
+      npm run prod:start
+      "
