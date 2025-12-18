@@ -1,0 +1,9 @@
+node_modules
+
+# build files
+dist
+src/assets/css/output.css
+
+# env files
+.env.*
+!.env.example

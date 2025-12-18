@@ -1,22 +1,19 @@
 <% if (totalPages > 1) { %>
 
-   
     <%
     // set the main page to support page object  or page value
     let page_key="page";
     let page_value=page; 
-    console.log(page);
+
     if(typeof page === 'object') {
         page_key=page.key;
         page_value=page.value;
     }
-    console.log(page_key, page_value);
 
     // set the extra pages
     let page_params = '';
     if(typeof extra_pages !== 'undefined' && extra_pages.length > 0) {
         page_params = '&'+ (extra_pages.map(({key, value}) => `${key}=${value}`).join('&'));
-        console.log(page_params);
     } %>
 
     <div class="flex justify-center items-center space-x-2 mt-8">

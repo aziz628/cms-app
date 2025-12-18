@@ -1,12 +1,3 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
 node_modules/
 **/node_modules/
 
@@ -14,20 +5,11 @@ dist
 tailwind-output/output.css
 **/src/assets/css/output.css
 
-*.local
-
 
 **/src/index.css
-# Editor directories and files
+
+# Editor directories and exe files
 .vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 **/tempCodeRunnerFile.bat
 **/tailwindcss-windows.exe
 

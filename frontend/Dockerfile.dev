@@ -1,6 +1,7 @@
 # pull node image
 FROM node:22.12.0-alpine
 
+# move to working directory
 WORKDIR /app
 
 # Download specific Tailwind CLI for Linux

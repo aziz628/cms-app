@@ -3,5 +3,26 @@ node_modules
 # build files
 dist
 public/css/output.css
+
+# runtime
 DB/db.sqlite
 DB/migration-status.*
+data/storage-state.json
+*.log
+
+# Ignore image files in /uploads/ 
+/uploads/**/*.jpg
+/uploads/**/*.jpeg
+/uploads/**/*.png
+/uploads/**/*.avif
+/uploads/**/*.webp
+/uploads/**/*.gif
+
+#env files
+.env.*
+!.env.example
+
+
+.vscode/
+*.md
+

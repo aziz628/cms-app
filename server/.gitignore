@@ -23,9 +23,6 @@ server/__tests__/fixtures/**/*.bin
 premium pages demo
 template demo
 public/css/output.css
-!public/css
-!public/img
-!public/js
 
 # Environment files (except example and test)
 .env
@@ -33,8 +30,7 @@ public/css/output.css
 !.env.example
 !.env.test
 
-# Ignore only image files in /uploads/ using ( allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']
-  )
+# Ignore image files in /uploads/ 
 /uploads/**/*.jpg
 /uploads/**/*.jpeg
 /uploads/**/*.png
