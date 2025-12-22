@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   gym-cms:
@@ -15,8 +14,6 @@ services:
       - ./server/DB:/app/DB
     environment:
       - NODE_ENV=production
-    env_file:
-      - ./server/.env.production
     command: >
       sh -c "
       npm run migrate &&
