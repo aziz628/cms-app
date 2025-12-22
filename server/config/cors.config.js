@@ -19,6 +19,7 @@ const get_cors_origins = () => {
             // local network testing
             `http://192.168.1.12:${API_PORT}`, // local network IP for testing
         ];
+        // if api port is 3000
     }
 
     // Production origins

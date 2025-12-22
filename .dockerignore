@@ -1,8 +1,30 @@
 node_modules
+**/node_modules
 
 .git
 .gitignore
 README.md
 
+# Ignore envs but keep example
 .env.*
 !.env.example
+**/.env.*
+!**/.env.example
+
+# Server specific (relative to root)
+server/dist
+server/public/css/output.css
+server/DB/db.sqlite
+server/DB/migration-status.*
+server/data/storage-state.json
+server/*.log
+server/uploads/**/*
+!server/uploads/**/.gitkeep
+
+# Frontend specific (relative to root)
+frontend/dist
+frontend/src/assets/css/output.css
+
+# IDE and OS
+.vscode/
+*.md
