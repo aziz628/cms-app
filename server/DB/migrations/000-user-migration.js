@@ -17,7 +17,8 @@ export default create_migration({
     upQueries:[`
                 CREATE TABLE IF NOT EXISTS ${ADMIN.TABLE_NAME} (
                 ${ADMIN.USERNAME} TEXT NOT NULL UNIQUE,
-                ${ADMIN.PASSWORD} TEXT NOT NULL
+                ${ADMIN.PASSWORD} TEXT NOT NULL,
+                ${ADMIN.SESSION_ID} TEXT DEFAULT NULL
                 )`,
                 `INSERT INTO ${ADMIN.TABLE_NAME} (${ADMIN.USERNAME}, ${ADMIN.PASSWORD}) VALUES ('${ADMIN_USERNAME}', '${ADMIN_PASSWORD}')`
                ],

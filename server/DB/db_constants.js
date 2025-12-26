@@ -6,7 +6,8 @@
 const ADMIN = {
   TABLE_NAME: 'admin',
   USERNAME: 'username',
-  PASSWORD: 'password'
+  PASSWORD: 'password',
+  SESSION_ID: 'session_id'
 };
 
 const CLASSES = {

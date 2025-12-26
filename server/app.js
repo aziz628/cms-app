@@ -109,7 +109,7 @@ app.get('/api/health', publicLimiter, async (req, res) => {
 // serve the admin cms react app static files
 app.use('/cms', express.static(path.join(__dirname, './dist')));
 
-// Admin app routing - only for authenticated users
+// Admin app routing - serve index.html for all /cms/* routes 
 app.get('/cms/*', (req, res) => {
     res.sendFile(path.join(__dirname, './dist', 'index.html'));
 });

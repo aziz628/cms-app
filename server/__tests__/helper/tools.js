@@ -11,6 +11,11 @@ const UPLOAD_BASE =  '__tests__/uploads';
 const UPLOADS_DIR = path.join(__dirname, '..', '..', UPLOAD_BASE);
 const fixture_images= ['testing_image.jpg', 'testing_image2.webp', 'testing_image3.jpg',"testing_image4.jpg"];
 
+
+const ADMIN_USERNAME= process.env.ADMIN_USERNAME || "admin"
+const ADMIN_PASSWORD= process.env.ADMIN_PASSWORD || "admin_password"
+
+
 /**
   * Return a relative path to a fixture image and with each number, return a different image. 
   * @param {number} [number=0] - The fixture number (0-based index, default is zero).
@@ -137,7 +142,7 @@ export function invalid_fixture_image() {
   * Login and return authentication cookies.
   * Default credentials are for the initial admin user created in migration.
  */
-export async function getAuthCookies(credentials = { username: 'admin', password: 'admin_password' }) {
+export async function getAuthCookies(credentials = { username: ADMIN_USERNAME, password: ADMIN_PASSWORD }) {
   const res = await request(app)
     .post('/api/auth/login')
     .send(credentials);

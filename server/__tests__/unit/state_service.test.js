@@ -40,7 +40,8 @@ describe('Upload Storage State Service - Unit Tests', () => {
         reset();
 
            
-        // Setup default mock behaviors
+        // -- Setup default mock behaviors
+
         // Make writeFile "succeed" (return undefined)
         fs.writeFile.mockResolvedValue(undefined);
         // Make existsSync return false (pretend directory doesn't exist)
@@ -111,6 +112,7 @@ describe('Upload Storage State Service - Unit Tests', () => {
             const req = { headers: {'content-length': '2000'}, file: {size: 6000} };
             const res = {};
             const next = jest.fn();
+            
             // act : call the middleware
             post_upload_size_check(req, res, next);
 

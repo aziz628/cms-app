@@ -1,7 +1,12 @@
 import request from "supertest";
 import app from "../../app.js";
 import {ALLOWED_MIME_TYPES} from "../../middleware/file_middleware.js";
-import { getAuthCookies,get_fixture_image,ensure_uploaded_file_exist ,invalid_fixture_image} from '../helper/tools.js';
+import {
+    getAuthCookies,
+    get_fixture_image,
+    ensure_uploaded_file_exist,
+    invalid_fixture_image
+} from '../helper/tools.js';
 // get current directory name
 const upload_subfolder = 'classes'
 
@@ -13,6 +18,7 @@ describe("General Info API", () => {
     let imageName;
 
     beforeAll(async () => {
+      // login and get auth cookies
       authCookies = await getAuthCookies();
     });
     

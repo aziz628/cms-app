@@ -30,7 +30,7 @@ async function save_file_to_disk(filepath, fileBuffer,size) {
             console.log(`File saved successfully to ${filepath}`);
         }
         // Update storage state
-        await incrementStorage(size);
+        incrementStorage(size);
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
             console.error(`Failed to save file to ${filepath}:`, error);
@@ -53,7 +53,7 @@ async function delete_image(fileName, subfolder = '') {
         console.log(`File ${fileName} deleted successfully`)
       }
     // Update storage state
-    await decrementStorage(fileStats.size); 
+    decrementStorage(fileStats.size); 
   } catch (error) {
     if(process.env.NODE_ENV === 'development') {
       console.error(`Failed to delete file ${fileName}:`, error)

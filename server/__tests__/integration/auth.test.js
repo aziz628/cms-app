@@ -1,28 +1,42 @@
 import request from 'supertest';
 import app from '../../app.js';
 import {generateTokens} from '../../services/token_service.js';
+import { getAuthCookies} from '../helper/tools.js';
+import { get_current_session_id } from '../../services/session_store.js';
+
+import jwt from 'jsonwebtoken';
+const ADMIN_USERNAME= process.env.ADMIN_USERNAME || "admin"
+const ADMIN_PASSWORD= process.env.ADMIN_PASSWORD || "admin_password"
+const JWT_ACCESS_SECRET= process.env.JWT_ACCESS_SECRET;
+const JWT_REFRESH_SECRET= process.env.JWT_REFRESH_SECRET;
 
   describe('Auth Api', ()=>{  
   let auth_cookies;
   let updated_username;
   let updated_password;
 
-  afterAll(async ()=>{
-    // arrange
-    const username= process.env.ADMIN_USERNAME || "admin"
-    const password= process.env.ADMIN_PASSWORD || "admin_password"
+  beforeAll(async ()=>{
+    // get the cookies
+    auth_cookies = await getAuthCookies();
+  });
+
+  // reset the credentials for consistent sequential testing
+  afterAll(async ()=>{    
+    // get new auth cookies
+    auth_cookies = await getAuthCookies({username:updated_username, password:updated_password});
 
     // act
     const response = await request(app)
           .post('/api/auth/username_update')
             .set('Cookie', auth_cookies)
-            .send({ new_username:username})
+            .send({ new_username:ADMIN_USERNAME})
     
 
     const response2 = await request(app)
           .post('/api/auth/password_update')
             .set('Cookie', auth_cookies)
-            .send({ new_password:password})
+            .send({ new_password:ADMIN_PASSWORD})
+
     // assert
     expect(response.statusCode).toBe(200)
     expect(response.body.message).toBe('Username updated successfully')
@@ -30,8 +44,23 @@ import {generateTokens} from '../../services/token_service.js';
     expect(response2.body.message).toBe('Password updated successfully')
 
   })
+  
+// happy path - return user object when provided valid tokens
+it('should return user object when provided valid tokens', async () => {
+  
+  // act
+  const response = await request(app)
+    .get('/api/auth/me')
+    .set('Cookie', auth_cookies);
+
+  // assert
+  expect(response.statusCode).toBe(200);
+  expect(response.body).toBeDefined();
+  expect(response.body.username).toBe(ADMIN_USERNAME);
+});
 
 // -- login tests --
+
     //  happy path - a successful login.
   it('should return 200 on successful login with correct credentials', async () => {
         //  ARRANGE
@@ -57,7 +86,8 @@ import {generateTokens} from '../../services/token_service.js';
       expect(response.headers['set-cookie'].length).toBeGreaterThan(0);
       expect(response.headers['set-cookie'][0]).toMatch(/access_token/);
       expect(response.headers['set-cookie'][1]).toMatch(/refresh_token/);
-      // save the cookies for later
+
+      // overwrite the cookies with new valid tokens 
       auth_cookies=response.headers['set-cookie']
 
     });
@@ -119,7 +149,7 @@ import {generateTokens} from '../../services/token_service.js';
     expect(response.body.code).toBe('VALIDATION_ERROR');
   })
 
-// -- update username and password tests --
+    // -- update username and password tests --
 
     // sad path - change username to invalid username
     it('should return 400 for invalid new username',async ()=>{
@@ -162,6 +192,7 @@ import {generateTokens} from '../../services/token_service.js';
       expect(response2.statusCode).toBe(200);
       expect(response2.body.message).toBe('Login successful');
 
+      // overwrite the cookies with new valid tokens
       auth_cookies=response2.headers['set-cookie']
       updated_username=new_username
 
@@ -181,6 +212,7 @@ import {generateTokens} from '../../services/token_service.js';
       expect(response.body.message).toMatch(/"new_password" must be at least 8 chars/)
       expect(response.body.code).toBe('VALIDATION_ERROR')
     })
+
     // happy path - update password 
     it('should update the password',async ()=>{
 
@@ -207,36 +239,141 @@ import {generateTokens} from '../../services/token_service.js';
         expect(response2.statusCode).toBe(200);
         expect(response2.body.message).toBe('Login successful');
 
+        // overwrite the cookies with new valid tokens
         auth_cookies=response2.headers['set-cookie']
+        
+        updated_password=new_password
+      })
 
+    // -- token tests --
+    // get session expired by  using one second lifespan tokens
+    it("should return 401 for expired refresh token", async () => {
+      // arrange
+      let session_id = await get_current_session_id();
+      const {access_token, refresh_token} = generateTokens({
+        access_token_lifespan: 1, refresh_token_lifespan: 1, session_id
+      }) // tokens expire in 1 second
+      
+      // wait for 1+ second to ensure the token is expired
+      await new Promise(resolve => setTimeout(resolve, 1200)); // wait for 1.2 seconds
+      
+      // act
+      const response = await request(app)
+        .post('/api/auth/password_update')
+        .set('Cookie', [`access_token=${access_token}`, `refresh_token=${refresh_token}`])
+        .send();
+
+      // assert
+      expect(response.statusCode).toBe(401);
+      expect(response.body.message).toBe('Session expired. Please log in again.');
+      expect(response.body.code).toBe('SESSION_EXPIRED');
 
     })
+    
+    // get success request short access and long  refreshed tokens
+    it("should rotate tokens when access token is expired and refresh_token is valid", async () => {
+      // arrange
+      
+      let session_id = await get_current_session_id();
+      // 1s lifespan access token, 1h lifespan refresh token
+      const {access_token, refresh_token} = generateTokens({
+        access_token_lifespan: 1, refresh_token_lifespan: 60*60, session_id
+      });
+
+      // wait for 1+ second to ensure the access token is expired
+      await new Promise(resolve => setTimeout(resolve, 1200)); // wait for 1.2 seconds
+
+      // act
+      const response = await request(app)
+        .get('/api/auth/me')
+        .set('Cookie', [`access_token=${access_token}`, `refresh_token=${refresh_token}`])
+        .send();
+
+      // assert
+      expect(response.statusCode).toBe(200);
+      expect(response.body.username).toBe(updated_username);
+
+      // new tokens should be set in the response cookies 
+      expect(response.headers['set-cookie']).toBeDefined();
+      expect(response.headers['set-cookie'][0]).toMatch(/access_token/);
+      expect(response.headers['set-cookie'][1]).toMatch(/refresh_token/);
+
+      // helper functions to extract cookies
+      let find_cookie = cookieName => response.headers['set-cookie'].find(cookie => cookie.startsWith(`${cookieName}=`));
+      let parse_cookies = cookieString => cookieString.split(';')[0].split('=')[1];
+      
+      // get new tokens from cookies
+      const new_access_token = parse_cookies(find_cookie('access_token'));
+      const new_refresh_token = parse_cookies(find_cookie('refresh_token'));
+      
+      // decode tokens
+      const decoded_access = jwt.verify(new_access_token, JWT_ACCESS_SECRET);
+      const decoded_refresh = jwt.verify(new_refresh_token, JWT_REFRESH_SECRET);
+
+      // compare session IDs to ensure they match the original session ID
+      expect(decoded_access.session_id).toBe(session_id);
+      expect(decoded_refresh.session_id).toBe(session_id);
+    })
+
+    // do two consecutive logins and ensure the session ID is updated
+    it("should receive session invalid for second login attempt", async () => {
+      // arrange
+      const credentials = {
+        username: updated_username,
+        password: updated_password
+      };
+
+      // act
+      const response1 = await request(app)
+        .post('/api/auth/login')
+        .send(credentials);
+        
+      expect(response1.statusCode).toBe(200);
+
+      // save cookies from first login
+      const first_login_cookies = response1.headers['set-cookie'];
+
+      const response2 = await request(app)
+        .post('/api/auth/login')
+        .send(credentials);
+      expect(response2.statusCode).toBe(200);
+
+      // try /me endpoint with first login cookies - should be session invalid
+      const response3 = await request(app)
+        .get('/api/auth/me')
+        .set('Cookie', first_login_cookies)
+        .send();
+        
+      // updated auth cookies for next tests
+      auth_cookies = response2.headers['set-cookie'];
+
+      // assert
+      expect(response3.statusCode).toBe(401);
+      expect(response3.body.message).toBe('Session invalid');
+      expect(response3.body.code).toBe('SESSION_INVALID');
+    });
+
     // happy path - logout
     it('should logout the user',async ()=>{
-
-      // arrange
-      const credentials= {
-        username:updated_username,
-        password:updated_password
-      }
 
       // act 
       const response = await request(app)
             .post('/api/auth/logout')
             .set('Cookie', auth_cookies)
-            .send(credentials);
 
       // assert 
       expect(response.statusCode).toBe(200)
       expect(response.body.message).toBe('Logout successful')
 
     })
+
     // sad path - logout without being logged in
     it('should return 401 when trying to logout without being logged in',async ()=>{
       // act 
       const response = await request(app)
             .post('/api/auth/logout')
             .send();
+
       // assert 
       expect(response.statusCode).toBe(401)
       expect(response.body.message).toBe('Unauthorized')
@@ -255,30 +392,6 @@ import {generateTokens} from '../../services/token_service.js';
         expect(response.body.code).toBe('UNAUTHORIZED');
     });
 
-    // try session expired by making using one second lifespan tokens  
-    // run delay then try secure endpoint
-    it("should return 401 for expired refresh token", async () => {
-      // arrange
-      const {access_token, refresh_token} = generateTokens({access_token_lifespan: 1, refresh_token_lifespan: 1}) // tokens expire in 1 second
-      // wait for 1+ second to ensure the token is expired
-      await new Promise(resolve => setTimeout(resolve, 1200)); // wait for 1.2 seconds
-      
-      // act
-      const response = await request(app)
-        .post('/api/auth/password_update')
-        .set('Cookie', [`access_token=${access_token}`, `refresh_token=${refresh_token}`])
-        .send();
+   
 
-      // assert
-      expect(response.statusCode).toBe(401);
-      expect(response.body.message).toBe('Session expired. Please log in again.');
-      expect(response.body.code).toBe('SESSION_EXPIRED');
-
-    })
-
-
-})
-
-
-
-
+});

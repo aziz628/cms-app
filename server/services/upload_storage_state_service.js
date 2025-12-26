@@ -84,13 +84,14 @@ async function initialize_storage_state() {
   } catch (error) {
     // create new state file if missing or invalid
     if (error.code === 'ENOENT' || error.code === 'INVALID_STATE') {
-      console.log(' Storage state file missing or invalid, creating new one.');
-      await createNewStateFile();
+      console.log(' Storage state file missing or invalid data, creating new one.');
     } 
+    // corrupted JSON or other read error
     else {
       console.error(' Error loading storage state:', error);
-      throw error;
     }
+    await createNewStateFile();
+
   }
 }
 

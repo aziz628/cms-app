@@ -60,9 +60,18 @@ async function update_username(new_username){
         throw new App_error('Failed to update username', 500, 'USERNAME_UPDATE_FAILED');
     }
 }
+/** Retrieves admin user information.
+ * @returns {Promise<Object>} An object containing the admin user's information.
+ * @throws {AppError} If the retrieval fails.
+ */
+async function get_user_info() {
+    const user = await db.get(`SELECT ${ADMIN.USERNAME} FROM ${ADMIN.TABLE_NAME} `);
+    return user;
+}
 
 export default {
     verify_credentials,
     update_password,
-    update_username
+    update_username,
+    get_user_info
 };

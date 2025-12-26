@@ -16,10 +16,11 @@ import Login from "./pages/Login";
 import Contact from "./pages/Contact.jsx";
 import GeneralInfo from "./pages/Generalinfo.jsx";
 import NotFound from "./pages/NotFound"
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider,AUTH_STATES } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import { useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
+import LoadingSpinner from './components/common/LoadingSpinner.jsx';
 
 import './assets/css/theme.css'; // Import theme styles and variables
 import  './index.css' // Import Tailwind components and utilities
@@ -28,30 +29,36 @@ import './assets/css/output.css'; // Import compiled Tailwind CSS
 
 // ProtectedRoute component to guard the authenticated routes
 function ProtectedRoute({children}) {
-  const {user,logout} = useAuth();
+  const {authState, logout} = useAuth();
 
   // Listen for unauthorized events to log out the user
-    useEffect(() => {
-      // Handler for unauthorized event
-      const handleUnauthorized = () => {
-        console.log("Unauthorized event received, logging out");
-        logout();
-      };
-      
-      // Add event listener for unauthorized events
-      window.addEventListener('unauthorized', handleUnauthorized);
-      
-      // Cleanup function to remove the old event listener 
-      return () => window.removeEventListener('unauthorized', handleUnauthorized);
-    }, []); // run once on mount
+  useEffect(() => {
+    // Handler for unauthorized event
+    const handleUnauthorized = () => {
+      console.log("Unauthorized event received, logging out");
+      logout();
+    };
+    
+    // Add event listener for unauthorized events
+    window.addEventListener('unauthorized', handleUnauthorized);
+    
+    // Cleanup function to remove the old event listener 
+    return () => window.removeEventListener('unauthorized', handleUnauthorized);
+  }, []); // run once on mount
 
-  console.log("ProtectedRoute user:", user,"from page:", getCurrentPage());
+  console.log("ProtectedRoute authState:", authState, "from page:", getCurrentPage());
 
   // If no user logged in, redirect to login page
-  if(!user) {
-    return <Navigate to="/login" />
+  if(authState === AUTH_STATES.UNAUTHENTICATED) {
+    return <Navigate to="/login" />;
+  }
+  
+  // Show loading spinner while verifying session
+  if (authState === AUTH_STATES.LOADING) {
+    return <LoadingSpinner />;
   }
 
+  // continue to the requested page
   return children;
 }
 

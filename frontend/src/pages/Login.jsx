@@ -1,15 +1,19 @@
 import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth,AUTH_STATES } from '../context/AuthContext';
 import authService from '../services/authService';
 import { useNotification } from '../context/NotificationContext.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
+
+
+
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const { login,user } = useAuth();
+    const { login, authState } = useAuth();
     const navigate = useNavigate();
+
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const { error: notifyError, success } = useNotification();
@@ -17,11 +21,11 @@ function Login() {
 
     // If user already logged in, redirect to dashboard
     useEffect(() => {
-        if (user) {
+        if (authState === AUTH_STATES.AUTHENTICATED) {
             navigate('/dashboard');
             return;
         }
-    }, [user, navigate]);
+    }, [authState]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,7 +34,7 @@ function Login() {
         try {
             const response = await authService.login({ username, password });
 
-            login({ username: response.username });
+            login({ username: response?.username });
             // Redirect or update UI after successful login
             success('Login successful');
             navigate('/dashboard');
@@ -53,14 +57,18 @@ function Login() {
                 <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'} text-xl`}></i>
             </button>
 
-            {user 
-            ?<div className="flex justify-center items-center h-64">
+            {/* Login Form Container */}
+            { // show loading spinner when checking auth state
+            authState===AUTH_STATES.LOADING 
+            ? <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
-            :
-            <div className='text-text bg-surface p-8 rounded-md shadow-xl w-full max-w-md'>
+            : <div className='text-text bg-surface p-8 rounded-md shadow-xl w-full max-w-md'>
                 <h1 className='text-2xl font-bold mb-6 text-center'>Gym cms Login</h1>
-                {loading
+                {/* Login Form */}
+                
+                { // show spinner when submitting form
+                loading
                     ?  <LoadingSpinner />
                     :
                     <>
@@ -99,12 +107,6 @@ function Login() {
                             </button>
                             
                         </form>
-                        
-                        {/*
-                        <div className='mt-4 text-center'>
-                            <a href='#' className='text-primary hover:underline'>Forgot Password?</a>
-                        </div>
-                        */}
                     </>
                 }
             </div>

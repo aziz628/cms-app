@@ -4,21 +4,20 @@ import {passwordSchema,usernameSchema } from "../validation/schemas/SettingSchem
 import settingService from "../services/settingService.js"
 import { useNotification } from "../context/NotificationContext.jsx";
 import { UserForm, PasswordForm } from "../components/forms/SettingForms.jsx";
-
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Setting() {
-  const [username, setUsername] = useState('');;
+  const [username, setUsername] = useState('');
   const { theme, toggleTheme } = useTheme();
   const { success, error } = useNotification();
+  const { user } = useAuth();
 
   useEffect( ()=>{
-    // get user from local storage
-    const user = JSON.parse(localStorage.getItem('user') );
-
+    // set initial username (only when logged in)
     if (user) {
-      setUsername(user.username);
+      setUsername(user?.username);
     }
-  }, [] );
+  }, [user] );
 
   async function handleUsernameUpdate(username) {
     try{

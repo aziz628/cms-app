@@ -1,11 +1,13 @@
 import http from 'http';
 import app from './app.js';
 import { initialize_storage_state } from './services/upload_storage_state_service.js';
+import { init_session_store } from './services/session_store.js';
 
 const server = http.createServer(app);
 
-// Initialize the upload storage state
-initialize_storage_state();
+// Initialize the upload storage and session state
+await initialize_storage_state();
+await init_session_store();
 
 // Set the port to the environment variable PORT or default to 3000
 const API_PORT = process.env.API_PORT || 3000;
