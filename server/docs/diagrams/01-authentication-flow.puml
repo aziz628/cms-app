@@ -1,0 +1,81 @@
+@startuml Authentication Flow
+skinparam Style strictuml
+skinparam sequenceMessageAlign center
+skinparam MaxMessageSize 250
+
+actor Admin
+participant "React UI" as UI
+participant "Auth Context" as Context
+participant "Auth Controller" as Controller
+participant "Auth Service" as Service
+participant "Session Store (RAM)" as Store
+database "SQLite DB" as DB
+
+== 1. Initial Login (Session Creation) ==
+Admin -> UI: Enters Credentials
+UI -> Controller: POST /api/auth/login
+Controller -> Service: login(username, password)
+Service -> DB: Verify Password Hash
+DB -->> Service: Valid
+Service -> Store: create_new_session()
+activate Store
+    Store -> Store: Generate UUID
+    Store -> Store: Update RAM (currentSessionId)
+    Store ->> DB: UPDATE admin SET session_id (Async Wait)
+    DB -->> Store: Success
+deactivate Store
+Service -> Service: Generate Access & Refresh Tokens\n(Payload: { sid: uuid })
+Service -->> Controller: { tokens, user }
+Controller -->> UI: 200 OK (Set HttpOnly Cookies)
+UI -> Context: setAuth({ user, status: 'authenticated' })
+Context -> Context: localStorage.setItem('user')
+
+== 2. Protected Request (Session Validation) ==
+UI -> Controller: GET /api/admin/dashboard
+Controller -> Service: verify_token(accessToken)
+alt Access Token Valid
+    Service -> Store: is_session_valid(token.sid)
+    Store -> Store: Compare token.sid === RAM.currentSessionId
+    alt Match (Valid Session)
+        Store -->> Service: true
+        Service -->> Controller: next()
+        Controller -->> UI: 200 OK (Data)
+    else Mismatch (Overwritten by new login)
+        Store -->> Service: false
+        Service -->> Controller: Error: Invalid Session
+        Controller -->> UI: 401 Unauthorized
+        UI -> Context: logoutLocally()
+    end
+else Access Token Expired
+    Controller -> Service: refresh_token(refreshToken)
+    Service -> Service: Verify Refresh Token Signature
+    Service -> Store: is_session_valid(refreshToken.sid)
+    alt Session Still Valid
+        Store -->> Service: true
+        Service -> Service: Generate NEW Access Token\n(Keep SAME sid)
+        Service -->> Controller: New Access Token
+        Controller -> Controller: Retry Request
+        Controller -->> UI: 200 OK (Data + New Cookie)
+    else Session Invalid
+        Store -->> Service: false
+        Service -->> Controller: Error: Invalid Session
+        Controller -->> UI: 403 Forbidden
+        UI -> Context: logoutLocally()
+    end
+end
+
+== 3. Logout (Cleanup) ==
+Admin -> UI: Clicks Logout
+UI -> Controller: POST /api/auth/logout
+Controller -> Service: logout()
+Service -> Store: clear_session()
+activate Store
+    Store -> Store: RAM.currentSessionId = null
+    Store ->> DB: UPDATE admin SET session_id = NULL
+    DB -->> Store: Success
+deactivate Store
+Controller -->> UI: 200 OK (Clear Cookies)
+UI -> Context: logoutLocally()
+Context -> Context: localStorage.removeItem('user')
+
+@enduml

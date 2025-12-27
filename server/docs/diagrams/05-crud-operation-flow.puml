@@ -1,0 +1,67 @@
+@startuml CRUD Operation Flow (Complex Case: Transformations)
+skinparam Style strictuml
+skinparam sequenceMessageAlign center
+skinparam MaxMessageSize 250
+
+actor Admin
+participant "Transformation Page" as Page
+participant "FormBuilder" as Form
+participant "Middleware Pipeline\n(Multer + Validators)" as Pipe
+participant "Transformation Controller" as Controller
+participant "Transformation Service" as Service
+database "SQLite DB" as DB
+database "File System" as FS
+
+== 1. Form Submission ==
+Admin -> Form: Edits Transformation\n(Uploads New Before/After Images)
+Form -> Form: Yup Validation (Client-side)
+Form -> Pipe: POST /api/transformations/:id (FormData)
+
+== 2. Middleware Processing ==
+Pipe -> Pipe: memory_upload (Buffer files)
+Pipe -> Pipe: post_upload_size_check (RAM/Limit check)
+Pipe -> Pipe: update_transformation_validator (Joi check)
+Pipe -> Pipe: file_validator (Check if files present)
+Pipe -> FS: file_saver (Save new files to disk)
+FS -->> Pipe: Success (New Filenames)
+
+== 3. Controller & Service Logic ==
+Pipe -> Controller: update_transformation(req.body, req.files)
+Controller -> Service: update_transformation(id, data_with_new_images)
+
+activate Service
+    Service -> DB: run_in_transaction()
+    Service -> DB: SELECT old_images FROM transformations WHERE id = :id
+    
+    alt Entity Not Found (Wrong ID)
+        DB -->> Service: null
+        Service -> FS: delete_image(new_before_image)
+        Service -> FS: delete_image(new_after_image)
+        Service -->> Controller: throw 404 AppError
+        Controller -->> Form: 404 Not Found
+    else Entity Exists
+        DB -->> Service: { old_before, old_after }
+        
+        Service -> DB: UPDATE transformations SET ... WHERE id = :id
+        DB -->> Service: Success
+        
+        Service -> Service: record_entity_update()
+        
+        == 4. Image Cleanup (Post-Update) ==
+        alt New Before Image Provided
+            Service -> FS: delete_image(old_before)
+        end
+        alt New After Image Provided
+            Service -> FS: delete_image(old_after)
+        end
+        
+        Service -->> Controller: Success
+    end
+deactivate Service
+
+Controller -->> Form: 200 OK (Updated Data)
+Form -> Page: notifySuccess() & closeForm()
+Page -> Page: refreshData()
+Page -->> Admin: Show Toast & Update List
+
+@enduml

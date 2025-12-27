@@ -1,0 +1,57 @@
+@startuml Request Lifecycle
+skinparam componentStyle rectangle
+
+package "Entry Point" {
+    [Server (server.js)] as Server
+    [App (app.js)] as App
+}
+
+package "Global Middleware" {
+    [Helmet (Security)] as Helmet
+    [CORS] as CORS
+    [Rate Limiter] as Limiter
+    [Body Parser] as Parser
+}
+
+package "Routing Layer" {
+    [API Routes] as ApiRoutes
+    [Public Routes] as PublicRoutes
+}
+
+package "Logic Layer" {
+    [Auth Middleware] as AuthMid
+    [File Middleware] as FileMid
+    [Validation Middleware] as Validator
+    [Controllers] as Controllers
+    [Services] as Services
+}
+
+package "Data Layer" {
+    database "SQLite" as DB
+    database "File System" as FS
+    [RAM (Session/Storage)] as RAM
+}
+
+Server --> App : Initializes
+App --> Helmet : 1. Secure Headers
+Helmet --> CORS : 2. Origin Check
+CORS --> Limiter : 3. Rate Limit
+Limiter --> Parser : 4. Parse JSON/URL
+Parser --> ApiRoutes : 5. Route Matching
+
+' Detailed Middleware Interactions
+ApiRoutes --> AuthMid : Protected Routes
+AuthMid --> RAM : Check Session ID (Fast)
+AuthMid --> Validator : Token Valid
+
+AuthMid --> FileMid : Token valid
+FileMid --> RAM : Check Storage Limit
+FileMid --> Validator : Space Available
+
+Validator --> Controllers : Valid Input
+Controllers --> Services : Business Logic
+Services --> DB : Query Data
+Services --> FS : Read/Write Files
+Services --> RAM : Update Cache
+
+@enduml

@@ -1,0 +1,63 @@
+@startuml File Upload Pipeline
+skinparam Style strictuml
+skinparam sequenceMessageAlign center
+
+actor Admin
+participant "Frontend" as UI
+participant "Express Router" as Router
+participant "Size Validator" as SizeCheck
+participant "File Validator" as FileCheck
+participant "File Saver" as Saver
+participant "Storage State" as State
+database "File System" as Disk
+
+== 1. Request Preparation ==
+Admin -> UI: Selects File (e.g., image.jpg)
+UI -> UI: Create FormData
+UI -> Router: POST /api/upload
+
+== 2. Middleware Chain ==
+Router -> Router: receive request first chunks 
+
+Router -> SizeCheck: check_header_content_size()
+activate SizeCheck
+    SizeCheck -> State: get_total_storage()
+    State -->> SizeCheck: current_total_bytes
+    alt current + new_file > MAX_LIMIT (1GB)
+        SizeCheck -->> Router: 400 Error (Storage Full)
+        Router -->> UI: Error Message
+    else Space Available
+        SizeCheck -->> Router: next()
+    end
+deactivate SizeCheck
+
+Router -> FileCheck: validate_file_type()
+activate FileCheck
+    FileCheck -> FileCheck: Check file Hex signature
+    alt Invalid Signature
+        FileCheck -->> Router: 400 Error (Fake Extension)
+    else Valid Image
+        FileCheck -->> Router: next()
+    end
+deactivate FileCheck
+
+== 3. File Persistence (Fire-and-Forget) ==
+Router -> Saver: save_file_to_disk()
+activate Saver
+    Saver -> Disk: fs.writeFile(path, buffer)
+    Disk -->> Saver: Success
+    
+    par Fire-and-Forget State Update
+        Saver ->> State: add_file(size)
+        activate State
+            State -> State: Update RAM Cache
+            State -> Disk: Write storage-state.json (Async)
+        deactivate State
+    end
+
+    Saver -->> Router: next()
+deactivate Saver
+
+Router -->> UI: 200 OK (File URL)
+
+@enduml

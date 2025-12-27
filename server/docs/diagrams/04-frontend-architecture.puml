@@ -1,0 +1,73 @@
+@startuml Frontend Architecture
+skinparam componentStyle rectangle
+
+package "Context Layer (Global State)" {
+    [AuthContext] as Auth
+    [ThemeContext] as Theme
+    [NotificationContext] as Notify
+}
+
+package "Router Layer (The Gatekeeper)" {
+    [ProtectedRoute] as Protected
+    [PublicRoute] as Public
+}
+
+package "Shell Layer (The Layout)" {
+    [MainLayout] as Layout
+    [Sidebar] as Sidebar
+    [Header] as Header
+    [NotificationToast] as Toast
+}
+
+package "Feature Layer (Pages)" {
+    [Login Page] as Login
+    [Dashboard] as Dash
+    [Content Pages\n(Classes, Trainers, etc.)] as ContentPages
+}
+
+package "Engine Layer (Shared Components)" {
+    [FormBuilder] as FormBuilder
+    [DataTable] as DataTable
+    [ImageUploader] as Uploader
+    [Yup Validation] as Yup
+}
+
+package "Service Layer (API)" {
+    [Axios Instance] as Axios
+    [AuthService] as AuthService
+    [DataService] as DataService
+}
+
+' Relationships
+App --> Theme : 1. Wraps
+Theme --> Notify : 2. Wraps
+Notify --> Auth : 3. Wraps
+
+' Routing Logic
+Auth --> Protected : Provides Auth Status
+Auth --> Public : Provides Auth Status
+
+Protected --> Layout : Renders if Authenticated
+Public --> Login : Renders if Unauthenticated
+
+' Shell & Content
+Layout --> Sidebar : Contains
+Layout --> Header : Contains
+Layout --> Toast : Displays
+Layout --> ContentPages : Renders Child (Outlet)
+Layout --> Dash : Renders Child 
+
+' Page Logic
+ContentPages --> DataTable : Displays List
+ContentPages --> FormBuilder : Create/Edit Mode
+
+' Engine & Services
+FormBuilder --> Yup : Validates Input
+FormBuilder --> Uploader : Handles Files
+FormBuilder --> DataService : Submits Data
+
+DataService --> Axios : HTTP Requests
+AuthService --> Axios : HTTP Requests
+Auth --> AuthService : verify session (on boot)
+
+@enduml

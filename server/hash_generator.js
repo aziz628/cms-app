@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
 const saltRounds = 10;
 const password = 'password';
 

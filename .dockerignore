@@ -28,3 +28,4 @@ frontend/src/assets/css/output.css
 # IDE and OS
 .vscode/
 *.md
+/docs
