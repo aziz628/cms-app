@@ -29,7 +29,7 @@ cms-app/
 
 - RESTful API for admin operations
 - EJS templates for public-facing site
-- SQLite database with JSON file storage
+- SQLite database and JSON file for tracking storage status
 - Secure authentication with refresh tokens
 - Request validation with Joi
 - Jest testing suite

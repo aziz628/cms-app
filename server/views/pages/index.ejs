@@ -126,7 +126,7 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
                     </div>
                 <% }); %>
             <% } else { %>
-                <p class="col-span-full text-center text-slate-500">No classes available</p>
+                <p class="col-span-full text-center text-slate-500">No classes available currently</p>
             <% } %>
         </div>
         <!-- Classes Pagination -->
@@ -173,6 +173,8 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
         
         <!-- Schedule Table -->
         <div id="schedule" class="flex flex-col p-2  rounded-lg text-center overflow-x-auto">
+            <!--check if have sessions -->
+            <% if (layoutByDay && Object.keys(layoutByDay).length > 0) { %>
             <!--columns headers-->
             <div class="h-fit w-fit mx-[auto]  border rounded-lg shadow-lg bg-white">
                 <div class=" flex w-fit  bg-gray-50 text-xl h-14 border-b text-center font-semibold">
@@ -236,7 +238,9 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
                     <% } %>
                 </div>
             </div>
-
+            <% } else { %>
+                <p class=" text-center text-slate-500">No schedule available currently</p>
+            <% } %>
         </div>
 
     </div>
@@ -302,7 +306,7 @@ style="background-image: url('/uploads/general_info/<%= general_info.hero_image 
                 <% }); %>
             <!-- if no price plans show text -->
             <% } else { %>
-                <p class="col-span-full text-center text-slate-500">No pricing plans available</p>
+                <p class="col-span-full text-center text-slate-500">No pricing plans available currently</p>
             <% } %>
         </div>
 

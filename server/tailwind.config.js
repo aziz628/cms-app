@@ -18,12 +18,7 @@ module.exports = {
         
         dark: 'var(--dark)',
         light: 'var(--light)',
-      },
-      fontFamily: {
-        // Client-specific fonts will be added here
-        // 'sans': ['ClientSans', 'sans-serif'],
-        // 'heading': ['ClientHeading', 'serif'],
-      },
+      }
     },
   },
   plugins: [],

@@ -15,7 +15,7 @@ npm run dev
 npm run reset
 ```
 
-The server runs at http://localhost:3000
+The server default ip:port is  http://localhost:3000
 
 ## Project Structure
 
@@ -208,7 +208,7 @@ server/
 
 ## Environment Variables
 
-Create `.env.development` from `.env.example`:
+Create `.env.development` from `.env.example` and edit the vars:
 
 ```env
 # Server
@@ -233,6 +233,7 @@ ADMIN_PASSWORD_HASH=bcrypt-hash-here
 | express       | Web framework          |
 | jsonwebtoken  | JWT authentication     |
 | bcrypt        | Password hashing       |
+| crypto        | generating session id  |
 | joi           | Request validation     |
 | multer        | File uploads           |
 | cookie-parser | Cookie handling        |

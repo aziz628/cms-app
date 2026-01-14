@@ -35,7 +35,7 @@ const { post_upload_size_check} = await import ('../../middleware/file_middlewar
 describe('Upload Storage State Service - Unit Tests', () => {
 
     beforeAll(async () => {
-        // Clear all mock call history before each test
+        // Clear all mock functions call history before each test (mocked functions calls are tracked)
         jest.clearAllMocks();
         reset();
 
@@ -55,7 +55,8 @@ describe('Upload Storage State Service - Unit Tests', () => {
     
 
     describe('incrementStorage', () => {
-        
+
+        // test that mocked fs functions are called correctly inside the queued function
         it('should NOT write to real files', async () => {
         await incrementStorage(0);
 
@@ -72,27 +73,30 @@ describe('Upload Storage State Service - Unit Tests', () => {
         
         });
 
+        // test that incrementStorage updates state correctly in the queued function
         it('should update lastUpdated timestamp', async () => {
-            // can't run reset here since it would reset after the increment and state receive 0 again
+            // Capture time before and after increment (unix timestamp for easier comparison)
             const beforeTime = new Date();
             await incrementStorage(1000); 
             const afterTime = new Date();
-            // unix timestamp for easier comparison
 
+            // get the updated state
             const state = getState();
             const updateTime = new Date(state.lastUpdated); // convert to Date object
+
+            // Check that lastUpdated is between beforeTime and afterTime
             expect(updateTime.getTime()).toBeGreaterThanOrEqual(beforeTime.getTime());
             expect(updateTime.getTime()).toBeLessThanOrEqual(afterTime.getTime());
         });
     
-        
+        // test that multiple calls to incrementStorage are processed in order
         it('should process queue in order', async () => {
             const executionOrder = [];
 
             // Mock the increment to track when it happens
             const original_state_value = getState().totalSize;
 
-            // Call three times and track
+            // Call three times and track execution order
             const p1 = incrementStorage(100).then(() => executionOrder.push(1));
             const p2 = incrementStorage(200).then(() => executionOrder.push(2));
             const p3 = incrementStorage(300).then(() => executionOrder.push(3));

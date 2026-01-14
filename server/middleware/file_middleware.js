@@ -243,10 +243,12 @@ const file_validator = (options = {}) => {
     next();
   };
 };
+
 // --- Middleware 3: File Saver ---
 
 /**
- * Creates a middleware that saves uploaded files to disk.
+ * Creates a middleware that saves uploaded files to disk
+ * handle file saving for both single and multiple file uploads.
  *
  * @param {Object} options - Configuration options.
  * @param {string} options.section - The subdirectory within 'uploads' to save the file(s).
@@ -282,12 +284,17 @@ const file_saver = (options = {}) => {
       next();
     } catch (err) {
       console.error('Error saving file:', err);
-      // better error message for user  
       next(new AppError('Failed to save uploaded file', 500, 'FILE_SAVE_ERROR'));
     }
   };
 };
 
+/**
+ * Renames a file ,  saves it to disk and updates the file object with new properties.
+ * @param {Object} file - The file object from multer.
+ * @param {string} section - The subdirectory within 'uploads' to save the file.
+ * @returns {Promise<Object>} The updated file object.
+ */
 const save_file = async (file, section) => {
     // create a unique filename
     const unique_suffix = Math.floor(Math.random() * 1000);
