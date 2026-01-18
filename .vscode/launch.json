@@ -1,0 +1,54 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    
+    "version": "0.2.0",      // The version of the debug configuration format
+    "configurations": [      // Array of debug configurations
+        {
+            "type": "node",  // Specifies the debugger to use (Node.js debugger)
+            "request": "launch",  // Launches a new instance of your program
+                                  // (alternative: "attach" connects to running process)
+            "name": "Debug server",  // Display name in the debug dropdown menu
+
+            "skipFiles": [  // Files to skip when stepping through code
+                "<node_internals>/**"  // Skip Node.js internal files
+            ], 
+            "program": "${workspaceFolder}\\server.js",  // Entry point of your application
+                                                        // ${workspaceFolder} is the root of your project
+            "env": {  // Environment variables to set when launching your program                       
+                "NODE_ENV": "development"  // Sets NODE_ENV to "development"
+            },
+            "console": "integratedTerminal"  // Use VS Code's integrated terminal for console output                                     // (alternatives: "internalConsole", "externalTerminal")
+        },   {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Jest Tests",
+            "program": "${workspaceFolder}\\node_modules\\jest\\bin\\jest.js",
+            "args": ["${file}", "--runInBand", "--no-coverage", "--testTimeout=9999999"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "NODE_ENV": "test",
+                "NODE_OPTIONS": "--experimental-vm-modules"
+            },
+            "skipFiles": [
+                "<node_internals>/**",
+                "${workspaceFolder}/services/**/*.js",
+                "${workspaceFolder}/controllers/**/*.js",
+                "${workspaceFolder}/middlewares/**/*.js"
+            ]
+        },
+        // regular js file debugging
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug JS Files",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        }
+    ]
+}

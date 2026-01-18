@@ -1,10 +1,14 @@
-.vscode/
-.vscode/launch.json
-
-!README.md
+# general files
 *.md
+!README.md
+!docs/**/*.md
+
 *.txt
 
+# docs diagrams images
+/docs/diagrams/*.png
+
+# build files
 /**/tempCodeRunnerFile.bat
 /**/tailwindcss-windows.exe
 /**/tailwindcss.exe

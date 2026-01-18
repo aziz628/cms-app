@@ -9,7 +9,6 @@ export const NotificationProvider = ({ children }) => {
   
   // Add a new notification
   const addNotification = (notification) => {
-    // use something true unique id generator in production
     const id =  Math.random().toString(36).slice(2, 11); // generates a random string of 9 characters
     
     setNotifications(prev => [...prev, { ...notification, id }]);
@@ -73,6 +72,7 @@ export const NotificationProvider = ({ children }) => {
       info
     }}>
       {children}
+      {/*render the list of notifications as */}
       <div className="toast-container fixed top-4 right-4 z-50 space-y-2">
         {notifications.map(notification => (
           <Toast 

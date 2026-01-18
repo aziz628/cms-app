@@ -55,5 +55,3 @@ tailwindcss-windows.exe
 **/DB/*.md
 !./DB/sqlite_migration_tools.md
 
-# docs diagrams images
-/docs/diagrams/*.png

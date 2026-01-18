@@ -67,8 +67,8 @@ cms-app/
    ```
 2. **Start Development Servers**
 
-   * **Windows:** Run [script/run_dev.bat](cci:7://file:///c:/Users/wesla/Documents/personal%20projects/code%20projects/Web_front_end_pages/template%20system/cms-app/script/run_dev.bat:0:0-0:0)
-   * **Linux/Mac:** Run [script/run_dev.sh](cci:7://file:///c:/Users/wesla/Documents/personal%20projects/code%20projects/Web_front_end_pages/template%20system/cms-app/script/run_dev.sh:0:0-0:0)
+   * **Windows:** Run [script/run_dev.bat](./script/run_dev.bat)
+   * **Linux/Mac:** Run [script/run_dev.sh](./script/run_dev.sh)
 
 ### Development Workflow
 

@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
             setAuthState(AUTH_STATES.UNAUTHENTICATED);
             return;
         }
-        // if user exists,  verify with backend
+        // if user exists, verify with backend
         try {
             // Call /me endpoint to ensure session is valid
             const response = await authService.verifySession();

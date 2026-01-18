@@ -245,9 +245,4 @@ ADMIN_PASSWORD_HASH=bcrypt-hash-here
 | nodemon       | Development hot reload |
 | jest          | Testing framework      |
 
-## Testing
 
-```bash
-# Run all tests
-npm test
-```
