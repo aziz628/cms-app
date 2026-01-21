@@ -50,5 +50,18 @@
                 "NODE_ENV": "development"
             }
         }
+        // debug server in docker container
+        ,{
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Docker server debugger",
+            "address": "localhost",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}/server",
+            "remoteRoot": "/app",
+            "skipFiles": [
+                "<node_internals>/**"
+            ] 
+        }
     ]
 }

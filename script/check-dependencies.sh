@@ -19,7 +19,7 @@ fi
 echo "npm: $(npm --version)"
 
 # Check Tailwind binary
-if [ -f "./tailwindcss" ]; then
+if [ -f "../tailwindcss" ]; then
     echo "Tailwind CSS: ./tailwindcss"
 else
     echo "Tailwind CSS not found at ./tailwindcss"

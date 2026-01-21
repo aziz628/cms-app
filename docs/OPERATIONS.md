@@ -56,13 +56,47 @@ Optimized for performance and security.
 ---
 
 ## Debugging
+### Docker Debugging (Node.js Server)
+for debugging we gonna use pre-configured attach task in  `.vscode/launch.json`
 
-### VS Code Debugger
-We have pre-configured launch tasks in `.vscode/launch.json`.
+1.  **Start Debug Container:**
+    ```bash
+    # from scratch (first run of docker compose )
+    docker compose --profile debug up server-debug frontend 
+    ```
+    
+    ```bash
+    # Transitioning from dev : Stop the running dev server Then Start debug server 
+    docker compose stop server && docker compose --profile debug up server-debug 
+    ```
+
+2.  **Attach VS Code Debugger:**
+    *   Select **"Attach to Docker"** from the debugger  dropdown
+    *   Press `F5` or Run button to  Start Debugging
+    *   The debugger connects to `localhost:9229`
+
+3.  **Set Breakpoints:**
+    *    set breakpoints at lines numbers 
+
+4.  **View Output:**
+    *   Console logs appear in the Docker Compose terminal (not VS Code Debug Console)
+    * 
+5.  **Switch Back to Dev Mode:**
+    ```bash
+    docker compose stop server-debug
+    docker compose up server
+    ```
+6.  **Access Container Terminal (if needed):**
+    ```bash
+    docker compose exec server-debug sh
+    ```
+
+### VS Code Debugger (Host Manual Mode)
+use pre-configured launch tasks in `.vscode/launch.json`.
 
 1.  **Debug Server:**
     *   Select "Debug server" from the dropdown menu and run it
-    *   This attaches the debugger to the `server.js` process. You can set breakpoints in Controllers/Services.
+    *   This ready launch config  attaches the debugger to the `server.js` process. You can set breakpoints in Controllers/Services etc.
     *   *Variables:* Use the "Variables" pane to inspect `req.body` or `res.locals`.
 
 2.  **Debug Tests:**

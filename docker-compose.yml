@@ -1,13 +1,15 @@
 services:
+  # development server container
   server:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
+
     volumes:
-      - ./server:/app 
-      - /app/node_modules
+      - ./server:/app # mount the server code
+      - /app/node_modules # prevent overwriting node_modules in container
     command: >
       sh -c "
       npm run migrate && 
@@ -15,6 +17,32 @@ services:
       npm run dev
       "
   
+
+  # debug server container
+  # Usage :
+  #   Stop dev server first:  'docker compose stop server && docker compose --profile debug up server-debug
+  #   or from scratch : docker compose --profile debug up server-debug frontend
+  server-debug:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    command: >
+      sh -c "
+      npm run migrate && 
+      tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch & 
+      npm run debug
+      "
+    profiles: ["debug"]  # Only runs with --profile debug
+
+
+      
+  # development frontend container
   frontend:
     build:
       context: ./frontend

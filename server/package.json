@@ -8,6 +8,7 @@
     "prod:start": "cross-env NODE_ENV=production node server.js",
     "start": "cross-env NODE_ENV=development node server.js",
     "dev": "cross-env NODE_ENV=development nodemon server.js",
+    "debug": "cross-env NODE_ENV=development node --inspect=0.0.0.0:9229 server.js",
     "lint": "eslint .",
     "test": "cross-env  NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest  --runInBand",
     "prettier": "prettier --check .",

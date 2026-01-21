@@ -1,9 +1,6 @@
+# Dependencies
 node_modules
 **/node_modules
-
-.git
-.gitignore
-README.md
 
 # Ignore envs but keep example
 .env.*
@@ -25,7 +22,19 @@ server/uploads/**/*
 frontend/dist
 frontend/src/assets/css/output.css
 
-# IDE and OS
+# Documentation & IDE
 .vscode/
 *.md
 /docs
+.gitignore
+.git
+README.*
+
+
+# --- Production Cleanup ---
+# Note : STILL be available in development containers because of volume mounts 
+
+**/__tests__
+**/Dockerfile.dev
+**/*.bat
+**/*.sh

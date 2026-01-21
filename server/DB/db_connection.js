@@ -8,7 +8,6 @@ import fs from 'fs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..'); // go back one level to reach the server directory
 const db_relative_path = process.env.DB_PATH || './DB/db.sqlite';
-// console.log(' DB_PATH:', db_relative_path,' and running in environment:', process.env.NODE_ENV);
 
 const db_path = path.resolve(rootDir, db_relative_path);
 const dbDir = path.dirname(db_path);

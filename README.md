@@ -57,7 +57,7 @@ cms-app/
 
 ##### Option B: Manual Host Setup
 
-*Prerequisites: Node.js 22 , Tailwind CLI 3.4.1 installed globally.*
+*Prerequisites: Node.js v22.12.0 , Tailwind CLI 3.4.1 in workspace as 'tailwindcss' .*
 
 1. **Run the Host Setup Script**
    This installs dependencies and runs migrations.

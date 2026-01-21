@@ -37,11 +37,17 @@ pids+=($!)
 echo "Compiling server template Tailwind..."
 bash template_tailwind_compile.sh --watch &
 pids+=($!)
-cd ..
+cd .. # return to root directory
+
+# initial Tailwind compilation before starting Vite
+echo "Waiting for Tailwind compilation..."
+cd frontend
+bash ./compile_tailwind.sh  # Run once 
+pids_tailwind=$!  #get pid to wait
+wait $pids_tailwind # wait for initial compilation to finish
 
 # Start the Tailwind CSS compiler
 echo "Starting Tailwind CSS compiler..."
-cd frontend
 bash ./compile_tailwind.sh --watch &
 pids+=($!)
 
