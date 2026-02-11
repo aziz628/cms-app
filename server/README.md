@@ -78,6 +78,7 @@ server/
 | POST   | `/api/auth/login`   | Admin login          |
 | POST   | `/api/auth/logout`  | Admin logout         |
 | POST   | `/api/auth/refresh` | Refresh access token |
+| GET    | `/api/auth/me`      | Get current user info / verify authentication |
 
 ### Dashboard
 
@@ -244,5 +245,3 @@ ADMIN_PASSWORD_HASH=bcrypt-hash-here
 | sqlite3       | Database               |
 | nodemon       | Development hot reload |
 | jest          | Testing framework      |
-
-

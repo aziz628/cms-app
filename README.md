@@ -9,6 +9,7 @@ cms-app/
 ├── frontend/          # React admin panel (Vite + Tailwind CSS)
 ├── server/            # Express.js backend with EJS templates
 ├── script/            # Cross-platform development scripts
+├── docs/              # Project documentation and architecture guides
 ├── package.json       # Root package.json
 └── setup.js           # Initial environment setup
 ```

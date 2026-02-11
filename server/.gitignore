@@ -55,3 +55,4 @@ tailwindcss-windows.exe
 **/DB/*.md
 !./DB/sqlite_migration_tools.md
 
+/data/backups

@@ -45,7 +45,7 @@
     ]
   },
   "dependencies": {
-    "bcrypt": "^5.1.0",
+    "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.5.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -60,8 +60,9 @@
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.1",
     "multer": "^1.4.5-lts.1",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7",
+    "node-cron": "^4.2.1",
+    "sqlite": "^5.1.1", 
+    "sqlite3": "^5.0.2",
     "winston": "^3.18.3"
   },
   "devDependencies": {
