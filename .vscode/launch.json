@@ -14,7 +14,7 @@
             "skipFiles": [  // Files to skip when stepping through code
                 "<node_internals>/**"  // Skip Node.js internal files
             ], 
-            "program": "${workspaceFolder}\\server.js",  // Entry point of your application
+            "program": "${workspaceFolder}/server/server.js",  // Entry point of your application
                                                         // ${workspaceFolder} is the root of your project
             "env": {  // Environment variables to set when launching your program                       
                 "NODE_ENV": "development"  // Sets NODE_ENV to "development"
@@ -24,7 +24,7 @@
             "type": "node",
             "request": "launch",
             "name": "Debug Jest Tests",
-            "program": "${workspaceFolder}\\node_modules\\jest\\bin\\jest.js",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--runInBand", "--no-coverage", "--testTimeout=9999999"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
